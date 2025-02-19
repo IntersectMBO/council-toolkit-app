@@ -214,9 +214,34 @@ export const TransactionButton = () => {
         />
         <Button
           variant="contained"
+          component="label"
+          color="success"
+          sx={{ whiteSpace: "nowrap", px: 3 }}
+        >
+          Upload
+          <input
+            type="file"
+            hidden
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                  const result = JSON.parse(event.target?.result as string);
+                  console.log("Uploaded file:", result.cborHex);
+                  console.log("Uploaded file:", result);
+                  setUnsignedTransactionHex(result.cborHex);
+                };
+                reader.readAsText(file);
+              }
+            }}
+          />
+        </Button>
+        <Button
+          variant="contained"
           color="success"
           onClick={checkTransaction}
-          sx={{ whiteSpace: "nowrap", px: 3 }}
+          sx={{ whiteSpace: "nowrap", px: 4 }}
         >
           Check Transaction
         </Button>

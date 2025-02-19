@@ -66,7 +66,6 @@ export const openInNewTab = (url: string) => {
 };
  
 export const getDataHashFromURI = async (anchorURL: string) => {
-  console.log('Callllll fuuunctioooon');
   if (anchorURL !== "") {
     console.log("Anchor data null")
   }
@@ -76,7 +75,6 @@ export const getDataHashFromURI = async (anchorURL: string) => {
   // anchorURL='https://ipfs.io/ipfs/bafkreidsmyjjfrsvj3czrsu5roy2undco2bhhcnqdgbievolgbyi7lptxy'
   const data = await fetch(anchorURL);
   const text = await data.text();
-  console.log('THEEEEE TEXT',text);
   const hash = blake.blake2bHex(text,undefined, 32);
   console.log("Hash from text:", hash);
   return hash
