@@ -35,7 +35,7 @@ export const TransactionChecks = ({
         </Box>
         
         <Box display="flex" alignItems="center" gap={0.5}>
-          <InfoWithTooltip info="Should you be signing this transactions?" />
+          <InfoWithTooltip info="Is this an unsigned transaction or is it already signed?" />
           <Typography display="flex" flexDirection="column" width="45%" variant="body1" fontWeight="bold">
           Transaction is unsigned?: {isUnsignedTransaction ? "✅" : "❌"}
         </Typography>
@@ -54,16 +54,10 @@ export const TransactionChecks = ({
             Is Intersect ICC credential?: {hasICCCredentials ? "✅" : "❌"}
           </Typography>
         </Box>
-
-        <Box display="flex" alignItems="center" gap={0.5}>
-          <InfoWithTooltip info="Does the document hosted at the provided metadata URL match the provided hash?" />
-          <Typography variant="body1" fontWeight="bold">
-            Does the metadata match the provided hash?: {isMetadataAnchorValid ? "✅" : "❌"}
-          </Typography>
-        </Box>
       </Box>
 
       <Box display="flex" flexDirection="column" gap={2} width="48%">
+
         <Box display="flex" alignItems="center" gap={0.5}>
           <InfoWithTooltip info="Does the transaction only contain one vote? multiple votes could be misleading" />
           <Typography variant="body1" fontWeight="bold">
@@ -84,6 +78,14 @@ export const TransactionChecks = ({
             Is voting key in plutus data?: {isInOutputPlutusData ? "✅" : "❌"}
           </Typography>
         </Box>
+
+        <Box display="flex" alignItems="center" gap={0.5}>
+          <InfoWithTooltip info="Does the document hosted at the provided metadata URL match the provided hash?" />
+          <Typography variant="body1" fontWeight="bold">
+            Does the metadata match the provided hash?: {isMetadataAnchorValid ? "✅" : "❌"}
+          </Typography>
+        </Box>
+
       </Box>
     </Box>
 
