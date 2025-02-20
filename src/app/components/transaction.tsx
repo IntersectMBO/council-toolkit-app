@@ -5,11 +5,12 @@ import { useWallet } from "@meshsdk/react";
 import { deserializeAddress } from "@meshsdk/core";
 import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
-import ReactJsonPretty from 'react-json-pretty';
+import ReactJsonPretty from "react-json-pretty";
 import * as txValidationUtils from "../utils/txValidationUtils";
 import { TransactionChecks } from "./validationChecks";
-import { decodeHextoTx,convertGAToBech, getCardanoScanURL } from "../utils/txUtils";
+import {decodeHextoTx,convertGAToBech,getCardanoScanURL} from "../utils/txUtils";
 import { VotingDetails } from "./votingDetails";
+import DownloadButton from "./downloadFiles";
 
 export const TransactionButton = () => {
   const [message, setMessage] = useState("");
@@ -297,6 +298,9 @@ export const TransactionButton = () => {
             }}
           >
             <Typography component="pre">{signature}</Typography>
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+            <DownloadButton signature={signature} govActionID={govActionID} voterKeyHash={''} />
           </Box>
         </Box>
       )}
