@@ -228,7 +228,7 @@ export const TransactionButton = () => {
             setMetadataAnchorHash("");
           }}
         />
-        <FileUploader setUnsignedTransactionHex={setUnsignedTransactionHex} />
+        <FileUploader setUnsignedTransactionHex={setUnsignedTransactionHex} setMessage={setMessage} />
       </Box>
 
       {/* Transaction Details */}
