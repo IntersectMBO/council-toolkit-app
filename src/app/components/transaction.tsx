@@ -7,7 +7,8 @@ import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import ReactJsonPretty from "react-json-pretty";
 import * as voteTxValidationUtils from "../utils/txValidationUtils";
-import { TransactionChecks } from "./voteValidationChecks";
+import { TransactionChecks } from "./txValidationChecks";
+import { VoteTransactionChecks } from "./voteValidationChecks";
 import {decodeHexToTx, convertGAToBech, getCardanoScanURL} from "../utils/txUtils";
 import { VotingDetails } from "./votingDetails";
 import DownloadButton from "./downloadFiles";
@@ -26,27 +27,34 @@ export const TransactionButton = () => {
   const [metadataAnchorHash, setMetadataAnchorHash] = useState<string>("");
   const [stakeCredentialHash, setStakeCredentialHash] = useState<string>("");
   const [isAcknowledged, setIsAcknowledged] = useState(false);
-  const [validationState, setValidationState] = useState({
+  const [isVoteTransaction, setIsVoteTransaction] = useState(false);
+  const [txValidationState, setTxValidationState] = useState({
     isPartOfSigners: false,
-    isOneVote: false,
     hasCertificates: true,
     isSameNetwork: false,
     hasICCCredentials: false,
     isInOutputPlutusData: false,
-    isMetadataAnchorValid: false,
     isUnsignedTransaction: false,
   });
-  const resetValidationState = () => {
-    setValidationState((prev) => ({
+  const [voteValidationState, setVoteValidationState] = useState({
+    isOneVote: false,
+    isMetadataAnchorValid: false,
+  });
+
+  const resetAllValidationState = () => {
+    setTxValidationState((prev) => ({
       ...prev,
       isPartOfSigners: false,
-      isOneVote: false,
       hasCertificates: true,
       isSameNetwork: false,
       hasICCCredentials: false,
       isInOutputPlutusData: false,
-      isMetadataAnchorValid: false,
       isUnsignedTransaction: false,
+    })),
+    setVoteValidationState((prev) => ({
+      ...prev,
+      isOneVote: false,
+      isMetadataAnchorValid: false,
     }));
   };
 
@@ -60,7 +68,7 @@ export const TransactionButton = () => {
     setExplorerLink("");
     setMetadataAnchorURL("");
     setMetadataAnchorHash("");
-    resetValidationState();
+    resetAllValidationState();
     setIsAcknowledged(false);
   }, []);
   
@@ -82,7 +90,7 @@ export const TransactionButton = () => {
 
   const checkTransaction = useCallback(async () => {
     if (!connected) {
-      resetValidationState();
+      resetAllValidationState();
       setVoteChoice("");
       setGovActionID("");
       return;
@@ -109,13 +117,21 @@ export const TransactionButton = () => {
       // todo add logic to work out which type of transaction is being signed
       // then from detected transaction, apply the correct validation checks
 
-      // for now lets just apply voting validation checks, when there is a vote
-      // else assume its a joining hierarchy transaction
-
       const votingProcedures = transactionBody.to_js_value().voting_procedures;
+
+      setTxValidationState({
+        isPartOfSigners: voteTxValidationUtils.isPartOfSigners(transactionBody, stakeCred),
+        hasCertificates: voteTxValidationUtils.hasCertificates(transactionBody),
+        isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody, network),
+        hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
+        isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody, stakeCred),
+        isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction),
+      });
 
       // is a vote transaction
       if (votingProcedures){
+
+        setIsVoteTransaction(true);
 
         console.log("Transaction is a vote transaction, applying vote validations");
 
@@ -129,15 +145,9 @@ export const TransactionButton = () => {
         const voteMetadataURL = votes[0].voting_procedure.anchor.anchor_url;
         const voteMetadataHash = votes[0].voting_procedure.anchor.anchor_data_hash;
 
-        setValidationState({
-          isPartOfSigners: await voteTxValidationUtils.isPartOfSigners(transactionBody, stakeCred),
-          isOneVote: hasOneVote,
-          hasCertificates: voteTxValidationUtils.hasCertificates(transactionBody),
-          isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody, network),
-          hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
-          isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody, stakeCred),
+        setVoteValidationState({
+          isOneVote: voteTxValidationUtils.hasOneVoteOnTransaction(transactionBody),
           isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash),
-          isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction),
         });
 
         // Get the key voting details of the transaction
@@ -153,7 +163,7 @@ export const TransactionButton = () => {
           setMetadataAnchorURL(voteMetadataURL);
           setMetadataAnchorHash(voteMetadataHash);
           setExplorerLink(getCardanoScanURL(govActionID,transactionNetworkID));
-          }
+        }
 
       // for now assume its a joining hierarchy transaction
       } else if (!votingProcedures) {
@@ -171,7 +181,7 @@ export const TransactionButton = () => {
  
   const signTransaction = async () => {
     try {
-      if (validationState.isPartOfSigners) {
+      if (txValidationState.isPartOfSigners) {
         // Pass transaction to wallet for signing
         const signedTx = await wallet.signTx(unsignedTransactionHex, true);
         const signedTransactionObj = decodeHexToTx(signedTx);
@@ -247,7 +257,7 @@ export const TransactionButton = () => {
           value={unsignedTransactionHex}
           onChange={(e) => {
             setUnsignedTransactionHex(e.target.value);
-            resetValidationState();
+            resetAllValidationState();
             setVoteChoice("");
             setGovActionID("");
             setSignature("");
@@ -258,20 +268,31 @@ export const TransactionButton = () => {
         <FileUploader setUnsignedTransactionHex={setUnsignedTransactionHex} setMessage={setMessage} />
       </Box>
 
-      {/* Transaction Details */}
-      <Box sx={{ mt: 3 }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Transaction Validation Checks
-        </Typography>
+    {/* Transaction Details for all transactions*/}
+    <Box sx={{ mt: 3 }}>
+      <Typography variant="h6" sx={{ mb: 2 }}>
+        Transaction Validation Checks
+      </Typography>
+      {unsignedTransaction && (
+        <TransactionChecks {...txValidationState} />
+      )}
 
-        {unsignedTransaction && (
-            <TransactionChecks {...validationState}
-          />
-        )}
-        <Typography variant="h6" sx={{ mt: 3 }}>
-          Voting Details
-        </Typography>
-        {unsignedTransaction && (
+      {/* Vote Transaction Validations */}
+      {unsignedTransaction && isVoteTransaction && (
+        <>
+          <Typography variant="h6" sx={{ mt: 3 }}>
+            Vote Validation Checks
+          </Typography>
+          <VoteTransactionChecks {...voteValidationState} />
+        </>
+      )}
+
+      {/* Vote Details */}
+      {unsignedTransaction && isVoteTransaction && (
+        <>
+          <Typography variant="h6" sx={{ mt: 3 }}>
+            Vote Details
+          </Typography>
           <VotingDetails
             govActionID={govActionID}
             voteChoice={voteChoice}
@@ -280,7 +301,8 @@ export const TransactionButton = () => {
             metadataAnchorHash={metadataAnchorHash}
             onAcknowledgeChange={setIsAcknowledged}
           />
-        )}
+        </>
+      )}
         <Box
           sx={{
             backgroundColor: "#f5f5f5",
