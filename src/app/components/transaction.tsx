@@ -76,7 +76,7 @@ export const TransactionButton = () => {
       setMessage("Please connect your wallet first.");
     }
     else {
-      setMessage(`Connected to wallet: ${name}`);
+      setMessage(`Connected to wallet`);
     }
   }, [connected,resetAllStates]);
 
