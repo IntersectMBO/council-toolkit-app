@@ -9,25 +9,32 @@ import ReactJsonPretty from "react-json-pretty";
 import * as voteTxValidationUtils from "../utils/txValidationUtils";
 import { TransactionChecks } from "./txValidationChecks";
 import { VoteTransactionChecks } from "./voteValidationChecks";
-import {decodeHexToTx, convertGAToBech, getCardanoScanURL} from "../utils/txUtils";
+import { decodeHexToTx, convertGAToBech, getCardanoScanURL } from "../utils/txUtils";
 import { VotingDetails } from "./votingDetails";
+import { HierarchyDetails } from "./hierarchyDetails";
 import DownloadButton from "./downloadFiles";
 import FileUploader from "./fileUploader";
 
 export const TransactionButton = () => {
+  const { wallet, connected } = useWallet();
+  const [stakeCredentialHash, setStakeCredentialHash] = useState<string>("");
   const [message, setMessage] = useState("");
   const [unsignedTransactionHex, setUnsignedTransactionHex] = useState("");
   const [unsignedTransaction, setUnsignedTransaction] = useState<CSL.Transaction | null>(null);
-  const { wallet, connected } = useWallet();
   const [signature, setSignature] = useState<string>("");
-  const [voteChoice, setVoteChoice] = useState<string>("");
-  const [govActionID, setGovActionID] = useState<string>("");
-  const [explorerLink, setExplorerLink] = useState<string>("");
-  const [metadataAnchorURL, setMetadataAnchorURL] = useState<string>("");
-  const [metadataAnchorHash, setMetadataAnchorHash] = useState<string>("");
-  const [stakeCredentialHash, setStakeCredentialHash] = useState<string>("");
-  const [isAcknowledged, setIsAcknowledged] = useState(false);
+  const [acknowledgedTx, setAcknowledgedTx] = useState(false);
   const [isVoteTransaction, setIsVoteTransaction] = useState(false);
+  const [voteTransactionDetails, setVoteTransactionDetails] = useState({
+    govActionID: "",
+    voteChoice: "",
+    explorerLink: "",
+    metadataAnchorURL: "",
+    metadataAnchorHash: "",
+  });
+  const [voteValidationState, setVoteValidationState] = useState({
+    isOneVote: false,
+    isMetadataAnchorValid: false,
+  });
   const [txValidationState, setTxValidationState] = useState({
     isPartOfSigners: false,
     hasCertificates: true,
@@ -36,10 +43,16 @@ export const TransactionButton = () => {
     isInOutputPlutusData: false,
     isUnsignedTransaction: false,
   });
-  const [voteValidationState, setVoteValidationState] = useState({
-    isOneVote: false,
-    isMetadataAnchorValid: false,
-  });
+
+  const resetVoteDetailsState = () => {
+    setVoteTransactionDetails({
+      govActionID: "",
+      voteChoice: "",
+      explorerLink: "",
+      metadataAnchorURL: "",
+      metadataAnchorHash: "",
+    });
+  }
 
   const resetAllValidationState = () => {
     setTxValidationState((prev) => ({
@@ -63,13 +76,10 @@ export const TransactionButton = () => {
     setUnsignedTransactionHex("");
     setUnsignedTransaction(null);
     setSignature("");
-    setVoteChoice("");
-    setGovActionID("");
-    setExplorerLink("");
-    setMetadataAnchorURL("");
-    setMetadataAnchorHash("");
     resetAllValidationState();
-    setIsAcknowledged(false);
+    setAcknowledgedTx(false);
+    resetVoteDetailsState();
+    setIsVoteTransaction(false);
   }, []);
   
   const walletRef = useRef(wallet);
@@ -86,14 +96,15 @@ export const TransactionButton = () => {
     else {
       setMessage(`Connected to wallet`);
     }
-  }, [connected,resetAllStates]);
+  }, [connected, resetAllStates]);
 
   const checkTransaction = useCallback(async () => {
+    // if wallet not connected, reset vote details and validation state
+    // and return
     if (!connected) {
       resetAllValidationState();
-      setVoteChoice("");
-      setGovActionID("");
-      return;
+      resetAllDetailsState();
+      return setMessage("Please connect your wallet first.");
     }
     try {
       const network = await walletRef.current.getNetworkId();
@@ -156,13 +167,15 @@ export const TransactionButton = () => {
         if (votes && hasOneVote) {
           
           const govActionID = convertGAToBech(votes[0].action_id.transaction_id, votes[0].action_id.index);
-  
-          setVoteChoice(vote === 'Yes' ? 'Constitutional' : vote === 'No' ? 'Unconstitutional' : 'Abstain');
-          setGovActionID(govActionID);
           if(!votes[0].voting_procedure.anchor) throw new Error("Vote has no anchor.");
-          setMetadataAnchorURL(voteMetadataURL);
-          setMetadataAnchorHash(voteMetadataHash);
-          setExplorerLink(getCardanoScanURL(govActionID,transactionNetworkID));
+
+          setVoteTransactionDetails({
+            govActionID: govActionID,
+            voteChoice: vote === 'Yes' ? 'Constitutional' : vote === 'No' ? 'Unconstitutional' : 'Abstain',
+            explorerLink: getCardanoScanURL(govActionID,transactionNetworkID),
+            metadataAnchorURL: voteMetadataURL,
+            metadataAnchorHash: voteMetadataHash,
+          });
         }
 
       // for now assume its a joining hierarchy transaction
@@ -173,9 +186,7 @@ export const TransactionButton = () => {
     catch (error) {
       console.error("Error validating transaction:", error);
       setMessage("Transaction validation failed. " + error);
-      resetValidationState();
-      setVoteChoice("");
-      setGovActionID("");
+      resetAllValidationState();
     }
   }, [unsignedTransactionHex, walletRef, connected]);
  
@@ -243,7 +254,7 @@ export const TransactionButton = () => {
         });
       }
     }
-  }, [signature,unsignedTransaction]);
+  }, [signature, unsignedTransaction]);
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
@@ -258,11 +269,8 @@ export const TransactionButton = () => {
           onChange={(e) => {
             setUnsignedTransactionHex(e.target.value);
             resetAllValidationState();
-            setVoteChoice("");
-            setGovActionID("");
+            resetVoteDetailsState();
             setSignature("");
-            setMetadataAnchorURL("");
-            setMetadataAnchorHash("");
           }}
         />
         <FileUploader setUnsignedTransactionHex={setUnsignedTransactionHex} setMessage={setMessage} />
@@ -294,12 +302,23 @@ export const TransactionButton = () => {
             Vote Details
           </Typography>
           <VotingDetails
-            govActionID={govActionID}
-            voteChoice={voteChoice}
-            explorerLink={explorerLink}
-            metadataAnchorURL={metadataAnchorURL}
-            metadataAnchorHash={metadataAnchorHash}
-            onAcknowledgeChange={setIsAcknowledged}
+            govActionID={voteTransactionDetails.govActionID}
+            voteChoice={voteTransactionDetails.voteChoice}
+            explorerLink={voteTransactionDetails.explorerLink}
+            metadataAnchorURL={voteTransactionDetails.metadataAnchorURL}
+            metadataAnchorHash={voteTransactionDetails.metadataAnchorHash}
+            onAcknowledgeChange={setAcknowledgedTx}
+          />
+        </>
+      )}
+      {/* Hierarchy Details */}
+      {unsignedTransaction && !isVoteTransaction && (
+        <>
+          <Typography variant="h6" sx={{ mt: 3 }}>
+            Hierarchy Details
+          </Typography>
+          <HierarchyDetails
+            onAcknowledgeChange={setAcknowledgedTx}
           />
         </>
       )}
@@ -324,7 +343,7 @@ export const TransactionButton = () => {
 
       {/* Sign Button - Aligned to Right */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-      {!isAcknowledged &&(
+      {!acknowledgedTx &&(
           <Typography color="error" sx={{ mt: 1 }}>
             ⚠️ You must acknowledge voting details before signing!
           </Typography>
@@ -333,7 +352,7 @@ export const TransactionButton = () => {
           id="sign-transaction"
           variant="contained"
           color="success"
-          disabled={!isAcknowledged}
+          disabled={!acknowledgedTx}
           onClick={signTransaction}
           sx={{ whiteSpace: "nowrap", px: 3 }}
         >
@@ -364,7 +383,7 @@ export const TransactionButton = () => {
             <Typography component="pre">{signature}</Typography>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-            <DownloadButton signature={signature} govActionID={govActionID} voterKeyHash={stakeCredentialHash} />
+            <DownloadButton signature={signature} govActionID={voteTransactionDetails.govActionID} voterKeyHash={stakeCredentialHash} />
           </Box>
         </Box>
       )}

@@ -1,4 +1,4 @@
-import {Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel } from "@mui/material";
 import { openInNewTab } from "../utils/txUtils";
 import { useState } from "react";
 import InfoWithTooltip from "./infoHover";
@@ -26,8 +26,6 @@ export const VotingDetails = ({
         ackVoteChoice: false,
         ackMetadataAnchor: false,
     });
-
-    const allChecked = Object.values(checkboxes).every(Boolean);
 
     const handleCheckBoxChange = (name: keyof typeof checkboxes) => (event: React.ChangeEvent<HTMLInputElement>) => {
       const updatedCheckboxes = { ...checkboxes, [name]: event.target.checked };
