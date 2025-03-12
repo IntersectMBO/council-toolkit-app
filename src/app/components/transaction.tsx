@@ -8,7 +8,7 @@ import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import ReactJsonPretty from "react-json-pretty";
 import * as voteTxValidationUtils from "../utils/txValidationUtils";
 import { TransactionChecks } from "./voteValidationChecks";
-import {decodeHextoTx,convertGAToBech,getCardanoScanURL} from "../utils/txUtils";
+import {decodeHexToTx, convertGAToBech, getCardanoScanURL} from "../utils/txUtils";
 import { VotingDetails } from "./votingDetails";
 import DownloadButton from "./downloadFiles";
 import FileUploader from "./fileUploader";
@@ -17,11 +17,11 @@ export const TransactionButton = () => {
   const [message, setMessage] = useState("");
   const [unsignedTransactionHex, setUnsignedTransactionHex] = useState("");
   const [unsignedTransaction, setUnsignedTransaction] = useState<CSL.Transaction | null>(null);
-  const { wallet, connected, name, connect, disconnect } = useWallet();
+  const { wallet, connected } = useWallet();
   const [signature, setSignature] = useState<string>("");
   const [voteChoice, setVoteChoice] = useState<string>("");
   const [govActionID, setGovActionID] = useState<string>("");
-  const [cardanoscan, setCardanoscan] = useState<string>("");
+  const [explorerLink, setExplorerLink] = useState<string>("");
   const [metadataAnchorURL, setMetadataAnchorURL] = useState<string>("");
   const [metadataAnchorHash, setMetadataAnchorHash] = useState<string>("");
   const [stakeCredentialHash, setStakeCredentialHash] = useState<string>("");
@@ -57,7 +57,7 @@ export const TransactionButton = () => {
     setSignature("");
     setVoteChoice("");
     setGovActionID("");
-    setCardanoscan("");
+    setExplorerLink("");
     setMetadataAnchorURL("");
     setMetadataAnchorHash("");
     resetValidationState();
@@ -89,7 +89,7 @@ export const TransactionButton = () => {
     }
     try {
       const network = await walletRef.current.getNetworkId();
-      const unsignedTransaction = decodeHextoTx(unsignedTransactionHex);
+      const unsignedTransaction = decodeHexToTx(unsignedTransactionHex);
       setUnsignedTransaction(unsignedTransaction);
       if (!unsignedTransaction) throw new Error("Invalid transaction format.");
 
@@ -152,7 +152,7 @@ export const TransactionButton = () => {
           if(!votes[0].voting_procedure.anchor) throw new Error("Vote has no anchor.");
           setMetadataAnchorURL(voteMetadataURL);
           setMetadataAnchorHash(voteMetadataHash);
-          setCardanoscan(getCardanoScanURL(govActionID,transactionNetworkID));
+          setExplorerLink(getCardanoScanURL(govActionID,transactionNetworkID));
           }
 
       // for now assume its a joining hierarchy transaction
@@ -174,7 +174,7 @@ export const TransactionButton = () => {
       if (validationState.isPartOfSigners) {
         // Pass transaction to wallet for signing
         const signedTx = await wallet.signTx(unsignedTransactionHex, true);
-        const signedTransactionObj = decodeHextoTx(signedTx);
+        const signedTransactionObj = decodeHexToTx(signedTx);
 
         const witnessHex = signedTransactionObj?.witness_set().vkeys()?.get(0)?.to_hex() || '';
         const signature = signedTransactionObj?.witness_set().vkeys()?.get(0).signature().to_hex() || '';
@@ -218,7 +218,7 @@ export const TransactionButton = () => {
     if (unsignedTransactionHex) {
       checkTransaction();
     }
-  }, [unsignedTransactionHex,checkTransaction]);
+  }, [unsignedTransactionHex, checkTransaction]);
   useEffect(() => {
     if (signature || unsignedTransaction) {
       const transactionElement = document.getElementById("sign-transaction");
@@ -275,7 +275,7 @@ export const TransactionButton = () => {
           <VotingDetails
             govActionID={govActionID}
             voteChoice={voteChoice}
-            cardanoscan={cardanoscan}
+            explorerLink={explorerLink}
             metadataAnchorURL={metadataAnchorURL}
             metadataAnchorHash={metadataAnchorHash}
             onAcknowledgeChange={setIsAcknowledged}
