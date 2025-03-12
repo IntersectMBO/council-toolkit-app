@@ -73,6 +73,10 @@ export const TransactionButton = () => {
   useEffect(() => {
     if (!connected) {
       resetAllStates();
+      setMessage("Please connect your wallet first.");
+    }
+    else {
+      setMessage(`Connected to wallet`);
     }
   }, [connected,resetAllStates]);
 
@@ -81,7 +85,7 @@ export const TransactionButton = () => {
       resetValidationState();
       setVoteChoice("");
       setGovActionID("");
-      return setMessage("Please connect your wallet first.");
+      return;
     }
     try{
       const network = await walletRef.current.getNetworkId();
@@ -139,6 +143,9 @@ export const TransactionButton = () => {
     catch (error) {
       console.error("Error validating transaction:", error);
       setMessage("Transaction validation failed. " + error);
+      resetValidationState();
+      setVoteChoice("");
+      setGovActionID("");
     }
   }, [unsignedTransactionHex,walletRef,connected]);
  
@@ -228,7 +235,7 @@ export const TransactionButton = () => {
             setMetadataAnchorHash("");
           }}
         />
-        <FileUploader setUnsignedTransactionHex={setUnsignedTransactionHex} />
+        <FileUploader setUnsignedTransactionHex={setUnsignedTransactionHex} setMessage={setMessage} />
       </Box>
 
       {/* Transaction Details */}
