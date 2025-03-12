@@ -194,8 +194,11 @@ export const TransactionButton = () => {
       } else if (!votingProcedures) {
 
         setIsVoteTransaction(false);
-        
         console.log("Transaction is a vote transaction, applying vote validations");
+
+        // todo: add hierarchy details
+        // todo: add hierarchy validation checks
+
       }
     }
     catch (error) {
@@ -361,7 +364,7 @@ export const TransactionButton = () => {
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
       {!acknowledgedTx &&(
           <Typography color="error" sx={{ mt: 1 }}>
-            ⚠️ You must acknowledge voting details before signing!
+            ⚠️ You must acknowledge the transaction details before signing!
           </Typography>
         )}
         <Button
