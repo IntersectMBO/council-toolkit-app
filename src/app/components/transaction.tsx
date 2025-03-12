@@ -6,8 +6,8 @@ import { deserializeAddress } from "@meshsdk/core";
 import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import ReactJsonPretty from "react-json-pretty";
-import * as txValidationUtils from "../utils/txValidationUtils";
-import { TransactionChecks } from "./validationChecks";
+import * as voteTxValidationUtils from "../utils/txValidationUtils";
+import { TransactionChecks } from "./voteValidationChecks";
 import {decodeHextoTx,convertGAToBech,getCardanoScanURL} from "../utils/txUtils";
 import { VotingDetails } from "./votingDetails";
 import DownloadButton from "./downloadFiles";
@@ -87,7 +87,7 @@ export const TransactionButton = () => {
       setGovActionID("");
       return;
     }
-    try{
+    try {
       const network = await walletRef.current.getNetworkId();
       const unsignedTransaction = decodeHextoTx(unsignedTransactionHex);
       setUnsignedTransaction(unsignedTransaction);
@@ -98,47 +98,67 @@ export const TransactionButton = () => {
       setStakeCredentialHash(stakeCred);
 
       console.log("Connected wallet network ID:", network);
-      console.log("unsignedTransaction:", unsignedTransaction);
-      console.log("Stake Credential:", stakeCred);
+      console.log("Unsigned transaction:", unsignedTransaction.to_hex());
+      console.log("Connected wallet's stake credential (used as voting key):", stakeCred);
 
-      //**************************************Transaction Validation Checks****************************************
+      // Transaction Validation Checks
 
       const transactionBody = unsignedTransaction.body();
       if (!transactionBody) throw new Error("Transaction body is null.");
-      const voting_procedures= transactionBody.to_js_value().voting_procedures;
-      if (!voting_procedures) throw new Error("Transaction has no voting procedures.");
-      const votes=voting_procedures[0].votes;
-      if (!votes) throw new Error("Transaction has no votes.");
-      const hasOneVote = txValidationUtils.hasOneVoteOnTransaction(transactionBody);
-      const vote = voting_procedures[0].votes[0].voting_procedure.vote;
-      if(!votes[0].voting_procedure.anchor) throw new Error("Vote has no anchor.");
-      const voteMetadataURL = votes[0].voting_procedure.anchor.anchor_url;
-      const voteMetadataHash = votes[0].voting_procedure.anchor.anchor_data_hash;
 
-      setValidationState({
-        isPartOfSigners: await txValidationUtils.isPartOfSigners(transactionBody, stakeCred),
-        isOneVote: hasOneVote,
-        hasCertificates: txValidationUtils.hasCertificates(transactionBody),
-        isSameNetwork: txValidationUtils.isSameNetwork(transactionBody, network),
-        hasICCCredentials: txValidationUtils.hasValidICCCredentials(transactionBody, network),
-        isInOutputPlutusData: txValidationUtils.isSignerInPlutusData(transactionBody, stakeCred),
-        isMetadataAnchorValid: await txValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash),
-        isUnsignedTransaction: txValidationUtils.isUnsignedTransaction(unsignedTransaction),
-      });
-      
-      //********************************************Voting Details *********************************************************************/
-      const transactionNetworkID = transactionBody.outputs().get(0).address().to_bech32().startsWith("addr_test1") ? 0 : 1;
-      if (votes && hasOneVote) {
-        
-        const govActionID = convertGAToBech(votes[0].action_id.transaction_id, votes[0].action_id.index);
+      // todo add logic to work out which type of transaction is being signed
+      // then from detected transaction, apply the correct validation checks
 
-        setVoteChoice(vote === 'Yes' ? 'Constitutional' : vote === 'No' ? 'Unconstitutional' : 'Abstain');
-        setGovActionID(govActionID);
+      // for now lets just apply voting validation checks, when there is a vote
+      // else assume its a joining hierarchy transaction
+
+      const votingProcedures = transactionBody.to_js_value().voting_procedures;
+
+      // is a vote transaction
+      if (votingProcedures){
+
+        console.log("Transaction is a vote transaction, applying vote validations");
+
+        // todo: change logic to reference voting procedures
+        const votes = votingProcedures[0].votes;
+
+        // apply validation logic
+        const hasOneVote = voteTxValidationUtils.hasOneVoteOnTransaction(transactionBody);
+        const vote = votingProcedures[0].votes[0].voting_procedure.vote;
         if(!votes[0].voting_procedure.anchor) throw new Error("Vote has no anchor.");
-        setMetadataAnchorURL(voteMetadataURL);
-        setMetadataAnchorHash(voteMetadataHash);
-        setCardanoscan(getCardanoScanURL(govActionID,transactionNetworkID));
-        }
+        const voteMetadataURL = votes[0].voting_procedure.anchor.anchor_url;
+        const voteMetadataHash = votes[0].voting_procedure.anchor.anchor_data_hash;
+
+        setValidationState({
+          isPartOfSigners: await voteTxValidationUtils.isPartOfSigners(transactionBody, stakeCred),
+          isOneVote: hasOneVote,
+          hasCertificates: voteTxValidationUtils.hasCertificates(transactionBody),
+          isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody, network),
+          hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
+          isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody, stakeCred),
+          isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash),
+          isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction),
+        });
+
+        // Get the key voting details of the transaction
+
+        const transactionNetworkID = transactionBody.outputs().get(0).address().to_bech32().startsWith("addr_test1") ? 0 : 1;
+        if (votes && hasOneVote) {
+          
+          const govActionID = convertGAToBech(votes[0].action_id.transaction_id, votes[0].action_id.index);
+  
+          setVoteChoice(vote === 'Yes' ? 'Constitutional' : vote === 'No' ? 'Unconstitutional' : 'Abstain');
+          setGovActionID(govActionID);
+          if(!votes[0].voting_procedure.anchor) throw new Error("Vote has no anchor.");
+          setMetadataAnchorURL(voteMetadataURL);
+          setMetadataAnchorHash(voteMetadataHash);
+          setCardanoscan(getCardanoScanURL(govActionID,transactionNetworkID));
+          }
+
+      // for now assume its a joining hierarchy transaction
+      } else if (!votingProcedures) {
+        console.log("Transaction is not a vote transaction");
+      }
     }
     catch (error) {
       console.error("Error validating transaction:", error);
@@ -147,7 +167,7 @@ export const TransactionButton = () => {
       setVoteChoice("");
       setGovActionID("");
     }
-  }, [unsignedTransactionHex,walletRef,connected]);
+  }, [unsignedTransactionHex, walletRef, connected]);
  
   const signTransaction = async () => {
     try {

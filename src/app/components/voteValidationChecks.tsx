@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import InfoWithTooltip from "../components/infoHover";
+import InfoWithTooltip from "./infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 
 interface TransactionChecksProps {
