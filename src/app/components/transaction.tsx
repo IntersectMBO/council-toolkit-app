@@ -24,17 +24,7 @@ export const TransactionButton = () => {
   const [signature, setSignature] = useState<string>("");
   const [acknowledgedTx, setAcknowledgedTx] = useState(false);
   const [isVoteTransaction, setIsVoteTransaction] = useState(false);
-  const [voteTransactionDetails, setVoteTransactionDetails] = useState({
-    govActionID: "",
-    voteChoice: "",
-    explorerLink: "",
-    metadataAnchorURL: "",
-    metadataAnchorHash: "",
-  });
-  const [voteValidationState, setVoteValidationState] = useState({
-    isOneVote: false,
-    isMetadataAnchorValid: false,
-  });
+  // for all transactions
   const [txValidationState, setTxValidationState] = useState({
     isPartOfSigners: false,
     hasCertificates: true,
@@ -43,8 +33,23 @@ export const TransactionButton = () => {
     isInOutputPlutusData: false,
     isUnsignedTransaction: false,
   });
+  // for vote transactions
+  const [voteTransactionDetails, setVoteTransactionDetails] = useState({
+    govActionID: "",
+    voteChoice: "",
+    explorerLink: "",
+    metadataAnchorURL: "",
+    metadataAnchorHash: "",
+  });
+  // for vote transactions
+  const [voteValidationState, setVoteValidationState] = useState({
+    isOneVote: false,
+    isMetadataAnchorValid: false,
+  });
 
-  const resetVoteDetailsState = () => {
+  // add other transactions validations and details here
+
+  const resetAllDetailsState = () => {
     setVoteTransactionDetails({
       govActionID: "",
       voteChoice: "",
@@ -52,10 +57,6 @@ export const TransactionButton = () => {
       metadataAnchorURL: "",
       metadataAnchorHash: "",
     });
-  }
-
-  const resetAllDetailsState = () => {
-    resetVoteDetailsState();
     // add hierarchy details reset here
     // add other transaction details reset here
   }
@@ -75,6 +76,7 @@ export const TransactionButton = () => {
       isOneVote: false,
       isMetadataAnchorValid: false,
     }));
+    // add other transactions validations here
   };
 
   const resetAllStates = useCallback(() => {
@@ -82,9 +84,9 @@ export const TransactionButton = () => {
     setUnsignedTransactionHex("");
     setUnsignedTransaction(null);
     setSignature("");
+    resetAllDetailsState();
     resetAllValidationState();
     setAcknowledgedTx(false);
-    resetVoteDetailsState();
     setIsVoteTransaction(false);
   }, []);
   
@@ -128,13 +130,9 @@ export const TransactionButton = () => {
 
       // Transaction Validation Checks
 
+      // for all transactions
       const transactionBody = unsignedTransaction.body();
       if (!transactionBody) throw new Error("Transaction body is null.");
-
-      // todo add logic to work out which type of transaction is being signed
-      // then from detected transaction, apply the correct validation checks
-
-      const votingProcedures = transactionBody.to_js_value().voting_procedures;
 
       setTxValidationState({
         isPartOfSigners: voteTxValidationUtils.isPartOfSigners(transactionBody, stakeCred),
@@ -145,7 +143,15 @@ export const TransactionButton = () => {
         isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction),
       });
 
-      // is a vote transaction
+      // todo add logic to work out which type of transaction is being signed
+      // then from detected transaction, apply the correct validation checks
+
+      // for now; if vote then assume its a vote tx
+      // if not vote assume its a hierarchy tx
+
+      const votingProcedures = transactionBody.to_js_value().voting_procedures;
+
+      // if a vote transaction
       if (votingProcedures){
 
         setIsVoteTransaction(true);
@@ -186,7 +192,10 @@ export const TransactionButton = () => {
 
       // for now assume its a joining hierarchy transaction
       } else if (!votingProcedures) {
-        console.log("Transaction is not a vote transaction");
+
+        setIsVoteTransaction(false);
+        
+        console.log("Transaction is a vote transaction, applying vote validations");
       }
     }
     catch (error) {
@@ -276,7 +285,7 @@ export const TransactionButton = () => {
           onChange={(e) => {
             setUnsignedTransactionHex(e.target.value);
             resetAllValidationState();
-            resetVoteDetailsState();
+            resetAllDetailsState();
             setSignature("");
           }}
         />
