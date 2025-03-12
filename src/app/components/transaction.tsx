@@ -73,6 +73,10 @@ export const TransactionButton = () => {
   useEffect(() => {
     if (!connected) {
       resetAllStates();
+      setMessage("Please connect your wallet first.");
+    }
+    else {
+      setMessage(`Connected to wallet: ${name}`);
     }
   }, [connected,resetAllStates]);
 
@@ -81,7 +85,7 @@ export const TransactionButton = () => {
       resetValidationState();
       setVoteChoice("");
       setGovActionID("");
-      return setMessage("Please connect your wallet first.");
+      return;
     }
     try{
       const network = await walletRef.current.getNetworkId();
