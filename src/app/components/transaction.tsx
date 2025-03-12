@@ -54,6 +54,12 @@ export const TransactionButton = () => {
     });
   }
 
+  const resetAllDetailsState = () => {
+    resetVoteDetailsState();
+    // add hierarchy details reset here
+    // add other transaction details reset here
+  }
+
   const resetAllValidationState = () => {
     setTxValidationState((prev) => ({
       ...prev,
@@ -187,6 +193,7 @@ export const TransactionButton = () => {
       console.error("Error validating transaction:", error);
       setMessage("Transaction validation failed. " + error);
       resetAllValidationState();
+      resetAllDetailsState();
     }
   }, [unsignedTransactionHex, walletRef, connected]);
  
