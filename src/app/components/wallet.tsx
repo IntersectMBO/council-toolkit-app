@@ -6,7 +6,7 @@ import "@meshsdk/react/styles.css"
 import { useWallet } from "@meshsdk/react";
 import { BrowserWallet, deserializeAddress } from "@meshsdk/core";
 import {  Container, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from "@mui/material";
-
+import Image from 'next/image';
 
 
 export const Wallet = () => {
@@ -89,7 +89,7 @@ export const Wallet = () => {
                     <div style={{ display: "flex", alignItems: "center" }}>
                       {walletNetwork || "Not Available"} 
                       {walletIcon && 
-                        <img src={walletIcon} alt="Wallet Icon" style={{ width: "5%", height: "5%" ,marginLeft: "15px"}} />}
+                        <Image src={walletIcon} alt="Wallet Icon" className="wallet-icon" width={25} height={25} style={{ marginLeft: "15px"}} />}
                     </div>
                   </TableCell>
                 </TableRow>

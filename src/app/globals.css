@@ -10,3 +10,10 @@
   padding: 2rem;
   overflow: auto; 
 }
+/* Mobile devices or smaller screens */
+@media (max-width: 768px) {
+  .wallet-icon {
+    width: 15px;  
+    height: 15px;
+  }
+}
