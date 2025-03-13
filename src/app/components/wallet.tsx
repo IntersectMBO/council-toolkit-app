@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import "../globals.css"; // Import the CSS file
 import "@meshsdk/react/styles.css"
 import { useWallet } from "@meshsdk/react";
-import { deserializeAddress } from "@meshsdk/core";
+import { BrowserWallet, deserializeAddress } from "@meshsdk/core";
 import {  Container, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from "@mui/material";
+
 
 
 export const Wallet = () => {
@@ -13,7 +14,7 @@ export const Wallet = () => {
   const [paymentCred, setPaymentCred] = useState<string | null>(null);
   const [stakeCred, setStakeCred] = useState<string | null>(null);
   const [walletNetwork, setWalletNetwork] = useState<string | null>(null);
- 
+  const [walletIcon,setWalletIcon]=useState<string>('');
   useEffect(() => {
     const run = async () => {
       try {
@@ -37,12 +38,15 @@ export const Wallet = () => {
           console.log("Public key:", pubKey);
           const changeAddress = await wallet.getChangeAddress();
           const networkId = await wallet.getNetworkId();
+          const iconSvg=(await BrowserWallet.getAvailableWallets()).find(wallet => wallet.id.toLowerCase() === name?.toLowerCase())?.icon || "";
 
           setPaymentCred(deserializeAddress(changeAddress).pubKeyHash);
           //stake key used for vote signing 
           setStakeCred(deserializeAddress(changeAddress).stakeCredentialHash);
 
           setWalletNetwork(networkId === 0 ? "Testnet" : networkId === 1 ? "Mainnet" : "unknown");
+
+          setWalletIcon(iconSvg);
 
           console.log("Payment Credential:", paymentCred);
           console.log("Stake Credential:", stakeCred);
@@ -51,6 +55,7 @@ export const Wallet = () => {
           setPaymentCred(null);
           setStakeCred(null);
           setWalletNetwork(null);
+          setWalletIcon("");
         }
       };
 
@@ -67,7 +72,7 @@ export const Wallet = () => {
   return (
 
     <Container maxWidth="md">  
-    <div className="wallet-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }} >
+    <div className="wallet-container" style={{ display: "flex", alignItems: "center" ,justifyContent:"center "}} >
       <WalletWrapper />
     </div>
           {/* Credentials Table */}
@@ -80,7 +85,13 @@ export const Wallet = () => {
                 </TableRow>
                 <TableRow>
                   <TableCell sx={{ fontWeight: "bold" }}>Wallet Network</TableCell>
-                  <TableCell>{walletNetwork || "Not Available"}</TableCell>
+                  <TableCell> 
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {walletNetwork || "Not Available"} 
+                      {walletIcon && 
+                        <img src={walletIcon} alt="Wallet Icon" style={{ width: "5%", height: "5%" ,marginLeft: "15px"}} />}
+                    </div>
+                  </TableCell>
                 </TableRow>
               </TableBody>
             </Table>
