@@ -29,7 +29,6 @@ export const TransactionButton = () => {
     isPartOfSigners: false,
     hasCertificates: true,
     isSameNetwork: false,
-    hasICCCredentials: false,
     isInOutputPlutusData: false,
     isUnsignedTransaction: false,
   });
@@ -45,6 +44,7 @@ export const TransactionButton = () => {
   const [voteValidationState, setVoteValidationState] = useState({
     isOneVote: false,
     isMetadataAnchorValid: false,
+    hasICCCredentials: false,
   });
 
   // add other transactions validations and details here
@@ -138,7 +138,6 @@ export const TransactionButton = () => {
         isPartOfSigners: voteTxValidationUtils.isPartOfSigners(transactionBody, stakeCred),
         hasCertificates: voteTxValidationUtils.hasCertificates(transactionBody),
         isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody, network),
-        hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
         isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody, stakeCred),
         isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction),
       });
@@ -171,6 +170,7 @@ export const TransactionButton = () => {
         setVoteValidationState({
           isOneVote: voteTxValidationUtils.hasOneVoteOnTransaction(transactionBody),
           isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash),
+          hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
         });
 
         // Get the key voting details of the transaction
