@@ -1,22 +1,22 @@
-import {Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel } from "@mui/material";
 import { openInNewTab } from "../utils/txUtils";
 import { useState } from "react";
 import InfoWithTooltip from "./infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 
 interface VotingDetailsProps {
-    govActionID: string;
-    voteChoice: string;
-    cardanoscan: string;   
-    metadataAnchorURL: string;
-    metadataAnchorHash: string;
-    onAcknowledgeChange: (checked: boolean) => void;
+  govActionID: string;
+  voteChoice: string;
+  explorerLink: string;   
+  metadataAnchorURL: string;
+  metadataAnchorHash: string;
+  onAcknowledgeChange: (checked: boolean) => void;
 }
 
 export const VotingDetails = ({ 
     govActionID, 
     voteChoice, 
-    cardanoscan, 
+    explorerLink, 
     metadataAnchorURL, 
     metadataAnchorHash,
     onAcknowledgeChange  
@@ -26,8 +26,6 @@ export const VotingDetails = ({
         ackVoteChoice: false,
         ackMetadataAnchor: false,
     });
-
-    const allChecked = Object.values(checkboxes).every(Boolean);
 
     const handleCheckBoxChange = (name: keyof typeof checkboxes) => (event: React.ChangeEvent<HTMLInputElement>) => {
       const updatedCheckboxes = { ...checkboxes, [name]: event.target.checked };
@@ -45,7 +43,7 @@ export const VotingDetails = ({
               </TableCell>
               <TableCell>
                 <a
-                  href={`${cardanoscan}`}
+                  href={`${explorerLink}`}
                   target="_blank"
                   style={{ color: "blue", textDecoration: "underline" }}
                 >
