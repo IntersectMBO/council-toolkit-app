@@ -6,7 +6,6 @@ interface TransactionChecksProps {
   isPartOfSigners: boolean;
   hasCertificates: boolean;
   isSameNetwork: boolean;
-  hasICCCredentials: boolean;
   isInOutputPlutusData: boolean;
   isUnsignedTransaction: boolean;
 }
@@ -15,7 +14,6 @@ export const TransactionChecks = ({
   isPartOfSigners,
   hasCertificates,
   isSameNetwork,
-  hasICCCredentials,
   isInOutputPlutusData,
   isUnsignedTransaction,
 }: TransactionChecksProps) => {
@@ -37,14 +35,13 @@ export const TransactionChecks = ({
           Transaction is unsigned?: {isUnsignedTransaction ? "✅" : "❌"}
         </Typography>
         </Box>
-        
+
         <Box display="flex" alignItems="center" gap={0.5}>
-          <InfoWithTooltip info={TOOLTIP_MESSAGES.HAVE_ICC_CREDENTIAL} />
+          <InfoWithTooltip info={TOOLTIP_MESSAGES.IS_SAME_NETWORK} />
           <Typography variant="body1" fontWeight="bold">
-            Is Intersect ICC credential?: {hasICCCredentials ? "✅" : "❌"}
+            Transaction and wallet on the same network?: {isSameNetwork ? "✅" : "❌"}
           </Typography>
         </Box>
-        <Box sx={{ borderBottom: '1px solid #ccc', mt: 2 }} />
       </Box>
 
       <Box display="flex" flexDirection="column" gap={2} width="48%">
@@ -63,13 +60,6 @@ export const TransactionChecks = ({
           </Typography>
         </Box>
 
-        <Box display="flex" alignItems="center" gap={0.5}>
-          <InfoWithTooltip info={TOOLTIP_MESSAGES.IS_SAME_NETWORK} />
-          <Typography variant="body1" fontWeight="bold">
-            Transaction and wallet on the same network?: {isSameNetwork ? "✅" : "❌"}
-          </Typography>
-        </Box>
-        <Box sx={{ borderBottom: '1px solid #ccc', mt: 2 }} />
       </Box>
     </Box>
   );

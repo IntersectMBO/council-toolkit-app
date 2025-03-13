@@ -5,11 +5,13 @@ import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 interface VoteTransactionChecksProps {
   isOneVote: boolean;
   isMetadataAnchorValid: boolean;
+  hasICCCredentials: boolean;
 }
 
 export const VoteTransactionChecks = ({
   isOneVote,
   isMetadataAnchorValid,
+  hasICCCredentials,
 }: VoteTransactionChecksProps) => {
   return (
   
@@ -21,6 +23,13 @@ export const VoteTransactionChecks = ({
           <InfoWithTooltip info={TOOLTIP_MESSAGES.IS_ONE_VOTE} />
           <Typography variant="body1" fontWeight="bold">
             Only one vote?: {isOneVote ? "✅" : "❌"}
+          </Typography>
+        </Box>
+
+        <Box display="flex" alignItems="center" gap={0.5}>
+          <InfoWithTooltip info={TOOLTIP_MESSAGES.HAVE_ICC_CREDENTIAL} />
+          <Typography variant="body1" fontWeight="bold">
+            Is Intersect ICC credential?: {hasICCCredentials ? "✅" : "❌"}
           </Typography>
         </Box>
 
