@@ -1,7 +1,7 @@
 import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel } from "@mui/material";
 import { openInNewTab } from "../utils/txUtils";
 import { useState } from "react";
-import InfoWithTooltip from "./infoHover";
+import InfoWithTooltip from "./molecules/infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 
 interface VotingDetailsProps {
