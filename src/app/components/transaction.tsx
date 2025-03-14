@@ -213,8 +213,12 @@ export const TransactionButton = () => {
       console.log("Transaction Validation State: ", txValidationState);
       const voteValidationAllState= Object.values(voteValidationState).every(Boolean);
       console.log("Vote Validation State: ", voteValidationState);
-      if (!txValidationAllState || !voteValidationAllState) {
+
+      if (!txValidationAllState) {
         throw new Error("Ensure all transaction and vote validations are successful before proceeding.");
+      }
+      if (!voteValidationAllState && isVoteTransaction) {
+        throw new Error("Ensure all vote validations are successful before proceeding.");
       }
       // Pass transaction to wallet for signing
       const signedTx = await wallet.signTx(unsignedTransactionHex, true);
