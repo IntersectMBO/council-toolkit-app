@@ -107,11 +107,9 @@ export const TransactionButton = () => {
   }, [connected, resetAllStates]);
 
   const checkTransaction = useCallback(async () => {
-    // if wallet not connected, reset vote details and validation state
+    // if wallet not connected and we try to check transaction, set message
     // and return
     if (!connected) {
-      resetAllValidationState();
-      resetAllDetailsState();
       return setMessage("Please connect your wallet first.");
     }
     try {
