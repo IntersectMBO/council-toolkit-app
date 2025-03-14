@@ -18,8 +18,8 @@ const downloadFile = (data : any, filename : string , fileExtension = "json") =>
 
 const downloadSignature = (govActionID : string, voterKeyHash : string , signature : string) => {   
     const data = {
-        type: "Unwitnessed Tx ConwayEra",
-        description: "Ledger Cddl Format",
+        type: "TxWitness ConwayEra",
+        description: "Key Witness ShelleyEra",
         govActionID,
         voterKeyHash,
         cborHex: signature
