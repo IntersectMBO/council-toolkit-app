@@ -292,7 +292,7 @@ export const TransactionButton = () => {
             setSignature("");
           }}
         />
-        <FileUploader setUnsignedTransactionHex={setUnsignedTransactionHex} setMessage={setMessage} />
+        <FileUploader setUnsignedTransactionHex={(hex) => { setUnsignedTransactionHex(hex); setSignature(""); }} setMessage={setMessage} />
       </Box>
 
     {/* Transaction Details for all transactions*/}
