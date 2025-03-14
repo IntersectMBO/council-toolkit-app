@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import InfoWithTooltip from "./infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
+import CheckItem from "./ValidationCheckItem";
 
 interface VoteTransactionChecksProps {
   isOneVote: boolean;
@@ -18,32 +19,25 @@ export const VoteTransactionChecks = ({
     <Box display="flex" justifyContent="space-between" gap={2}>
 
       <Box display="flex" flexDirection="column" gap={2} width="48%">
-
-        <Box display="flex" alignItems="center" gap={0.5}>
-          <InfoWithTooltip info={TOOLTIP_MESSAGES.IS_ONE_VOTE} />
-          <Typography variant="body1" fontWeight="bold">
-            Only one vote?: {isOneVote ? "✅" : "❌"}
-          </Typography>
-        </Box>
-
-        <Box display="flex" alignItems="center" gap={0.5}>
-          <InfoWithTooltip info={TOOLTIP_MESSAGES.HAVE_ICC_CREDENTIAL} />
-          <Typography variant="body1" fontWeight="bold">
-            Is Intersect ICC credential?: {hasICCCredentials ? "✅" : "❌"}
-          </Typography>
-        </Box>
-
+        <CheckItem 
+          label="Only one vote?" 
+          tooltip={TOOLTIP_MESSAGES.IS_ONE_VOTE} 
+          value={isOneVote} 
+        />
+        <CheckItem
+          label="Is Intersect ICC credential?"
+          tooltip={TOOLTIP_MESSAGES.HAVE_ICC_CREDENTIAL}
+          value={hasICCCredentials}
+        />
       </Box>
 
       <Box display="flex" flexDirection="column" gap={2} width="48%">
 
-        <Box display="flex" alignItems="center" gap={0.5}>
-          <InfoWithTooltip info={TOOLTIP_MESSAGES.CORRECT_METADATA_ANCHOR} />
-          <Typography variant="body1" fontWeight="bold">
-            Does the metadata match the provided hash?: {isMetadataAnchorValid ? "✅" : "❌"}
-          </Typography>
-        </Box>
-
+        <CheckItem
+          label="Does the metadata match the provided hash?"
+          tooltip={TOOLTIP_MESSAGES.CORRECT_METADATA_ANCHOR}
+          value={isMetadataAnchorValid}
+        />
       </Box>
 
     </Box>
