@@ -70,7 +70,7 @@ export const TransactionButton = () => {
       hasICCCredentials: false,
       isInOutputPlutusData: false,
       isUnsignedTransaction: false,
-    })),
+    }));
     setVoteValidationState((prev) => ({
       ...prev,
       isOneVote: false,
