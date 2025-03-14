@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
-import InfoWithTooltip from "./infoHover";
+import InfoWithTooltip from "./molecules/infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
-import CheckItem from "./ValidationCheckItem";
+import CheckItem from "./molecules/validationCheckItem";
 
 interface TransactionChecksProps {
   isPartOfSigners: boolean;
