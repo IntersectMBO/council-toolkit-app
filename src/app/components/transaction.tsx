@@ -27,7 +27,7 @@ export const TransactionButton = () => {
   // for all transactions
   const [txValidationState, setTxValidationState] = useState({
     isPartOfSigners: false,
-    hasCertificates: true,
+    hasNoCertificates: false,
     isSameNetwork: false,
     isInOutputPlutusData: false,
     isUnsignedTransaction: false,
@@ -65,7 +65,7 @@ export const TransactionButton = () => {
     setTxValidationState((prev) => ({
       ...prev,
       isPartOfSigners: false,
-      hasCertificates: true,
+      hasNoCertificates: false,
       isSameNetwork: false,
       hasICCCredentials: false,
       isInOutputPlutusData: false,
@@ -134,7 +134,7 @@ export const TransactionButton = () => {
 
       setTxValidationState({
         isPartOfSigners: voteTxValidationUtils.isPartOfSigners(transactionBody, stakeCred),
-        hasCertificates: voteTxValidationUtils.hasCertificates(transactionBody),
+        hasNoCertificates: !voteTxValidationUtils.hasCertificates(transactionBody),
         isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody, network),
         isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody, stakeCred),
         isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction),
@@ -209,44 +209,46 @@ export const TransactionButton = () => {
  
   const signTransaction = async () => {
     try {
-      if (txValidationState.isPartOfSigners) {
-        // Pass transaction to wallet for signing
-        const signedTx = await wallet.signTx(unsignedTransactionHex, true);
-        const signedTransactionObj = decodeHexToTx(signedTx);
-
-        const witnessHex = signedTransactionObj?.witness_set().vkeys()?.get(0)?.to_hex() || '';
-        const signature = signedTransactionObj?.witness_set().vkeys()?.get(0).signature().to_hex() || '';
-        let providedVkey = signedTransactionObj?.witness_set().vkeys()?.get(0).vkey().to_hex() || '';
-
-        // Remove the (confusing) CBOR header, not sure why adds this
-        providedVkey = providedVkey.substring(4);
-        const providedVKeyObj = CSL.PublicKey.from_hex(providedVkey);
-
-        // Check to make sure the wallet produced a signature as expected
-
-        // compare the desired credential with the vKey returned from wallet
-        const expectedVKeyHash = deserializeAddress(await wallet.getChangeAddress()).stakeCredentialHash;
-        const providedVKeyHash = providedVKeyObj.hash().to_hex();
-
-        if (providedVKeyHash != expectedVKeyHash) {
-          throw new Error("Wallet returned unexpected VKey.");
-        }
-
-        // Check the produced signature if valid
-        const txHash = CSL.FixedTransaction.from_hex(unsignedTransactionHex).transaction_hash().to_bytes();
-        const validSignature = providedVKeyObj.verify(txHash, CSL.Ed25519Signature.from_hex(signature));
-
-        if (!validSignature){
-          throw new Error("Wallet created an invalid signature.");
-        }
-
-        setSignature(witnessHex);
-        console.log("Witness (hex): ", witnessHex);
+      const txValidationAllState= Object.values(txValidationState).every(Boolean);
+      console.log("Transaction Validation State: ", txValidationState);
+      const voteValidationAllState= Object.values(voteValidationState).every(Boolean);
+      console.log("Vote Validation State: ", voteValidationState);
+      if (!txValidationAllState || !voteValidationAllState) {
+        throw new Error("Ensure all transaction and vote validations are successful before proceeding.");
       }
-      else { 
-        throw new Error("You are not part of the required signers.");
+      // Pass transaction to wallet for signing
+      const signedTx = await wallet.signTx(unsignedTransactionHex, true);
+      const signedTransactionObj = decodeHexToTx(signedTx);
+
+      const witnessHex = signedTransactionObj?.witness_set().vkeys()?.get(0)?.to_hex() || '';
+      const signature = signedTransactionObj?.witness_set().vkeys()?.get(0).signature().to_hex() || '';
+      let providedVkey = signedTransactionObj?.witness_set().vkeys()?.get(0).vkey().to_hex() || '';
+
+      // Remove the (confusing) CBOR header, not sure why adds this
+      providedVkey = providedVkey.substring(4);
+      const providedVKeyObj = CSL.PublicKey.from_hex(providedVkey);
+
+      // Check to make sure the wallet produced a signature as expected
+
+      // compare the desired credential with the vKey returned from wallet
+      const expectedVKeyHash = deserializeAddress(await wallet.getChangeAddress()).stakeCredentialHash;
+      const providedVKeyHash = providedVKeyObj.hash().to_hex();
+
+      if (providedVKeyHash != expectedVKeyHash) {
+        throw new Error("Wallet returned unexpected VKey.");
       }
 
+      // Check the produced signature if valid
+      const txHash = CSL.FixedTransaction.from_hex(unsignedTransactionHex).transaction_hash().to_bytes();
+      const validSignature = providedVKeyObj.verify(txHash, CSL.Ed25519Signature.from_hex(signature));
+
+      if (!validSignature){
+        throw new Error("Wallet created an invalid signature.");
+      }
+
+      setSignature(witnessHex);
+      console.log("Witness (hex): ", witnessHex);
+     
     } catch (error) {
       console.error("Error signing transaction:", error);
       setMessage("Transaction signing failed. " + error);

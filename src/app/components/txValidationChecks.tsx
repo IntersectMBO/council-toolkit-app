@@ -4,7 +4,7 @@ import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 
 interface TransactionChecksProps {
   isPartOfSigners: boolean;
-  hasCertificates: boolean;
+  hasNoCertificates: boolean;
   isSameNetwork: boolean;
   isInOutputPlutusData: boolean;
   isUnsignedTransaction: boolean;
@@ -12,7 +12,7 @@ interface TransactionChecksProps {
 
 export const TransactionChecks = ({
   isPartOfSigners,
-  hasCertificates,
+  hasNoCertificates,
   isSameNetwork,
   isInOutputPlutusData,
   isUnsignedTransaction,
@@ -49,7 +49,7 @@ export const TransactionChecks = ({
         <Box display="flex" alignItems="center" gap={0.5}>
           <InfoWithTooltip info={TOOLTIP_MESSAGES.HAVE_CERTIFICATES}/>
           <Typography variant="body1" fontWeight="bold">
-            Has no certificates?: {hasCertificates ? "❌" : "✅"}
+            Has no certificates?: {hasNoCertificates ?  "✅" : "❌"}
           </Typography>
         </Box>
 
