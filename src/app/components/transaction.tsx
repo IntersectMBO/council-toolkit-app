@@ -12,8 +12,8 @@ import { VoteTransactionChecks } from "./voteValidationChecks";
 import { decodeHexToTx, convertGAToBech, getCardanoScanURL } from "../utils/txUtils";
 import { VotingDetails } from "./votingDetails";
 import { HierarchyDetails } from "./hierarchyDetails";
-import DownloadButton from "./downloadFiles";
-import FileUploader from "./fileUploader";
+import DownloadButton from "./molecules/downloadFiles";
+import FileUploader from "./molecules/fileUploader";
 
 export const TransactionButton = () => {
   const { wallet, connected } = useWallet();
