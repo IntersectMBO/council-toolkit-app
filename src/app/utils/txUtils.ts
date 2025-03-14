@@ -11,8 +11,8 @@ const NEXT_PUBLIC_REST_IPFS_GATEWAY=process.env.NEXT_PUBLIC_REST_IPFS_GATEWAY;
  * @returns {CSL.Transaction} the decoded transaction object, or null if the decoding fails.
  */
 
-export const decodeHextoTx = (unsignedTransactionHex: string) => {
-    console.log("decodeHextoTx");
+export const decodeHexToTx = (unsignedTransactionHex: string) => {
+    console.log("decodeHexToTx");
     try {
       const unsignedTransaction = CSL.Transaction.from_hex(unsignedTransactionHex);
       return unsignedTransaction;

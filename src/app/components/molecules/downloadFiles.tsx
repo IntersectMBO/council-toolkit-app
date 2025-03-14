@@ -18,13 +18,18 @@ const downloadFile = (data : any, filename : string , fileExtension = "json") =>
 
 const downloadSignature = (govActionID : string, voterKeyHash : string , signature : string) => {   
     const data = {
-        type: "Unwitnessed Tx ConwayEra",
-        description: "Ledger Cddl Format",
+        type: "TxWitness ConwayEra",
+        description: "Key Witness ShelleyEra",
         govActionID,
         voterKeyHash,
         cborHex: signature
     };
-    downloadFile(data, "vote", "signature");
+    // Extract information for file name
+    const voterPrefix = voterKeyHash.substring(0, 5);
+    const govPrefix = govActionID.substring(0, 15);
+    const filename = `${govPrefix}-vote-from-${voterPrefix}`;
+
+    downloadFile(data, filename, "witness");
 }
 
 interface DownloadButtonProps {
