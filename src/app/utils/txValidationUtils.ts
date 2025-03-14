@@ -9,10 +9,6 @@ import * as CSL from "@emurgo/cardano-serialization-lib-browser";
  */
 export const isPartOfSigners = (transactionBody: any, stakeCred: string)  => {
     console.log("isPartOfSigners");
-    
-    if (!transactionBody) {
-        throw new Error("Transaction body is null.");
-    }
     //wallet needs to sign
     // Check if signer part of plutus output data
     const requiredSigners = transactionBody.required_signers();
