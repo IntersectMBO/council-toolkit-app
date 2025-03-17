@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel } from "@mui/material";
 import { openInNewTab } from "../utils/txUtils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InfoWithTooltip from "./molecules/infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 
@@ -11,6 +11,7 @@ interface VotingDetailsProps {
   metadataAnchorURL: string;
   metadataAnchorHash: string;
   onAcknowledgeChange: (checked: boolean) => void;
+  resetAckState: boolean;
 }
 
 export const VotingDetails = ({ 
@@ -19,7 +20,8 @@ export const VotingDetails = ({
     explorerLink, 
     metadataAnchorURL, 
     metadataAnchorHash,
-    onAcknowledgeChange  
+    onAcknowledgeChange,
+    resetAckState  
 }: VotingDetailsProps) => {
     const [checkboxes, setCheckboxes] = useState({
         ackGovAction: false,
@@ -32,6 +34,17 @@ export const VotingDetails = ({
       setCheckboxes(updatedCheckboxes);
       onAcknowledgeChange(Object.values(updatedCheckboxes).every(Boolean));
     };
+
+    useEffect(() => {
+      if (resetAckState) {
+        setCheckboxes({
+          ackGovAction: false,
+          ackVoteChoice: false,
+          ackMetadataAnchor: false,
+        });
+        onAcknowledgeChange(false);  
+      }
+    }, [resetAckState]);
 
     return (
       <TableContainer sx={{ mb: 3 }}>

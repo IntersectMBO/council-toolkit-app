@@ -39,6 +39,7 @@ export const TransactionButton = () => {
     explorerLink: "",
     metadataAnchorURL: "",
     metadataAnchorHash: "",
+    resetAckState: false,
   });
   // for vote transactions
   const [voteValidationState, setVoteValidationState] = useState({
@@ -56,6 +57,7 @@ export const TransactionButton = () => {
       explorerLink: "",
       metadataAnchorURL: "",
       metadataAnchorHash: "",
+      resetAckState: true,
     });
     // add hierarchy details reset here
     // add other transaction details reset here
@@ -185,6 +187,7 @@ export const TransactionButton = () => {
             explorerLink: getCardanoScanURL(govActionID,transactionNetworkID),
             metadataAnchorURL: voteMetadataURL,
             metadataAnchorHash: voteMetadataHash,
+            resetAckState: false,
           });
         }
 
@@ -296,7 +299,7 @@ export const TransactionButton = () => {
             setSignature("");
           }}
         />
-        <FileUploader setUnsignedTransactionHex={(hex) => { setUnsignedTransactionHex(hex); setSignature(""); }} setMessage={setMessage} />
+        <FileUploader setUnsignedTransactionHex={(hex) => { setUnsignedTransactionHex(hex); setSignature(""); resetAllDetailsState();}} setMessage={setMessage} />
       </Box>
 
     {/* Transaction Details for all transactions*/}
@@ -331,6 +334,7 @@ export const TransactionButton = () => {
             metadataAnchorURL={voteTransactionDetails.metadataAnchorURL}
             metadataAnchorHash={voteTransactionDetails.metadataAnchorHash}
             onAcknowledgeChange={setAcknowledgedTx}
+            resetAckState={voteTransactionDetails.resetAckState}
           />
         </>
       )}
