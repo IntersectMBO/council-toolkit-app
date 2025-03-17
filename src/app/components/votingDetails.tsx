@@ -44,7 +44,7 @@ export const VotingDetails = ({
         });
         onAcknowledgeChange(false);  
       }
-    }, [resetAckState]);
+    }, [resetAckState,onAcknowledgeChange]);
 
     return (
       <TableContainer sx={{ mb: 3 }}>
