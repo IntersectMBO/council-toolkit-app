@@ -80,4 +80,41 @@ export const getDataHashFromURI = async (anchorURL: string) => {
   return hash
 }
 
+export const signTransaction = async (wallet: any, unsignedTransactionHex: string) => {
+  
+  const signedTx = await wallet.signTx(unsignedTransactionHex, true);
+  if (!signedTx) {
+    throw new Error("Error signing transaction.");
+  }
+  const signedTransactionObj = decodeHexToTx(signedTx);
+  const witnessHex = signedTransactionObj?.witness_set().vkeys()?.get(0)?.to_hex() || "";
+    
+  return { signedTransactionObj, witnessHex }; 
+  //returning the decoded transaction object (we don't need to return the hex form)and the witness hex
+  
+};
 
+export const validateWitness = async (signedTransactionObj: any, wallet: any, unsignedTransactionHex: string) => {
+  const signature = signedTransactionObj?.witness_set().vkeys()?.get(0).signature().to_hex() || "";
+  let providedVkey = signedTransactionObj?.witness_set().vkeys()?.get(0).vkey().to_hex() || "";
+
+      // Remove the CBOR header
+      providedVkey = providedVkey.substring(4);
+      const providedVKeyObj = CSL.PublicKey.from_hex(providedVkey);
+
+      const expectedVKeyHash = deserializeAddress(await wallet.getChangeAddress()).stakeCredentialHash;
+      const providedVKeyHash = providedVKeyObj.hash().to_hex();
+
+      if (providedVKeyHash !== expectedVKeyHash) {
+        throw new Error("Wallet returned unexpected VKey.");
+      }
+
+      const txHash = CSL.FixedTransaction.from_hex(unsignedTransactionHex).transaction_hash().to_bytes();
+      const validSignature = providedVKeyObj.verify(txHash, CSL.Ed25519Signature.from_hex(signature));
+
+      if (!validSignature) {
+        throw new Error("Wallet created an invalid signature.");
+      }
+
+      console.log("Signature is valid.");
+};
