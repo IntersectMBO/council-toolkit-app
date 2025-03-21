@@ -22,7 +22,7 @@ export const defaultVoteTransactionDetails: VoteTransactionDetails = {
   explorerLink: "",
   metadataAnchorURL: "",
   metadataAnchorHash: "",
-  resetAckState: false,
+  resetAckState: true,
 };
 
 
