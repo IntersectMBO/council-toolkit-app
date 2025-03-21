@@ -3,13 +3,15 @@
 import { useState } from "react";
 import { Button, Typography, Box } from "@mui/material";
 import { signTransaction, validateWitness } from "../utils/txUtils";
+import { TxValidationState, VoteValidationState } from "./types/types";
+import { IWallet } from "@meshsdk/core";
 
 interface SignTransactionButtonProps {
-  wallet: any; 
+  wallet: IWallet; 
   unsignedTransactionHex: string;
   isVoteTransaction: boolean;
-  txValidationState: any;
-  voteValidationState: any;
+  txValidationState: TxValidationState;
+  voteValidationState: VoteValidationState;
   acknowledgedTx: boolean;
   voteTransactionDetails: {
     govActionID: string;
