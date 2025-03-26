@@ -3,15 +3,11 @@ import { openInNewTab } from "../utils/txUtils";
 import { useEffect, useState } from "react";
 import InfoWithTooltip from "./molecules/infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
+import { VoteTransactionDetails } from "./types/types";
 
-interface VotingDetailsProps {
-  govActionID: string;
-  voteChoice: string;
-  explorerLink: string;   
-  metadataAnchorURL: string;
-  metadataAnchorHash: string;
+
+export interface VotingDetailsProps extends VoteTransactionDetails {
   onAcknowledgeChange: (checked: boolean) => void;
-  resetAckState: boolean;
 }
 
 export const VotingDetails = ({ 

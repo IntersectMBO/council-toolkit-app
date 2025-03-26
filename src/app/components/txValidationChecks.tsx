@@ -2,14 +2,7 @@ import { Box, Typography } from "@mui/material";
 import InfoWithTooltip from "./molecules/infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 import CheckItem from "./molecules/validationCheckItem";
-
-interface TransactionChecksProps {
-  isPartOfSigners: boolean;
-  hasNoCertificates: boolean;
-  isSameNetwork: boolean;
-  isInOutputPlutusData: boolean;
-  isUnsignedTransaction: boolean;
-}
+import { TxValidationState } from "./types/types";
 
 export const TransactionChecks = ({
   isPartOfSigners,
@@ -17,7 +10,7 @@ export const TransactionChecks = ({
   isSameNetwork,
   isInOutputPlutusData,
   isUnsignedTransaction,
-}: TransactionChecksProps) => {
+}: TxValidationState) => {
   return (
 
     <Box display="flex" justifyContent="space-between" gap={2}>

@@ -2,18 +2,13 @@ import { Box, Typography } from "@mui/material";
 import InfoWithTooltip from "./molecules/infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 import CheckItem from "./molecules/validationCheckItem";
-
-interface VoteTransactionChecksProps {
-  isOneVote: boolean;
-  isMetadataAnchorValid: boolean;
-  hasICCCredentials: boolean;
-}
+import { VoteValidationState } from "./types/types";
 
 export const VoteTransactionChecks = ({
   isOneVote,
   isMetadataAnchorValid,
   hasICCCredentials,
-}: VoteTransactionChecksProps) => {
+}: VoteValidationState) => {
   return (
   
     <Box display="flex" justifyContent="space-between" gap={2}>
