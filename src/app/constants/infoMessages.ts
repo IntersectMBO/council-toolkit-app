@@ -6,5 +6,8 @@
     IS_ONE_VOTE: "Does the transaction only contain one vote? multiple votes could be misleading",
     HAVE_CERTIFICATES: "Does the transaction contain any unexpected certificates?",
     CORRECT_PLUTUS_DATA: "Is your key within the Intersect ICC hierarchy",
-    CORRECT_METADATA_ANCHOR: "Does the document hosted at the provided metadata URL match the provided hash?"
+    CORRECT_METADATA_ANCHOR: "Does the document hosted at the provided metadata URL match the provided hash?", 
+    ACK_GOV_ACTION_ID: "Please acknowledge that you have checked the governance action details.",
+    ACK_VOTE_CHOICE: "Please acknowledge that you have checked and agreed to the vote choice.",
+    ACK_METADATA_ANCHOR: "Please acknowledge that you have checked and agreed to the metadata anchor.",   
   };

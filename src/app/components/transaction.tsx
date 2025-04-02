@@ -245,7 +245,7 @@ export const TransactionButton = () => {
 
       {/* Vote Details */}
       {unsignedTransaction && isVoteTransaction && (
-        <Box sx={{ mt: 3 }}>
+        <>
           <Typography variant="h6" sx={{ mt: 3 }}>
             Vote Details
           </Typography>
@@ -258,7 +258,7 @@ export const TransactionButton = () => {
             onAcknowledgeChange={setAcknowledgedTx}
             resetAckState={voteTransactionDetails.resetAckState}
           />
-        </Box>
+        </>
       )}
       {/* Hierarchy Details */}
       {unsignedTransaction && !isVoteTransaction && (
