@@ -226,7 +226,7 @@ export const TransactionButton = () => {
 
     {/* Transaction Details for all transactions*/}
     <Box sx={{ mt: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
+      <Typography variant="h6" sx={{ mt: 2, mb:2 }}  bgcolor={"#e0e0e0"}>
         Transaction Validation Checks
       </Typography>
       {unsignedTransaction && (
@@ -236,7 +236,7 @@ export const TransactionButton = () => {
       {/* Vote Transaction Validations */}
       {unsignedTransaction && isVoteTransaction && (
         <>
-          <Typography variant="h6" sx={{ mt: 3 }}>
+          <Typography variant="h6" sx={{ mt: 2 ,mb: 2 }} bgcolor={"#e0e0e0"}>
             Vote Validation Checks
           </Typography>
           <VoteTransactionChecks {...voteValidationState} />
@@ -246,7 +246,7 @@ export const TransactionButton = () => {
       {/* Vote Details */}
       {unsignedTransaction && isVoteTransaction && (
         <>
-          <Typography variant="h6" sx={{ mt: 3 }}>
+          <Typography variant="h6" sx={{ mt: 2 ,mb: 2 } } bgcolor={"#e0e0e0"}>
             Vote Details
           </Typography>
           <VotingDetails
@@ -263,7 +263,7 @@ export const TransactionButton = () => {
       {/* Hierarchy Details */}
       {unsignedTransaction && !isVoteTransaction && (
         <>
-          <Typography variant="h6" sx={{ mt: 3 }}>
+          <Typography variant="h6" sx={{  mt: 2 ,mb: 2 }} bgcolor={"#e0e0e0"}>
             Hierarchy Details
           </Typography>
           <HierarchyDetails
