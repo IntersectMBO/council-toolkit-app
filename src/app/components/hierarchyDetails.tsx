@@ -10,14 +10,12 @@ interface HierarchyDetailsProps {
 export const HierarchyDetails = ({ 
     onAcknowledgeChange
 }: HierarchyDetailsProps) => {
-    const [checkboxes, setCheckboxes] = useState({
-      ackAll: false,
-    });
+    const [checkbox, setCheckbox] = useState<boolean>(false);
 
-    const handleCheckBoxChange = (name: keyof typeof checkboxes) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const updatedCheckboxes = { ...checkboxes, [name]: event.target.checked };
-      setCheckboxes(updatedCheckboxes);
-      onAcknowledgeChange(Object.values(updatedCheckboxes).every(Boolean));
+    const handleCheckBoxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const checkBox =event.target.checked;
+      setCheckbox(checkBox);
+      onAcknowledgeChange(checkBox);
     };
 
     return (
@@ -30,7 +28,7 @@ export const HierarchyDetails = ({
               </TableCell>
                 <TableCell  style={{ display: 'flex', alignItems: 'center' }}>
                   <FormControlLabel
-                  control={<Checkbox checked={checkboxes.ackAll} onChange={handleCheckBoxChange("ackAll")} />}
+                  control={<Checkbox checked={checkbox} onChange={handleCheckBoxChange} />}
                   label="*"
                   />
                   <InfoWithTooltip info={'⚠️'} />
