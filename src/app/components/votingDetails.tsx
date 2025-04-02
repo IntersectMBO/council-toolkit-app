@@ -50,7 +50,7 @@ export const VotingDetails = ({
               <TableCell sx={{ fontWeight: "bold" }}>
                 Governance Action ID{" "}
               </TableCell>
-              <TableCell>
+              <TableCell >
                 <a
                   href={`${explorerLink}`}
                   target="_blank"
@@ -59,7 +59,7 @@ export const VotingDetails = ({
                   {govActionID}
                 </a>
               </TableCell>
-                <TableCell  style={{ display: 'flex', alignItems: 'center' }}>
+                <TableCell style={{ display: 'flex'}}>
                   <FormControlLabel
                   control={<Checkbox checked={checkboxes.ackGovAction} onChange={handleCheckBoxChange("ackGovAction")} />}
                   label="*"
@@ -70,7 +70,7 @@ export const VotingDetails = ({
             <TableRow>
               <TableCell sx={{ fontWeight: "bold" }}>Vote Choice </TableCell>
               <TableCell>{voteChoice}</TableCell>
-              <TableCell style={{ display: 'flex', alignItems: 'center' }}>
+              <TableCell >
                 <FormControlLabel
                   control={<Checkbox checked={checkboxes.ackVoteChoice} onChange={handleCheckBoxChange("ackVoteChoice")} />}
                   label="*"
@@ -90,7 +90,7 @@ export const VotingDetails = ({
                   {metadataAnchorURL}
                 </Link>
               </TableCell>
-              <TableCell style={{ display: 'flex', alignItems: 'center' }}>
+              <TableCell>
                 <FormControlLabel
                   control={<Checkbox checked={checkboxes.ackMetadataAnchor} onChange={handleCheckBoxChange("ackMetadataAnchor")} />}
                   label="*"
