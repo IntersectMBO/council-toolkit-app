@@ -66,29 +66,6 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
   };
 
   return (
-    // <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-    //   {!acknowledgedTx && (
-    //     <Typography color="error" sx={{ mt: 1 }}>
-    //       ⚠️ You must acknowledge the transaction details before signing!
-    //     </Typography>
-    //   )}
-    //   <Button
-    //     id="sign-transaction"
-    //     variant="contained"
-    //     color="success"
-    //     disabled={!acknowledgedTx || loading}
-    //     onClick={signTransactionWrapper}
-    //     sx={{ whiteSpace: "nowrap", px: 3 }}
-    //   >
-    //     {loading ? (
-    //       "Signing..."
-    //     ) : (
-    //       <label>
-    //         Sign <wbr /> Transaction
-    //       </label>
-    //     )}
-    //   </Button>
-    // </Box>
     <Box
   sx={{
     display: "flex",
