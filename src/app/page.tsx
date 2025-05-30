@@ -39,7 +39,7 @@ export default function Home() {
           </a>
 
           <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
-            <Typography>Version 1.5 - IntersectMBO</Typography>
+            <Typography>Version 2.0 - IntersectMBO</Typography>
           </Box>
         </Box>
       </Container>
