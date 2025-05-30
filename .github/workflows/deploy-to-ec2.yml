@@ -58,10 +58,8 @@ jobs:
             # Pull the latest Docker image from Docker Hub
             docker pull ${{ secrets.DOCKER_USERNAME }}/council-toolkit:${{ github.sha }}
 
-            # List the existing containers running the previous version of the image
+            # List the container running the previous version of the app and remove them
             old_containers=$(docker ps -q --filter "name=council-toolkit")
-
-            # Stop and remove the old containers if they exist
             if [ ! -z "$old_containers" ]; then
               echo "Removing old containers..."
               docker stop $old_containers
@@ -70,8 +68,16 @@ jobs:
 
             # Run the new container with the updated image
             echo "Starting new container with the latest image..."
-            docker run -d --name council-toolkit -e NEXT_PUBLIC_REST_IPFS_GATEWAY='ipfs.io/ipfs/' -p 3002:3000 ${{ secrets.DOCKER_USERNAME }}/council-toolkit:${{ github.sha }} npm run start
-           
+            for i in 1 2 3; do
+              port=$((3001 + i))
+              docker run -d \
+                --name council-toolkit-$i \
+                --restart unless-stopped \
+                -e NEXT_PUBLIC_REST_IPFS_GATEWAY='ipfs.io/ipfs/' \
+                -p ${port}:3000 \
+                ${{ secrets.DOCKER_USERNAME }}/council-toolkit:${{ github.sha }} npm run start
+            done
+            
             # Remove old images if they exist
             if [ ! -z "$old_image" ]; then
               echo "Removing old image..."

@@ -1,15 +1,12 @@
 import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel } from "@mui/material";
 import { openInNewTab } from "../utils/txUtils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InfoWithTooltip from "./molecules/infoHover";
 import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
+import { VoteTransactionDetails } from "./types/types";
 
-interface VotingDetailsProps {
-  govActionID: string;
-  voteChoice: string;
-  explorerLink: string;   
-  metadataAnchorURL: string;
-  metadataAnchorHash: string;
+
+export interface VotingDetailsProps extends VoteTransactionDetails {
   onAcknowledgeChange: (checked: boolean) => void;
 }
 
@@ -19,7 +16,8 @@ export const VotingDetails = ({
     explorerLink, 
     metadataAnchorURL, 
     metadataAnchorHash,
-    onAcknowledgeChange  
+    onAcknowledgeChange,
+    resetAckState  
 }: VotingDetailsProps) => {
     const [checkboxes, setCheckboxes] = useState({
         ackGovAction: false,
@@ -33,6 +31,17 @@ export const VotingDetails = ({
       onAcknowledgeChange(Object.values(updatedCheckboxes).every(Boolean));
     };
 
+    useEffect(() => {
+      if (resetAckState) {
+        setCheckboxes({
+          ackGovAction: false,
+          ackVoteChoice: false,
+          ackMetadataAnchor: false,
+        });
+        onAcknowledgeChange(false);  
+      }
+    }, [resetAckState,onAcknowledgeChange]);
+
     return (
       <TableContainer sx={{ mb: 3 }}>
         <Table sx={{ mt: 3 }}>
@@ -41,7 +50,7 @@ export const VotingDetails = ({
               <TableCell sx={{ fontWeight: "bold" }}>
                 Governance Action ID{" "}
               </TableCell>
-              <TableCell>
+              <TableCell >
                 <a
                   href={`${explorerLink}`}
                   target="_blank"
@@ -50,7 +59,7 @@ export const VotingDetails = ({
                   {govActionID}
                 </a>
               </TableCell>
-                <TableCell  style={{ display: 'flex', alignItems: 'center' }}>
+                <TableCell style={{ display: 'flex'}}>
                   <FormControlLabel
                   control={<Checkbox checked={checkboxes.ackGovAction} onChange={handleCheckBoxChange("ackGovAction")} />}
                   label="*"
@@ -61,7 +70,7 @@ export const VotingDetails = ({
             <TableRow>
               <TableCell sx={{ fontWeight: "bold" }}>Vote Choice </TableCell>
               <TableCell>{voteChoice}</TableCell>
-              <TableCell style={{ display: 'flex', alignItems: 'center' }}>
+              <TableCell >
                 <FormControlLabel
                   control={<Checkbox checked={checkboxes.ackVoteChoice} onChange={handleCheckBoxChange("ackVoteChoice")} />}
                   label="*"
@@ -81,7 +90,7 @@ export const VotingDetails = ({
                   {metadataAnchorURL}
                 </Link>
               </TableCell>
-              <TableCell style={{ display: 'flex', alignItems: 'center' }}>
+              <TableCell>
                 <FormControlLabel
                   control={<Checkbox checked={checkboxes.ackMetadataAnchor} onChange={handleCheckBoxChange("ackMetadataAnchor")} />}
                   label="*"

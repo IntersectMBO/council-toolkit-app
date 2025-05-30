@@ -14,6 +14,9 @@ import { VotingDetails } from "./votingDetails";
 import { HierarchyDetails } from "./hierarchyDetails";
 import DownloadButton from "./molecules/downloadFiles";
 import FileUploader from "./molecules/fileUploader";
+import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "./types/types";
+import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "./types/defaultStates";
+import SignTransactionButton from "./signTransactionButton";
 
 export const TransactionButton = () => {
   const { wallet, connected } = useWallet();
@@ -25,38 +28,16 @@ export const TransactionButton = () => {
   const [acknowledgedTx, setAcknowledgedTx] = useState(false);
   const [isVoteTransaction, setIsVoteTransaction] = useState(false);
   // for all transactions
-  const [txValidationState, setTxValidationState] = useState({
-    isPartOfSigners: false,
-    hasNoCertificates: false,
-    isSameNetwork: false,
-    isInOutputPlutusData: false,
-    isUnsignedTransaction: false,
-  });
+  const [txValidationState, setTxValidationState] = useState<TxValidationState>(defaultTxValidationState);
   // for vote transactions
-  const [voteTransactionDetails, setVoteTransactionDetails] = useState({
-    govActionID: "",
-    voteChoice: "",
-    explorerLink: "",
-    metadataAnchorURL: "",
-    metadataAnchorHash: "",
-  });
+  const [voteTransactionDetails, setVoteTransactionDetails] = useState<VoteTransactionDetails>(defaultVoteTransactionDetails);
   // for vote transactions
-  const [voteValidationState, setVoteValidationState] = useState({
-    isOneVote: false,
-    isMetadataAnchorValid: false,
-    hasICCCredentials: false,
-  });
+  const [voteValidationState, setVoteValidationState] = useState<VoteValidationState>(defaultVoteValidationState);
 
   // add other transactions validations and details here
 
   const resetAllDetailsState = () => {
-    setVoteTransactionDetails({
-      govActionID: "",
-      voteChoice: "",
-      explorerLink: "",
-      metadataAnchorURL: "",
-      metadataAnchorHash: "",
-    });
+    setVoteTransactionDetails(defaultVoteTransactionDetails);
     // add hierarchy details reset here
     // add other transaction details reset here
   }
@@ -64,17 +45,11 @@ export const TransactionButton = () => {
   const resetAllValidationState = () => {
     setTxValidationState((prev) => ({
       ...prev,
-      isPartOfSigners: false,
-      hasNoCertificates: false,
-      isSameNetwork: false,
-      hasICCCredentials: false,
-      isInOutputPlutusData: false,
-      isUnsignedTransaction: false,
+      defaultTxValidationState,
     }));
     setVoteValidationState((prev) => ({
       ...prev,
-      isOneVote: false,
-      isMetadataAnchorValid: false,
+      defaultVoteValidationState,
     }));
     // add other transactions validations here
   };
@@ -185,6 +160,7 @@ export const TransactionButton = () => {
             explorerLink: getCardanoScanURL(govActionID,transactionNetworkID),
             metadataAnchorURL: voteMetadataURL,
             metadataAnchorHash: voteMetadataHash,
+            resetAckState: false,
           });
         }
 
@@ -207,57 +183,6 @@ export const TransactionButton = () => {
     }
   }, [unsignedTransactionHex, walletRef, connected]);
  
-  const signTransaction = async () => {
-    try {
-      const txValidationAllState= Object.values(txValidationState).every(Boolean);
-      console.log("Transaction Validation State: ", txValidationState);
-      const voteValidationAllState= Object.values(voteValidationState).every(Boolean);
-      console.log("Vote Validation State: ", voteValidationState);
-
-      if (!txValidationAllState) {
-        throw new Error("Ensure all transaction and vote validations are successful before proceeding.");
-      }
-      if (!voteValidationAllState && isVoteTransaction) {
-        throw new Error("Ensure all vote validations are successful before proceeding.");
-      }
-      // Pass transaction to wallet for signing
-      const signedTx = await wallet.signTx(unsignedTransactionHex, true);
-      const signedTransactionObj = decodeHexToTx(signedTx);
-
-      const witnessHex = signedTransactionObj?.witness_set().vkeys()?.get(0)?.to_hex() || '';
-      const signature = signedTransactionObj?.witness_set().vkeys()?.get(0).signature().to_hex() || '';
-      let providedVkey = signedTransactionObj?.witness_set().vkeys()?.get(0).vkey().to_hex() || '';
-
-      // Remove the (confusing) CBOR header, not sure why adds this
-      providedVkey = providedVkey.substring(4);
-      const providedVKeyObj = CSL.PublicKey.from_hex(providedVkey);
-
-      // Check to make sure the wallet produced a signature as expected
-
-      // compare the desired credential with the vKey returned from wallet
-      const expectedVKeyHash = deserializeAddress(await wallet.getChangeAddress()).stakeCredentialHash;
-      const providedVKeyHash = providedVKeyObj.hash().to_hex();
-
-      if (providedVKeyHash != expectedVKeyHash) {
-        throw new Error("Wallet returned unexpected VKey.");
-      }
-
-      // Check the produced signature if valid
-      const txHash = CSL.FixedTransaction.from_hex(unsignedTransactionHex).transaction_hash().to_bytes();
-      const validSignature = providedVKeyObj.verify(txHash, CSL.Ed25519Signature.from_hex(signature));
-
-      if (!validSignature){
-        throw new Error("Wallet created an invalid signature.");
-      }
-
-      setSignature(witnessHex);
-      console.log("Witness (hex): ", witnessHex);
-     
-    } catch (error) {
-      console.error("Error signing transaction:", error);
-      setMessage("Transaction signing failed. " + error);
-    }
-  };
   useEffect(() => {
     if (unsignedTransactionHex) {
       checkTransaction();
@@ -296,12 +221,12 @@ export const TransactionButton = () => {
             setSignature("");
           }}
         />
-        <FileUploader setUnsignedTransactionHex={(hex) => { setUnsignedTransactionHex(hex); setSignature(""); }} setMessage={setMessage} />
+        <FileUploader setUnsignedTransactionHex={(hex) => { setUnsignedTransactionHex(hex); setSignature(""); resetAllDetailsState();}} setMessage={setMessage} />
       </Box>
 
     {/* Transaction Details for all transactions*/}
     <Box sx={{ mt: 3 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
+      <Typography variant="h6" sx={{ mt: 2, mb:2 }}  bgcolor={"#e0e0e0"}>
         Transaction Validation Checks
       </Typography>
       {unsignedTransaction && (
@@ -311,7 +236,7 @@ export const TransactionButton = () => {
       {/* Vote Transaction Validations */}
       {unsignedTransaction && isVoteTransaction && (
         <>
-          <Typography variant="h6" sx={{ mt: 3 }}>
+          <Typography variant="h6" sx={{ mt: 2 ,mb: 2 }} bgcolor={"#e0e0e0"}>
             Vote Validation Checks
           </Typography>
           <VoteTransactionChecks {...voteValidationState} />
@@ -321,7 +246,7 @@ export const TransactionButton = () => {
       {/* Vote Details */}
       {unsignedTransaction && isVoteTransaction && (
         <>
-          <Typography variant="h6" sx={{ mt: 3 }}>
+          <Typography variant="h6" sx={{ mt: 2 ,mb: 2 } } bgcolor={"#e0e0e0"}>
             Vote Details
           </Typography>
           <VotingDetails
@@ -331,13 +256,14 @@ export const TransactionButton = () => {
             metadataAnchorURL={voteTransactionDetails.metadataAnchorURL}
             metadataAnchorHash={voteTransactionDetails.metadataAnchorHash}
             onAcknowledgeChange={setAcknowledgedTx}
+            resetAckState={voteTransactionDetails.resetAckState}
           />
         </>
       )}
       {/* Hierarchy Details */}
       {unsignedTransaction && !isVoteTransaction && (
         <>
-          <Typography variant="h6" sx={{ mt: 3 }}>
+          <Typography variant="h6" sx={{  mt: 2 ,mb: 2 }} bgcolor={"#e0e0e0"}>
             Hierarchy Details
           </Typography>
           <HierarchyDetails
@@ -365,23 +291,7 @@ export const TransactionButton = () => {
       </Box>
 
       {/* Sign Button - Aligned to Right */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-      {!acknowledgedTx &&(
-          <Typography color="error" sx={{ mt: 1 }}>
-            ⚠️ You must acknowledge the transaction details before signing!
-          </Typography>
-        )}
-        <Button
-          id="sign-transaction"
-          variant="contained"
-          color="success"
-          disabled={!acknowledgedTx}
-          onClick={signTransaction}
-          sx={{ whiteSpace: "nowrap", px: 3 }}
-        >
-          Sign Transaction
-        </Button>
-      </Box>
+      <SignTransactionButton {...{ wallet, unsignedTransactionHex, isVoteTransaction, txValidationState, voteValidationState, acknowledgedTx, voteTransactionDetails, stakeCredentialHash, setMessage, setSignature }} />
 
       {/* Signature Display */}
       {signature && (
