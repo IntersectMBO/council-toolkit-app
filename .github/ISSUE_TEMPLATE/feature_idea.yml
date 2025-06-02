@@ -15,7 +15,7 @@ body:
       description: What part of the toolkit does this feature affect?
       options:
         - Transaction inspection
-        - Metadata inspection
+        - Rationale metadata inspection
         - On-chain data viewing
         - Not sure
     validations:

@@ -19,7 +19,7 @@ body:
       description: What part of the toolkit does this bug affect?
       options:
         - Transaction inspection
-        - Metadata inspection
+        - Rationale metadata inspection
         - On-chain data viewing
         - Not sure
     validations:
