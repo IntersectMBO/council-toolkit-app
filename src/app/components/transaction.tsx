@@ -243,7 +243,7 @@ export const TransactionButton = () => {
           />
           
         </Box>
-        <Box sx={{ display: "flex", alignItems: { xs: "stretch", sm: "flex-start" } }}>
+        <Box sx={{ display: "flex", alignItems: { xs: "stretch", sm: "flex-start" }, mt: 2 }}>
             <FileUploader 
               setUnsignedTransactionHex={(hex) => { 
                 setUnsignedTransactionHex(hex); 
