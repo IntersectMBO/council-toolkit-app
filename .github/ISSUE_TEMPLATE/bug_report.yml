@@ -12,6 +12,19 @@ body:
       value: |
         Before submitting a new issue please check the [existing issues](https://github.com/IntersectMBO/council-toolkit-app/issues) to avoid duplication.
 
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: What part of the toolkit does this bug affect?
+      options:
+        - Transaction inspection
+        - Metadata inspection
+        - On-chain data viewing
+        - Not sure
+    validations:
+      required: false
+
   - type: textarea
     id: context
     attributes:
