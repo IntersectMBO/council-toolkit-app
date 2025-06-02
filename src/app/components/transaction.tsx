@@ -241,7 +241,9 @@ export const TransactionButton = () => {
             }}
             sx={{ flex: 1 }}
           />
-          <Box sx={{ display: "flex", alignItems: { xs: "stretch", sm: "flex-start" } }}>
+          
+        </Box>
+        <Box sx={{ display: "flex", alignItems: { xs: "stretch", sm: "flex-start" } }}>
             <FileUploader 
               setUnsignedTransactionHex={(hex) => { 
                 setUnsignedTransactionHex(hex); 
@@ -251,7 +253,6 @@ export const TransactionButton = () => {
               setMessage={setMessage} 
             />
           </Box>
-        </Box>
       </Paper>
 
       {/* Validation and Details Sections */}
@@ -320,16 +321,18 @@ export const TransactionButton = () => {
                 borderColor: "divider"
               }}
             >
-              <ReactJsonPretty
-                data={unsignedTransaction.to_json()}
-                theme={{
-                  main: 'line-height:1.3;color:#000;background:#f8f9fa;overflow:auto;',
-                  key: 'color:#0070f3;',
-                  string: 'color:#22863a;',
-                  value: 'color:#22863a;',
-                  boolean: 'color:#005cc5;',
-                }}
-              />
+              {unsignedTransactionHex && (
+                <ReactJsonPretty
+                  data={unsignedTransaction ? unsignedTransaction.to_json() : {}}
+                  theme={{
+                    main: 'line-height:1.3;color:#000;background:#f8f9fa;',
+                    key: 'color:#0070f3;',
+                    string: 'color:#22863a;',
+                    value: 'color:#22863a;',
+                    boolean: 'color:#005cc5;',
+                  }}
+                />
+              )}
             </Box>
           </Paper>
         </Box>
