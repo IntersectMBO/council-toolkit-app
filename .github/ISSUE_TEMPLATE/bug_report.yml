@@ -21,6 +21,7 @@ body:
         - Transaction inspection
         - Rationale metadata inspection
         - On-chain data viewing
+        - Top level - all areas
         - Not sure
     validations:
       required: false
