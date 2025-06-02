@@ -1,0 +1,42 @@
+name: Add feature labels to new issues
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  apply-labels:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Apply label based on feature area
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const areaMap = {
+              "Transaction inspection": "🏷️ Transactions Feature",
+              "Rationale metadata inspection": "📝 Rationales Feature",
+              "On-chain data viewing": "⛓️ On-chain data Feature",
+              "Top level - all areas": "🌐 Top level",
+              "Not sure": "❓Unsure Feature",
+            };
+
+            const issueBody = context.payload.issue.body;
+
+            // Match the Area selected under the "### Area" header
+            const areaMatch = issueBody.match(/### Area\s*\n\s*(.*)\s*\n/);
+            const area = areaMatch ? areaMatch[1].trim() : null;
+
+            const labelToAdd = areaMap[area];
+
+            if (labelToAdd) {
+              await github.rest.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: [labelToAdd],
+              });
