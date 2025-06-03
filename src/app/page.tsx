@@ -98,16 +98,10 @@ export default function Home() {
           color: "white",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
         }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Image 
-              src="/images/Logo.svg" 
-              alt="Credential Manager Logo" 
-              width={80} 
-              height={80} 
-              style={{ filter: "brightness(0) invert(1)" }}
-            />
-            <Box>
-              <Typography variant="h5" sx={{ display: { xs: 'none', sm: 'block' } }}>
+          <Box sx={{ display: "flex", justifyContent: 'space-between', alignItems: "center", width: "100%" ,gap: 2 }}>
+            
+            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+              <Typography variant="h5" sx={{ lineHeight: 1 }}>
                 CC Toolkit
               </Typography>
               <Chip 
@@ -117,19 +111,21 @@ export default function Home() {
                   backgroundColor: 'rgba(255,255,255,0.2)',
                   color: 'white',
                   mt: 0.5,
-                  display: { xs: 'none', sm: 'inline-flex' }
+                  fontSize: '0.6rem',
+                  height: 18,
+                  ml: 0.5,
                 }} 
               />
             </Box>
+            <Image 
+              src="/images/Logo.svg" 
+              alt="Credential Manager Logo" 
+              width={80} 
+              height={80} 
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
           </Box>
         </Box>
-
-        {/* Welcome Message
-        <Paper elevation={1} sx={{ width: "100%", mt: 3, p: 2, borderRadius: 2 }}>
-          <Alert severity="info" sx={{ mb: 2 }}>
-            Welcome to the Credential Manager. Connect your wallet to get started.
-          </Alert>
-        </Paper> */}
 
         {/* Wallet Section with Paper background */}
         <Paper elevation={2} sx={{ width: "100%", mt: 3, p: 3, borderRadius: 2 }}>
@@ -147,36 +143,6 @@ export default function Home() {
             <Wallet />
           )}
         </Paper>
-
-        {/* Quick Actions
-        <Paper elevation={2} sx={{ width: "100%", mt: 3, p: 3, borderRadius: 2 }}>
-          <Typography variant="h6" gutterBottom color="text.secondary">
-            Quick Actions
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Button 
-              variant="outlined" 
-              startIcon={<Description />}
-              onClick={() => setTabValue(0)}
-            >
-              Inspect Transaction
-            </Button>
-            <Button 
-              variant="outlined" 
-              startIcon={<Stream />}
-              onClick={() => setTabValue(1)}
-            >
-              View Live Actions
-            </Button>
-            <Button 
-              variant="outlined" 
-              startIcon={<Create />}
-              onClick={() => setTabValue(2)}
-            >
-              Generate Rationale
-            </Button>
-          </Box>
-        </Paper> */}
 
         {/* Tabs Section */}
         <Paper elevation={3} sx={{ width: '100%', mt: 3, borderRadius: 2 }}>
