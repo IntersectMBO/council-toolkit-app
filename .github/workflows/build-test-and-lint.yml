@@ -1,4 +1,4 @@
-name: Build and Lint Next.js App
+name: Build, test and lint app
 
 on:
   push:
