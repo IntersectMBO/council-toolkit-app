@@ -1,5 +1,5 @@
 name: 💡 Feature idea
-description: Idea or request for some feature on the GovTool roadmap
+description: Idea or request for some feature on the toolkit roadmap
 title: "💡 "
 labels: ["💡 Feature idea"]
 body:
@@ -7,6 +7,20 @@ body:
     attributes:
       value: |
         ## 🌟 **Thank you for contributing!**
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: What part of the toolkit does this feature affect?
+      options:
+        - Transaction inspection
+        - Rationale metadata inspection
+        - On-chain data viewing
+        - Top level - all areas
+        - Not sure
+    validations:
+      required: false
 
   - type: textarea
     id: what

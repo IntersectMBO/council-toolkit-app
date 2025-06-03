@@ -1,0 +1,15 @@
+name: Add all issues created to project
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  add-to-project:
+    name: Add issue to project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/orgs/IntersectMBO/projects/62
+          github-token: ${{ secrets.ADD_ISSUE_TO_PROJECT_PAT }}
