@@ -8,7 +8,7 @@ interface CheckItemProps {
   textmsg?: string
 }
 
-const CheckItem = ({ label, tooltip, value, textInput }: CheckItemProps) => {
+const CheckItem = ({ label, tooltip, value, textmsg }: CheckItemProps) => {
 
   return (
     <Box display="flex" alignItems="center" gap={0.5}>
