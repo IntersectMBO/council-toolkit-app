@@ -100,7 +100,7 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     id="sign-transaction"
     variant="contained"
     color="success"
-    disabled={!acknowledgedTx || connected ||loading}
+    disabled={(!acknowledgedTx && connected )||loading}
     onClick={signTransactionWrapper}
     sx={{
       whiteSpace: "nowrap",

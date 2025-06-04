@@ -20,7 +20,7 @@ export const TransactionChecks = ({
           label="Wallet needs to sign?" 
           tooltip={TOOLTIP_MESSAGES.WALLET_NEEDS_TO_SIGN} 
           value={isPartOfSigners} 
-          textInput="Connect to wallet"
+          textMsg="Connect to wallet"
         />
         <CheckItem
           label="Transaction is unsigned?"
@@ -31,7 +31,7 @@ export const TransactionChecks = ({
           label="Transaction and wallet on the same network?"
           tooltip={TOOLTIP_MESSAGES.IS_SAME_NETWORK}
           value={isSameNetwork} 
-          textInput="Connect to wallet"
+          textMsg="Connect to wallet"
         />
       </Box>
 
@@ -45,7 +45,7 @@ export const TransactionChecks = ({
           label="Is voting key in plutus data?"
           tooltip={TOOLTIP_MESSAGES.CORRECT_PLUTUS_DATA}
           value={isInOutputPlutusData}
-          textInput="Connect to wallet"
+          textMsg="Connect to wallet"
         />
       </Box>
     </Box>
