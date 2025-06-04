@@ -5,16 +5,16 @@ interface CheckItemProps {
   label: string;
   tooltip: string;
   value: boolean | undefined;
-  textmsg?: string
+  textMsg?: string
 }
 
-const CheckItem = ({ label, tooltip, value, textmsg }: CheckItemProps) => {
+const CheckItem = ({ label, tooltip, value, textMsg }: CheckItemProps) => {
 
   return (
     <Box display="flex" alignItems="center" gap={0.5}>
       <InfoWithTooltip info={tooltip} />
       <Typography variant="body1" fontWeight="bold">
-        {label}: {value === true ? "✅" : value === false ? "❌" : textInput}
+        {label}: {value === true ? "✅" : value === false ? "❌" : textMsg}
       </Typography>
     </Box>
   );
