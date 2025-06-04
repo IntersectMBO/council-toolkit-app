@@ -23,7 +23,7 @@ export const VoteTransactionChecks = ({
           label="Is Intersect ICC credential?"
           tooltip={TOOLTIP_MESSAGES.HAVE_ICC_CREDENTIAL}
           value={hasICCCredentials}
-          textInput="Connect to wallet"
+          textMsg="Connect to wallet"
         />
       </Box>
 
