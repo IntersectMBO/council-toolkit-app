@@ -1,6 +1,6 @@
 "use client";
 
-import { Wallet } from "./components/wallet";
+import Wallet from "./components/wallet";
 import { TransactionButton } from "./components/transaction";
 import { 
   Container, 
@@ -138,7 +138,12 @@ export default function Home() {
             </Tooltip>
           </Box>
           {isLoading ? (
-            <Skeleton variant="rectangular" height={56} sx={{ borderRadius: 1 }} />
+            <Skeleton 
+              variant="rectangular" 
+              height={56} 
+              sx={{ borderRadius: 1 }} 
+              data-testid="loading-skeleton"
+            />
           ) : (
             <Wallet />
           )}
