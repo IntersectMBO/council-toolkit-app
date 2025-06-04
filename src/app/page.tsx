@@ -1,6 +1,6 @@
 "use client";
 
-import { Wallet } from "./components/wallet";
+import Wallet from "./components/wallet";
 import { TransactionButton } from "./components/transaction";
 import { 
   Container, 
