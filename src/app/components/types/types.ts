@@ -1,10 +1,10 @@
 // types.ts
 
 export interface TxValidationState {
-    isPartOfSigners: boolean;
+    isPartOfSigners?: boolean;
     hasNoCertificates: boolean;
-    isSameNetwork: boolean;
-    isInOutputPlutusData: boolean;
+    isSameNetwork?: boolean;
+    isInOutputPlutusData?: boolean;
     isUnsignedTransaction: boolean;
   }
   
@@ -20,6 +20,5 @@ export interface TxValidationState {
   export interface VoteValidationState {
     isOneVote: boolean;
     isMetadataAnchorValid: boolean;
-    hasICCCredentials: boolean;
+    hasICCCredentials?: boolean;
   }
-  

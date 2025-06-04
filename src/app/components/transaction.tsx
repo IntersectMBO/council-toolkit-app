@@ -74,7 +74,7 @@ export const TransactionButton = () => {
   useEffect(() => {
     if (!connected) {
       resetAllStates();
-      setMessage("Please connect your wallet first.");
+      //setMessage("Please connect your wallet first.");
     }
     else {
       setMessage(`Connected to wallet`);
@@ -82,39 +82,26 @@ export const TransactionButton = () => {
   }, [connected, resetAllStates]);
 
   const checkTransaction = useCallback(async () => {
-    // if wallet not connected and we try to check transaction, set message
-    // and return
-    if (!connected) {
-      return setMessage("Please connect your wallet first.");
-    }
+
     try {
-      const network = await walletRef.current.getNetworkId();
       const unsignedTransaction = decodeHexToTx(unsignedTransactionHex);
       setUnsignedTransaction(unsignedTransaction);
+      
       if (!unsignedTransaction) throw new Error("Invalid transaction format.");
-
-      const changeAddress = await walletRef.current.getChangeAddress();
-      const stakeCred = deserializeAddress(changeAddress).stakeCredentialHash;
-      setStakeCredentialHash(stakeCred);
-
-      console.log("Connected wallet network ID:", network);
       console.log("Unsigned transaction:", unsignedTransaction.to_hex());
-      console.log("Connected wallet's stake credential (used as voting key):", stakeCred);
 
-      // Transaction Validation Checks
+      {/* Transaction Validation Checks*/}
 
       // for all transactions
       const transactionBody = unsignedTransaction.body();
       if (!transactionBody) throw new Error("Transaction body is null.");
 
-      setTxValidationState({
-        isPartOfSigners: voteTxValidationUtils.isPartOfSigners(transactionBody, stakeCred),
+      const baseTxValidationState: TxValidationState = {
         hasNoCertificates: !voteTxValidationUtils.hasCertificates(transactionBody),
-        isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody, network),
-        isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody, stakeCred),
-        isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction),
-      });
+        isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction)
+      }
 
+       let voteValidationState: VoteValidationState | undefined = undefined;
       // todo add logic to work out which type of transaction is being signed
       // then from detected transaction, apply the correct validation checks
 
@@ -122,6 +109,7 @@ export const TransactionButton = () => {
       // if not vote assume its a hierarchy tx
 
       const votingProcedures = transactionBody.to_js_value().voting_procedures;
+      console.log("Voting ProceduresELENA:", votingProcedures);
 
       // if a vote transaction
       if (votingProcedures){
@@ -140,11 +128,15 @@ export const TransactionButton = () => {
         const voteMetadataURL = votes[0].voting_procedure.anchor.anchor_url;
         const voteMetadataHash = votes[0].voting_procedure.anchor.anchor_data_hash;
 
-        setVoteValidationState({
+        voteValidationState = {
           isOneVote: voteTxValidationUtils.hasOneVoteOnTransaction(transactionBody),
-          isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash),
-          hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
-        });
+          isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash)
+        }
+        // setVoteValidationState({
+        //   isOneVote: voteTxValidationUtils.hasOneVoteOnTransaction(transactionBody),
+        //   isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash),
+        //   hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
+        // });
 
         // Get the key voting details of the transaction
 
@@ -173,6 +165,33 @@ export const TransactionButton = () => {
         // todo: add hierarchy details
         // todo: add hierarchy validation checks
 
+      }
+
+      if (connected){
+        const network = await walletRef.current.getNetworkId();
+        const changeAddress = await walletRef.current.getChangeAddress();
+        const stakeCred = deserializeAddress(changeAddress).stakeCredentialHash;
+        setStakeCredentialHash(stakeCred);
+        setTxValidationState({
+          ...baseTxValidationState,
+          isPartOfSigners: voteTxValidationUtils.isPartOfSigners(transactionBody,stakeCred),
+          isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody,network),
+          isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody,stakeCred),
+      });
+        if (voteValidationState) {
+        setVoteValidationState({
+          ...voteValidationState,
+          hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
+        });
+      }
+      }else {
+        setTxValidationState({
+          ...baseTxValidationState
+        });
+        if (voteValidationState){
+          setVoteValidationState({...voteValidationState});
+        }
+        
       }
     }
     catch (error) {
