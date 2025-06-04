@@ -4,16 +4,17 @@ import InfoWithTooltip from "./infoHover";
 interface CheckItemProps {
   label: string;
   tooltip: string;
-  value: boolean;
+  value: boolean | undefined;
+  textInput?: string
 }
 
-const CheckItem = ({ label, tooltip, value}: CheckItemProps) => {
+const CheckItem = ({ label, tooltip, value, textInput }: CheckItemProps) => {
 
   return (
     <Box display="flex" alignItems="center" gap={0.5}>
       <InfoWithTooltip info={tooltip} />
       <Typography variant="body1" fontWeight="bold">
-        {label}: {value ? "✅" : "❌"}
+        {label}: {value === true ? "✅" : value === false ? "❌" : textInput}
       </Typography>
     </Box>
   );
