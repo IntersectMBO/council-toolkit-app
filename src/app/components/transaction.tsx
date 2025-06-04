@@ -348,6 +348,7 @@ export const TransactionButton = () => {
             txValidationState, 
             voteValidationState, 
             acknowledgedTx, 
+            connected,
             voteTransactionDetails, 
             stakeCredentialHash, 
             setMessage, 
