@@ -357,8 +357,8 @@ export const TransactionButton = () => {
         />
       </Box>
 
-      {/* Sign Button - Aligned to Right */}
-      <SignTransactionButton {...{ wallet, unsignedTransactionHex, isVoteTransaction, txValidationState, voteValidationState, acknowledgedTx,connected,voteTransactionDetails, stakeCredentialHash, setMessage, setSignature }} />
+      {/* Sign Button - Aligned to Right
+      <SignTransactionButton {...{ wallet, unsignedTransactionHex, isVoteTransaction, txValidationState, voteValidationState, acknowledgedTx,connected,voteTransactionDetails, stakeCredentialHash, setMessage, setSignature }} /> */}
 
       {/* Signature Display */}
       {signature && (
