@@ -74,7 +74,6 @@ export const TransactionButton = () => {
   useEffect(() => {
     if (!connected) {
       resetAllStates();
-      //setMessage("Please connect your wallet first.");
     }
     else {
       setMessage(`Connected to wallet`);
@@ -132,11 +131,6 @@ export const TransactionButton = () => {
           isOneVote: voteTxValidationUtils.hasOneVoteOnTransaction(transactionBody),
           isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash)
         }
-        // setVoteValidationState({
-        //   isOneVote: voteTxValidationUtils.hasOneVoteOnTransaction(transactionBody),
-        //   isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash),
-        //   hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
-        // });
 
         // Get the key voting details of the transaction
 
