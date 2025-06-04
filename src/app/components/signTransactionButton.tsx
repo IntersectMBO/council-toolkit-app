@@ -13,6 +13,7 @@ interface SignTransactionButtonProps {
   txValidationState: TxValidationState;
   voteValidationState: VoteValidationState;
   acknowledgedTx: boolean;
+  connected: boolean;
   voteTransactionDetails: {
     govActionID: string;
   };
@@ -28,6 +29,7 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
   txValidationState,
   voteValidationState,
   acknowledgedTx,
+  connected,
   voteTransactionDetails,
   stakeCredentialHash,
   setMessage,
@@ -81,11 +83,24 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
       ⚠️ You must acknowledge the transaction details before signing!
     </Typography>
   )}
+
+  <Typography
+  sx={{
+    mt: 1,
+    textAlign: { xs: "center", sm: "right" },
+    color: connected ? "green" : "red",
+  }}
+>
+  {connected
+    ? "✅ Wallet connected."
+    : "⚠️ Please connect your wallet before signing the transaction!"}
+  </Typography>
+
   <Button
     id="sign-transaction"
     variant="contained"
     color="success"
-    disabled={!acknowledgedTx || loading}
+    disabled={!acknowledgedTx || connected ||loading}
     onClick={signTransactionWrapper}
     sx={{
       whiteSpace: "nowrap",
