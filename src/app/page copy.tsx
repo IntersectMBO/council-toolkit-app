@@ -137,12 +137,11 @@ export default function Home() {
               <HelpOutline sx={{ ml: 1, color: 'text.secondary', cursor: 'pointer' }} />
             </Tooltip>
           </Box>
-          {/* {isLoading ? (
+          {isLoading ? (
             <Skeleton variant="rectangular" height={56} sx={{ borderRadius: 1 }} />
           ) : (
             <Wallet />
-          )} */}
-           <Wallet />
+          )}
         </Paper>
 
         {/* Tabs Section */}
