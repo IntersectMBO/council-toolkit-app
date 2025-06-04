@@ -5,7 +5,7 @@ interface CheckItemProps {
   label: string;
   tooltip: string;
   value: boolean | undefined;
-  textInput?: string
+  textmsg?: string
 }
 
 const CheckItem = ({ label, tooltip, value, textInput }: CheckItemProps) => {
