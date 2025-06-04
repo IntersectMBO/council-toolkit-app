@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useWallet } from "@meshsdk/react";
 import { deserializeAddress } from "@meshsdk/core";
-import { Button, TextField, Box, Typography, Container } from "@mui/material";
+import { Button, TextField, Box, Typography, Container, Paper } from "@mui/material";
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import ReactJsonPretty from "react-json-pretty";
 import * as voteTxValidationUtils from "../utils/txValidationUtils";
@@ -219,128 +219,206 @@ export const TransactionButton = () => {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-      {/* Transaction Input & Button */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <TextField
-          type="string"
-          label="Enter Hex Encoded Transaction"
-          variant="outlined"
-          fullWidth
-          value={unsignedTransactionHex}
-          onChange={(e) => {
-            setUnsignedTransactionHex(e.target.value);
-            resetAllValidationState();
-            resetAllDetailsState();
-            setSignature("");
-          }}
-        />
-        <FileUploader setUnsignedTransactionHex={(hex) => { setUnsignedTransactionHex(hex); setSignature(""); resetAllDetailsState();}} setMessage={setMessage} />
-      </Box>
-
-    {/* Transaction Details for all transactions*/}
-    <Box sx={{ mt: 3 }}>
-      <Typography variant="h6" sx={{ mt: 2, mb:2 }}  bgcolor={"#e0e0e0"}>
-        Transaction Validation Checks
-      </Typography>
-      {unsignedTransaction && (
-        <TransactionChecks {...txValidationState} />
-      )}
-
-      {/* Vote Transaction Validations */}
-      {unsignedTransaction && isVoteTransaction && (
-        <>
-          <Typography variant="h6" sx={{ mt: 2 ,mb: 2 }} bgcolor={"#e0e0e0"}>
-            Vote Validation Checks
-          </Typography>
-          <VoteTransactionChecks {...voteValidationState} />
-        </>
-      )}
-
-      {/* Vote Details */}
-      {unsignedTransaction && isVoteTransaction && (
-        <>
-          <Typography variant="h6" sx={{ mt: 2 ,mb: 2 } } bgcolor={"#e0e0e0"}>
-            Vote Details
-          </Typography>
-          <VotingDetails
-            govActionID={voteTransactionDetails.govActionID}
-            voteChoice={voteTransactionDetails.voteChoice}
-            explorerLink={voteTransactionDetails.explorerLink}
-            metadataAnchorURL={voteTransactionDetails.metadataAnchorURL}
-            metadataAnchorHash={voteTransactionDetails.metadataAnchorHash}
-            onAcknowledgeChange={setAcknowledgedTx}
-            resetAckState={voteTransactionDetails.resetAckState}
+      {/* Transaction Input Section */}
+      <Paper elevation={2} sx={{ p: 3, mb: 4, borderRadius: 2 }}>
+        <Typography variant="h6" gutterBottom color="primary">
+          Transaction Input
+        </Typography>
+        <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" }, gap: 2 }}>
+          <TextField
+            type="string"
+            label="Enter Hex Encoded Transaction"
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={3}
+            value={unsignedTransactionHex}
+            onChange={(e) => {
+              setUnsignedTransactionHex(e.target.value);
+              resetAllValidationState();
+              resetAllDetailsState();
+              setSignature("");
+            }}
+            sx={{ flex: 1 }}
           />
-        </>
-      )}
-      {/* Hierarchy Details */}
-      {unsignedTransaction && !isVoteTransaction && (
-        <>
-          <Typography variant="h6" sx={{  mt: 2 ,mb: 2 }} bgcolor={"#e0e0e0"}>
-            Hierarchy Details
-          </Typography>
-          <HierarchyDetails
-            onAcknowledgeChange={setAcknowledgedTx}
-          />
-        </>
-      )}
-        <Box
-          sx={{
-            backgroundColor: "#f5f5f5",
-            padding: 2,
-            borderRadius: 1,
-            maxHeight: "400px",
-            overflowY: "auto",
-            marginTop: 2,
-            boxShadow: 1,
-          }}
-        >
-          {unsignedTransactionHex && (
-            <ReactJsonPretty
-              data={unsignedTransaction ? unsignedTransaction.to_json() : {}}
-            />
-          )}
+          
         </Box>
+        <Box sx={{ display: "flex", alignItems: { xs: "stretch", sm: "flex-start" }, mt: 2 }}>
+            <FileUploader 
+              setUnsignedTransactionHex={(hex) => { 
+                setUnsignedTransactionHex(hex); 
+                setSignature(""); 
+                resetAllDetailsState();
+              }} 
+              setMessage={setMessage} 
+            />
+          </Box>
+      </Paper>
+
+      {/* Validation and Details Sections */}
+      {unsignedTransaction && (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {/* Transaction Validation Section */}
+          <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
+            <Typography variant="h6" gutterBottom color="primary">
+              Transaction Validation Checks
+            </Typography>
+            <TransactionChecks {...txValidationState} />
+          </Paper>
+
+          {/* Vote Validation Section */}
+          {isVoteTransaction && (
+            <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography variant="h6" gutterBottom color="primary">
+                Vote Validation Checks
+              </Typography>
+              <VoteTransactionChecks {...voteValidationState} />
+            </Paper>
+          )}
+
+          {/* Vote Details Section */}
+          {isVoteTransaction && (
+            <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography variant="h6" gutterBottom color="primary">
+                Vote Details
+              </Typography>
+              <VotingDetails
+                govActionID={voteTransactionDetails.govActionID}
+                voteChoice={voteTransactionDetails.voteChoice}
+                explorerLink={voteTransactionDetails.explorerLink}
+                metadataAnchorURL={voteTransactionDetails.metadataAnchorURL}
+                metadataAnchorHash={voteTransactionDetails.metadataAnchorHash}
+                onAcknowledgeChange={setAcknowledgedTx}
+                resetAckState={voteTransactionDetails.resetAckState}
+              />
+            </Paper>
+          )}
+
+          {/* Hierarchy Details Section */}
+          {!isVoteTransaction && (
+            <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
+              <Typography variant="h6" gutterBottom color="primary">
+                Hierarchy Details
+              </Typography>
+              <HierarchyDetails
+                onAcknowledgeChange={setAcknowledgedTx}
+              />
+            </Paper>
+          )}
+
+          {/* Transaction JSON View */}
+          <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
+            <Typography variant="h6" gutterBottom color="primary">
+              Transaction Details
+            </Typography>
+            <Box
+              sx={{
+                backgroundColor: "#f8f9fa",
+                borderRadius: 1,
+                maxHeight: "400px",
+                overflowY: "auto",
+                border: "1px solid",
+                borderColor: "divider"
+              }}
+            >
+              {unsignedTransactionHex && (
+                <ReactJsonPretty
+                  data={unsignedTransaction ? unsignedTransaction.to_json() : {}}
+                  theme={{
+                    main: 'line-height:1.3;color:#000;background:#f8f9fa;',
+                    key: 'color:#0070f3;',
+                    string: 'color:#22863a;',
+                    value: 'color:#22863a;',
+                    boolean: 'color:#005cc5;',
+                  }}
+                />
+              )}
+            </Box>
+          </Paper>
+        </Box>
+      )}
+
+      {/* Sign Transaction Section */}
+      <Box sx={{ mt: 4 }}>
+        <SignTransactionButton 
+          {...{ 
+            wallet, 
+            unsignedTransactionHex, 
+            isVoteTransaction, 
+            txValidationState, 
+            voteValidationState, 
+            acknowledgedTx, 
+            connected,
+            voteTransactionDetails, 
+            stakeCredentialHash, 
+            setMessage, 
+            setSignature 
+          }} 
+        />
       </Box>
 
-      {/* Sign Button - Aligned to Right */}
-      <SignTransactionButton {...{ wallet, unsignedTransactionHex, isVoteTransaction, txValidationState, voteValidationState, acknowledgedTx,connected,voteTransactionDetails, stakeCredentialHash, setMessage, setSignature }} />
+      {/* Sign Button - Aligned to Right
+      <SignTransactionButton {...{ wallet, unsignedTransactionHex, isVoteTransaction, txValidationState, voteValidationState, acknowledgedTx,connected,voteTransactionDetails, stakeCredentialHash, setMessage, setSignature }} /> */}
 
       {/* Signature Display */}
       {signature && (
-        <Box id="signature" sx={{ mt: 3 }}>
-          <Typography variant="h6">Signature</Typography>
+        <Paper elevation={2} sx={{ p: 3, mt: 4, borderRadius: 2 }}>
+          <Typography variant="h6" gutterBottom color="primary">
+            Signature
+          </Typography>
           <Box
             sx={{
-              backgroundColor: "#e8f5e9",
-              padding: 2,
+              backgroundColor: "#f8f9fa",
+              p: 2,
               borderRadius: 1,
-              whiteSpace: "pre-wrap",
-              wordWrap: "break-word",
-              boxShadow: 2,
-              maxHeight: "250px",
-              overflowY: "auto",
+              cursor: "pointer",
+              border: "1px solid",
+              borderColor: "divider",
+              '&:hover': {
+                backgroundColor: "#f0f0f0"
+              }
             }}
             onClick={() => {
               navigator.clipboard.writeText(signature);
               setMessage("Signature copied to clipboard!");
             }}
           >
-            <Typography component="pre">{signature}</Typography>
+            <Typography component="pre" sx={{ 
+              whiteSpace: "pre-wrap", 
+              wordBreak: "break-all",
+              fontFamily: "monospace",
+              fontSize: "0.875rem"
+            }}>
+              {signature}
+            </Typography>
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-            <DownloadButton signature={signature} govActionID={voteTransactionDetails.govActionID} voterKeyHash={stakeCredentialHash} />
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <DownloadButton 
+              signature={signature} 
+              govActionID={voteTransactionDetails.govActionID} 
+              voterKeyHash={stakeCredentialHash} 
+            />
           </Box>
-        </Box>
+        </Paper>
       )}
 
       {/* Error Message Display */}
       {message && (
-        <Typography variant="body1" color="error" sx={{ mt: 2 }}>
-          {message}
-        </Typography>
+        <Paper 
+          elevation={2} 
+          sx={{ 
+            p: 2, 
+            mt: 3, 
+            borderRadius: 2,
+            backgroundColor: "#ffebee",
+            borderLeft: "4px solid #f44336"
+          }}
+        >
+          <Typography color="error">
+            {message}
+          </Typography>
+        </Paper>
       )}
-     
     </Container>
   );
 };

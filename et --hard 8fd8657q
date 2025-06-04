@@ -1,0 +1,182 @@
+[33m8fd8657[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrebrand[m[33m, [m[1;31morigin/rebrand[m[33m)[m HEAD@{0}: checkout: moving from b04a2bdca7752413e5e111b9ce2b05e9e4585003 to rebrand
+[33mb04a2bd[m HEAD@{1}: checkout: moving from rebrand to b04a2bdca7752413e5e111b9ce2b05e9e4585003
+[33m8fd8657[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrebrand[m[33m, [m[1;31morigin/rebrand[m[33m)[m HEAD@{2}: checkout: moving from test to rebrand
+[33m5fbc46c[m[33m ([m[1;31morigin/test[m[33m)[m HEAD@{3}: checkout: moving from 5fbc46c52c84ff0937ccc5e307291571c9ab195e to test
+[33m5fbc46c[m[33m ([m[1;31morigin/test[m[33m)[m HEAD@{4}: checkout: moving from rebrand to 5fbc46c52c84ff0937ccc5e307291571c9ab195e
+[33m8fd8657[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mrebrand[m[33m, [m[1;31morigin/rebrand[m[33m)[m HEAD@{5}: commit: Test lint
+[33mf4fcf08[m HEAD@{6}: checkout: moving from v2.0.2 to rebrand
+[33m88cb96e[m[33m ([m[1;31morigin/v2.0.2[m[33m, [m[1;32mv2.0.2[m[33m)[m HEAD@{7}: checkout: moving from rebrand to v2.0.2
+[33mf4fcf08[m HEAD@{8}: checkout: moving from 5fbc46c52c84ff0937ccc5e307291571c9ab195e to rebrand
+[33m5fbc46c[m[33m ([m[1;31morigin/test[m[33m)[m HEAD@{9}: checkout: moving from 0cadb47122fca6bdb8aaf495b986c39bb44306e0 to 5fbc46c
+[33m0cadb47[m HEAD@{10}: checkout: moving from rebrand to 0cadb47
+[33mf4fcf08[m HEAD@{11}: commit: add style to validation message
+[33mbf49049[m HEAD@{12}: commit: clean up post conflict rebase
+[33m0cadb47[m HEAD@{13}: rebase (finish): returning to refs/heads/rebrand
+[33m0cadb47[m HEAD@{14}: rebase (pick): Add placefolder for wallet component
+[33m5fbc46c[m[33m ([m[1;31morigin/test[m[33m)[m HEAD@{15}: rebase (pick): Change upload button position
+[33m6544f00[m HEAD@{16}: rebase (pick): Fix horizontal scrolling on tx json
+[33mb04a2bd[m HEAD@{17}: rebase (continue): clean up use more mui
+[33m88cb96e[m[33m ([m[1;31morigin/v2.0.2[m[33m, [m[1;32mv2.0.2[m[33m)[m HEAD@{18}: rebase (start): checkout v2.0.2
+[33m4888d81[m HEAD@{19}: checkout: moving from v2.0.2 to rebrand
+[33m88cb96e[m[33m ([m[1;31morigin/v2.0.2[m[33m, [m[1;32mv2.0.2[m[33m)[m HEAD@{20}: checkout: moving from rebrand to v2.0.2
+[33m4888d81[m HEAD@{21}: reset: moving to HEAD
+[33m4888d81[m HEAD@{22}: checkout: moving from v2.0.2 to rebrand
+[33m88cb96e[m[33m ([m[1;31morigin/v2.0.2[m[33m, [m[1;32mv2.0.2[m[33m)[m HEAD@{23}: pull: Fast-forward
+[33m93111e7[m HEAD@{24}: checkout: moving from rebrand to v2.0.2
+[33m4888d81[m HEAD@{25}: reset: moving to HEAD
+[33m4888d81[m HEAD@{26}: checkout: moving from feat/remove-connect-wallet to rebrand
+[33md83e3ce[m[33m ([m[1;31morigin/feat/remove-connect-wallet[m[33m, [m[1;32mfeat/remove-connect-wallet[m[33m)[m HEAD@{27}: commit: Fix lint error
+[33m9f3fcfa[m HEAD@{28}: commit: change signing logic
+[33m8bbfa2d[m HEAD@{29}: commit: change signing logic
+[33m71b34c5[m HEAD@{30}: commit: change sign logic
+[33m10ab75b[m HEAD@{31}: commit: Change variable naming
+[33m737b76e[m HEAD@{32}: pull: Fast-forward
+[33ma43d02c[m HEAD@{33}: commit: only allow signing if wallet is connected
+[33m085352f[m HEAD@{34}: commit: Clean up comments
+[33m40cea80[m HEAD@{35}: commit: fix lint error
+[33mb5bac47[m HEAD@{36}: commit: Adjust logic to allow users to check tc without wallet connect
+[33m93111e7[m HEAD@{37}: checkout: moving from rebrand to feat/remove-connect-wallet
+[33m4888d81[m HEAD@{38}: reset: moving to HEAD
+[33m4888d81[m HEAD@{39}: checkout: moving from feat/remove-connect-wallet to rebrand
+[33m93111e7[m HEAD@{40}: checkout: moving from v2.0.2 to feat/remove-connect-wallet
+[33m93111e7[m HEAD@{41}: checkout: moving from rebrand to v2.0.2
+[33m4888d81[m HEAD@{42}: reset: moving to HEAD
+[33m4888d81[m HEAD@{43}: checkout: moving from v2.0.2 to rebrand
+[33m93111e7[m HEAD@{44}: checkout: moving from rebrand to v2.0.2
+[33m4888d81[m HEAD@{45}: reset: moving to HEAD
+[33m4888d81[m HEAD@{46}: rebase (finish): returning to refs/heads/rebrand
+[33m4888d81[m HEAD@{47}: rebase (pick): Add placefolder for wallet component
+[33mcfe9ab8[m HEAD@{48}: rebase (pick): Change upload button position
+[33m6b32c08[m HEAD@{49}: rebase (pick): Fix horizontal scrolling on tx json
+[33m4fd05e2[m HEAD@{50}: rebase (continue): clean up use more mui
+[33m93111e7[m HEAD@{51}: rebase (start): checkout v2.0.2
+[33m58e55c2[m HEAD@{52}: rebase (abort): returning to refs/heads/rebrand
+[33m93111e7[m HEAD@{53}: rebase (start): checkout v2.0.2
+[33m58e55c2[m HEAD@{54}: checkout: moving from v2.0.2 to rebrand
+[33m93111e7[m HEAD@{55}: commit: Init v2.0.2
+[33ma86f222[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{56}: checkout: moving from main to v2.0.2
+[33ma86f222[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{57}: pull: Fast-forward
+[33m8d0aca7[m[33m ([m[1;33mtag: [m[1;33mv2.0[m[33m)[m HEAD@{58}: checkout: moving from rebrand to main
+[33m58e55c2[m HEAD@{59}: reset: moving to HEAD
+[33m58e55c2[m HEAD@{60}: checkout: moving from main to rebrand
+[33m8d0aca7[m[33m ([m[1;33mtag: [m[1;33mv2.0[m[33m)[m HEAD@{61}: pull: Fast-forward
+[33m2cc5962[m HEAD@{62}: checkout: moving from v2.0 to main
+[33mfea25b8[m[33m ([m[1;31morigin/v2.0[m[33m, [m[1;32mv2.0[m[33m)[m HEAD@{63}: checkout: moving from rebrand to v2.0
+[33m58e55c2[m HEAD@{64}: checkout: moving from v2.0 to rebrand
+[33mfea25b8[m[33m ([m[1;31morigin/v2.0[m[33m, [m[1;32mv2.0[m[33m)[m HEAD@{65}: checkout: moving from rebrand to v2.0
+[33m58e55c2[m HEAD@{66}: reset: moving to HEAD
+[33m58e55c2[m HEAD@{67}: checkout: moving from v2.0 to rebrand
+[33mfea25b8[m[33m ([m[1;31morigin/v2.0[m[33m, [m[1;32mv2.0[m[33m)[m HEAD@{68}: pull: Fast-forward
+[33mda7caa4[m[33m ([m[1;32mfeat/157-add-ipfs-gateways[m[33m)[m HEAD@{69}: checkout: moving from main to v2.0
+[33m2cc5962[m HEAD@{70}: checkout: moving from rebrand to main
+[33m58e55c2[m HEAD@{71}: commit: Add placefolder for wallet component
+[33m85c4a98[m HEAD@{72}: commit: Change upload button position
+[33mfee8ff7[m HEAD@{73}: commit: Fix horizontal scrolling on tx json
+[33m8babbbf[m HEAD@{74}: checkout: moving from main to rebrand
+[33m2cc5962[m HEAD@{75}: checkout: moving from feat/157-add-ipfs-gateways to main
+[33mda7caa4[m[33m ([m[1;32mfeat/157-add-ipfs-gateways[m[33m)[m HEAD@{76}: checkout: moving from v2.0 to feat/157-add-ipfs-gateways
+[33mda7caa4[m[33m ([m[1;32mfeat/157-add-ipfs-gateways[m[33m)[m HEAD@{77}: pull: Fast-forward
+[33mfc77de2[m HEAD@{78}: checkout: moving from feat/128-adjust-fe-for-mobile to v2.0
+[33mcbd5ece[m[33m ([m[1;33mtag: [m[1;33mv1.5[m[33m, [m[1;31morigin/feat/128-adjust-fe-for-mobile[m[33m, [m[1;32mfeat/128-adjust-fe-for-mobile[m[33m)[m HEAD@{79}: checkout: moving from v2.0 to feat/128-adjust-fe-for-mobile
+[33mfc77de2[m HEAD@{80}: checkout: moving from main to v2.0
+[33m2cc5962[m HEAD@{81}: pull: Fast-forward
+[33m3498e70[m[33m ([m[1;33mtag: [m[1;33mv1.4[m[33m)[m HEAD@{82}: checkout: moving from feat/128-adjust-fe-for-mobile to main
+[33mcbd5ece[m[33m ([m[1;33mtag: [m[1;33mv1.5[m[33m, [m[1;31morigin/feat/128-adjust-fe-for-mobile[m[33m, [m[1;32mfeat/128-adjust-fe-for-mobile[m[33m)[m HEAD@{83}: commit: Code clean-up
+[33m6a03b31[m HEAD@{84}: reset: moving to 6a03b31
+[33md69e78a[m HEAD@{85}: rebase (finish): returning to refs/heads/feat/128-adjust-fe-for-mobile
+[33md69e78a[m HEAD@{86}: rebase (pick): CHanges to adjust mobile font 25-05-28
+[33mb4c837e[m[33m ([m[1;32mv1.5[m[33m)[m HEAD@{87}: rebase (start): checkout v1.5
+[33m41257c5[m HEAD@{88}: rebase (finish): returning to refs/heads/feat/128-adjust-fe-for-mobile
+[33m41257c5[m HEAD@{89}: rebase (pick): CHanges to adjust mobile font 25-05-28
+[33md429344[m HEAD@{90}: rebase (pick): Separate UI for different sections
+[33md4c7d88[m HEAD@{91}: rebase (pick): Fix vote detail alignments
+[33m8af5764[m HEAD@{92}: rebase (pick): Revert "Simplify voting details acknowledgement for the user"
+[33m96a0e6a[m HEAD@{93}: rebase (pick): Simplify voting details acknowledgement for the user
+[33ma050efc[m HEAD@{94}: rebase (pick): Improve type safety and clean code
+[33mcf4e9d0[m HEAD@{95}: rebase (pick): Add type saftety
+[33m2a1b29f[m HEAD@{96}: rebase (pick): Solve merge conflicts
+[33mab93dab[m HEAD@{97}: rebase (pick): Fix lint error on hooks dependency
+[33m7d4dbfc[m HEAD@{98}: rebase (pick): Uncheck ack boxes upon new file upload
+[33m0fa3f2f[m[33m ([m[1;31morigin/feat/update-version[m[33m)[m HEAD@{99}: rebase (start): checkout origin/main
+[33m6a03b31[m HEAD@{100}: checkout: moving from main to feat/128-adjust-fe-for-mobile
+[33m3498e70[m[33m ([m[1;33mtag: [m[1;33mv1.4[m[33m)[m HEAD@{101}: checkout: moving from danger-mode to main
+[33mcc991c1[m[33m ([m[1;32mdanger-mode[m[33m)[m HEAD@{102}: pull: Merge made by the 'ort' strategy.
+[33mfdfdea0[m HEAD@{103}: checkout: moving from feat/128-adjust-fe-for-mobile to danger-mode
+[33m6a03b31[m HEAD@{104}: checkout: moving from main to feat/128-adjust-fe-for-mobile
+[33m3498e70[m[33m ([m[1;33mtag: [m[1;33mv1.4[m[33m)[m HEAD@{105}: checkout: moving from feat/128-adjust-fe-for-mobile to main
+[33m6a03b31[m HEAD@{106}: commit: CHanges to adjust mobile font 25-05-28
+[33mb4c837e[m[33m ([m[1;32mv1.5[m[33m)[m HEAD@{107}: checkout: moving from v1.5 to feat/128-adjust-fe-for-mobile
+[33mb4c837e[m[33m ([m[1;32mv1.5[m[33m)[m HEAD@{108}: pull: Fast-forward
+[33m12efd3d[m[33m ([m[1;32mfeat/152-fix-wallet-ui[m[33m)[m HEAD@{109}: checkout: moving from feat/137-UI-tweaks to v1.5
+[33m544d2ba[m[33m ([m[1;31morigin/feat/137-UI-tweaks[m[33m, [m[1;32mfeat/137-UI-tweaks[m[33m)[m HEAD@{110}: commit: Separate UI for different sections
+[33m9dce77a[m HEAD@{111}: commit: Fix vote detail alignments
+[33mfcee2c1[m HEAD@{112}: checkout: moving from v1.5 to feat/137-UI-tweaks
+[33m12efd3d[m[33m ([m[1;32mfeat/152-fix-wallet-ui[m[33m)[m HEAD@{113}: checkout: moving from feat/137-UI-tweaks to v1.5
+[33mfcee2c1[m HEAD@{114}: revert: Revert "Simplify voting details acknowledgement for the user"
+[33m5489ca7[m HEAD@{115}: commit: Simplify voting details acknowledgement for the user
+[33m12efd3d[m[33m ([m[1;32mfeat/152-fix-wallet-ui[m[33m)[m HEAD@{116}: checkout: moving from v1.5 to feat/137-UI-tweaks
+[33m12efd3d[m[33m ([m[1;32mfeat/152-fix-wallet-ui[m[33m)[m HEAD@{117}: checkout: moving from feat/152-fix-wallet-ui to v1.5
+[33m12efd3d[m[33m ([m[1;32mfeat/152-fix-wallet-ui[m[33m)[m HEAD@{118}: checkout: moving from v1.5 to feat/152-fix-wallet-ui
+[33m12efd3d[m[33m ([m[1;32mfeat/152-fix-wallet-ui[m[33m)[m HEAD@{119}: checkout: moving from feat/152 to v1.5
+[33m12efd3d[m[33m ([m[1;32mfeat/152-fix-wallet-ui[m[33m)[m HEAD@{120}: checkout: moving from v1.5 to feat/152
+[33m12efd3d[m[33m ([m[1;32mfeat/152-fix-wallet-ui[m[33m)[m HEAD@{121}: pull: Fast-forward
+[33mb05f84a[m HEAD@{122}: checkout: moving from feat/136-move-sign-process to v1.5
+[33m7e3cf20[m[33m ([m[1;31morigin/feat/136-move-sign-process[m[33m, [m[1;32mfeat/136-move-sign-process[m[33m)[m HEAD@{123}: commit: Improve type safety and clean code
+[33m3ff4ccc[m HEAD@{124}: checkout: moving from v1.5 to feat/136-move-sign-process
+[33mb05f84a[m HEAD@{125}: checkout: moving from feat/136-move-sign-process to v1.5
+[33m3ff4ccc[m HEAD@{126}: reset: moving to HEAD
+[33m3ff4ccc[m HEAD@{127}: commit: Add type saftety
+[33m2eaaf2a[m HEAD@{128}: rebase (finish): returning to refs/heads/feat/136-move-sign-process
+[33m2eaaf2a[m HEAD@{129}: commit: Solve merge conflicts
+[33mb05f84a[m HEAD@{130}: rebase (start): checkout v1.5
+[33m1b46922[m HEAD@{131}: checkout: moving from v1.5 to feat/136-move-sign-process
+[33mb05f84a[m HEAD@{132}: pull: Fast-forward
+[33m666caf1[m HEAD@{133}: checkout: moving from feat/136-move-sign-process to v1.5
+[33m1b46922[m HEAD@{134}: commit: Add signTransaction component , create types and default values to reduce hardcoding
+[33m666caf1[m HEAD@{135}: reset: moving to HEAD
+[33m666caf1[m HEAD@{136}: checkout: moving from main to feat/136-move-sign-process
+[33m3498e70[m[33m ([m[1;33mtag: [m[1;33mv1.4[m[33m)[m HEAD@{137}: checkout: moving from feat/136-move-sign-process to main
+[33m666caf1[m HEAD@{138}: reset: moving to HEAD
+[33m666caf1[m HEAD@{139}: checkout: moving from v1.5 to feat/136-move-sign-process
+[33m666caf1[m HEAD@{140}: checkout: moving from feat/reset-ack-state to v1.5
+[33m7373845[m[33m ([m[1;31morigin/feat/reset-ack-state[m[33m, [m[1;32mfeat/reset-ack-state[m[33m)[m HEAD@{141}: commit: Fix lint error on hooks dependency
+[33m4f6613c[m HEAD@{142}: commit: Uncheck ack boxes upon new file upload
+[33m666caf1[m HEAD@{143}: checkout: moving from v1.5 to feat/reset-ack-state
+[33m666caf1[m HEAD@{144}: pull: Fast-forward
+[33m3498e70[m[33m ([m[1;33mtag: [m[1;33mv1.4[m[33m)[m HEAD@{145}: checkout: moving from feat/update-version to v1.5
+[33m0fa3f2f[m[33m ([m[1;31morigin/feat/update-version[m[33m)[m HEAD@{146}: reset: moving to HEAD
+[33m0fa3f2f[m[33m ([m[1;31morigin/feat/update-version[m[33m)[m HEAD@{147}: commit: Update packages with version v1.5
+[33m3498e70[m[33m ([m[1;33mtag: [m[1;33mv1.4[m[33m)[m HEAD@{148}: checkout: moving from v1.5 to feat/update-version
+[33m3498e70[m[33m ([m[1;33mtag: [m[1;33mv1.4[m[33m)[m HEAD@{149}: checkout: moving from main to v1.5
+[33m3498e70[m[33m ([m[1;33mtag: [m[1;33mv1.4[m[33m)[m HEAD@{150}: pull: Fast-forward
+[33ma0ee4ad[m[33m ([m[1;33mtag: [m[1;33mv1.3[m[33m)[m HEAD@{151}: checkout: moving from feat/143-refactor-repetitive-code-on-validation-check to main
+[33mb17e956[m[33m ([m[1;31morigin/feat/143-refactor-repetitive-code-on-validation-check[m[33m)[m HEAD@{152}: commit: Fix lint error
+[33m96408ca[m HEAD@{153}: commit: Organize Components
+[33m7ab46e0[m HEAD@{154}: rebase (finish): returning to refs/heads/feat/143-refactor-repetitive-code-on-validation-check
+[33m7ab46e0[m HEAD@{155}: rebase (continue): Add new component to reduce code repetition
+[33m102352a[m[33m ([m[1;32mv1.4[m[33m)[m HEAD@{156}: rebase (start): checkout v1.4
+[33m51cfe72[m HEAD@{157}: checkout: moving from v1.4 to feat/143-refactor-repetitive-code-on-validation-check
+[33m102352a[m[33m ([m[1;32mv1.4[m[33m)[m HEAD@{158}: pull: Fast-forward
+[33m7d385c4[m HEAD@{159}: checkout: moving from feat/139-restrict-signing to v1.4
+[33m165ccb1[m[33m ([m[1;31morigin/feat/139-restrict-signing[m[33m)[m HEAD@{160}: commit: Split logic
+[33m742eb90[m HEAD@{161}: checkout: moving from feat/143-refactor-repetitive-code-on-validation-check to feat/139-restrict-signing
+[33m51cfe72[m HEAD@{162}: commit: Add new component to reduce code repetition
+[33m7d385c4[m HEAD@{163}: checkout: moving from v1.4 to feat/143-refactor-repetitive-code-on-validation-check
+[33m7d385c4[m HEAD@{164}: checkout: moving from feat/139-restrict-signing to v1.4
+[33m742eb90[m HEAD@{165}: commit: Restrict signing
+[33m7d385c4[m HEAD@{166}: rebase (finish): returning to refs/heads/feat/139-restrict-signing
+[33m7d385c4[m HEAD@{167}: rebase (start): checkout v1.4
+[33mf45e955[m HEAD@{168}: reset: moving to HEAD
+[33mf45e955[m HEAD@{169}: checkout: moving from v1.4 to feat/139-restrict-signing
+[33m7d385c4[m HEAD@{170}: pull: Fast-forward
+[33mf45e955[m HEAD@{171}: checkout: moving from feat/139-restrict-signing to v1.4
+[33mf45e955[m HEAD@{172}: reset: moving to HEAD
+[33mf45e955[m HEAD@{173}: checkout: moving from v1.4 to feat/139-restrict-signing
+[33mf45e955[m HEAD@{174}: checkout: moving from fix/cleaning-up to v1.4
+[33mbde5294[m[33m ([m[1;31morigin/fix/cleaning-up[m[33m)[m HEAD@{175}: commit: Remove repeating similar reset logic
+[33mdeedec6[m HEAD@{176}: commit: Fix joint reset validation
+[33m71bacce[m HEAD@{177}: commit: Remove duplicated error throw
+[33mf45e955[m HEAD@{178}: checkout: moving from v1.4 to fix/cleaning-up
+[33mf45e955[m HEAD@{179}: checkout: moving from feat/140-review-state-resets to v1.4
+[33mf94ea7c[m[33m ([m[1;31morigin/feat/140-review-state-resets[m[33m)[m HEAD@{180}: reset: moving to HEAD
+[33mf94ea7c[m[33m ([m[1;31morigin/feat/140-review-state-resets[m[33m)[m HEAD@{181}: commit: Reset signature upon file upload
