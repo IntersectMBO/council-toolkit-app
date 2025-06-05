@@ -1,12 +1,19 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, act } from '@testing-library/react';
 import Home from '../page';
+
+// Mock MeshProvider
+jest.mock('../../providers/meshProvider', () => ({
+  MeshProviderApp: ({ children }: { children: React.ReactNode }) => <>{children}</>
+}));
 
 // Mock the components
 jest.mock('../components/wallet', () => ({
-  Wallet: () => <div data-testid="wallet">Mock Wallet</div>
+  __esModule: true,
+  default: () => <div data-testid="wallet">Mock Wallet</div>
 }));
 
 jest.mock('../components/transaction', () => ({
+  __esModule: true,
   TransactionButton: () => <div data-testid="transaction-button">Mock Transaction Button</div>
 }));
 
@@ -18,14 +25,30 @@ jest.mock('next/image', () => ({
   }
 }));
 
+// Test for the home page
 describe('Home Page', () => {
+  beforeEach(() => {
+    // Clear any mocked function calls between tests
+    jest.clearAllMocks();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it('renders without crashing', () => {
     render(<Home />);
     expect(document.body).toBeInTheDocument();
   });
 
-  it('renders main components', () => {
+  it('renders main components', async () => {
     render(<Home />);
+    
+    // Fast-forward timers to complete loading
+    await act(async () => {
+      jest.advanceTimersByTime(1000);
+    });
     
     // Check for wallet component
     expect(screen.getByTestId('wallet')).toBeInTheDocument();
@@ -45,4 +68,4 @@ describe('Home Page', () => {
       expect(img).toHaveAttribute('alt');
     });
   });
-}); 
+});

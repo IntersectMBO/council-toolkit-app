@@ -9,7 +9,7 @@ import {  Container, Table, TableBody, TableCell, TableContainer, TableRow, Pape
 import Image from 'next/image';
 
 
-export const Wallet = () => {
+const Wallet = () => {
   const [WalletComponent, setWalletComponent] = useState<any | null>(null);
   const [paymentCred, setPaymentCred] = useState<string | null>(null);
   const [stakeCred, setStakeCred] = useState<string | null>(null);
@@ -71,7 +71,7 @@ export const Wallet = () => {
 
   return (
 
-    <Container maxWidth="md">  
+    <Container maxWidth="md" data-testid="wallet">  
     <div className="wallet-container" style={{ display: "flex", alignItems: "center" ,justifyContent:"center "}} >
       <WalletWrapper />
     </div>

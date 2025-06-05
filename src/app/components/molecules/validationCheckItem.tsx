@@ -14,7 +14,11 @@ const CheckItem = ({ label, tooltip, value, textMsg }: CheckItemProps) => {
     <Box display="flex" alignItems="center" gap={0.5}>
       <InfoWithTooltip info={tooltip} />
       <Typography variant="body1" fontWeight="bold">
-        {label}: {value === true ? "✅" : value === false ? "❌" : textMsg}
+        {label}:{value === true ? "✅" : value === false ? "❌" : (
+          <span style={{ color: "orange", fontStyle: "italic", fontWeight: "normal" }}>
+            {" "+textMsg}
+          </span>
+        )}
       </Typography>
     </Box>
   );
