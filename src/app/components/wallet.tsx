@@ -71,7 +71,7 @@ const Wallet = () => {
 
   return (
 
-    <Container maxWidth="md">  
+    <Container maxWidth="md" data-testid="wallet">  
     <div className="wallet-container" style={{ display: "flex", alignItems: "center" ,justifyContent:"center "}} >
       <WalletWrapper />
     </div>
