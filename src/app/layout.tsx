@@ -4,8 +4,8 @@ import { MeshProviderApp } from "@/providers/meshProvider";
 import "@meshsdk/react/styles.css";
 
 export const metadata: Metadata = {
-  title: "Intersect Council Toolkit",
-  description: "Intersect Council Toolkit App",
+  title: "CC Toolkit",
+  description: "CC Toolkit App",
 };
 
 export default function RootLayout({
