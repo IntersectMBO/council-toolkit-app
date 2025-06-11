@@ -4,7 +4,6 @@ import dotevn from "dotenv";
 import * as blake from 'blakejs';
 dotevn.config();
 const NEXT_PUBLIC_REST_IPFS_GATEWAY = (process.env.NEXT_PUBLIC_REST_IPFS_GATEWAY ?? "").split(",");
-console.log("NEXT_PUBLIC_REST_IPFS_GATEWAY:", NEXT_PUBLIC_REST_IPFS_GATEWAY);
 const gateway = await getOnlineIpfsGateway();
 
 /**
@@ -14,7 +13,7 @@ const gateway = await getOnlineIpfsGateway();
  */
 
 export const decodeHexToTx = (unsignedTransactionHex: string) => {
-    console.log("decodeHexToTx");
+    
     try {
       const unsignedTransaction = CSL.Transaction.from_hex(unsignedTransactionHex);
       return unsignedTransaction;
@@ -61,7 +60,6 @@ export async function getOnlineIpfsGateway() {
   const testCid = "bafkreievzoobom6hvlxi7brticepo3xv22kcwpdq2vab6zgzrpqsd3haua"; // Valid Test CID
   for (let gateway of NEXT_PUBLIC_REST_IPFS_GATEWAY) {
     console.log("Checking IPFS Gateway:", gateway);
-    console.log("1");
     const gatewayUrl = `https://${gateway}/${testCid}`;
 
     try {
@@ -70,10 +68,6 @@ export async function getOnlineIpfsGateway() {
       if (response.ok) {
         console.log("✅ IPFS Gateway is up:", gateway);
         return gateway;
-      } else {
-        console.warn(
-          `⚠️ Gateway ${gateway} responded with status: ${response.status}`
-        );
       }
     } catch (error: any) {
       console.log(
