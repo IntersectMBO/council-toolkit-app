@@ -25,6 +25,7 @@ import Stream from "@mui/icons-material/Stream";
 import Create from "@mui/icons-material/Create";
 import HelpOutline from "@mui/icons-material/HelpOutline";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
+import { LiveActions } from "./components/liveActions";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -204,6 +205,7 @@ export default function Home() {
               <Typography color="text.secondary" sx={{ maxWidth: "600px", mx: "auto", mb: 2 }}>
                 Monitor and interact with live governance actions in real-time.
               </Typography>
+              <LiveActions />
               <Chip 
                 icon={<InfoOutlined />} 
                 label="Coming Soon" 
