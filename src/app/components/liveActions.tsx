@@ -43,7 +43,7 @@ export const LiveActions = () => {
         {epochEndTime ? new Date(epochEndTime * 1000).toLocaleString() : "N/A"}
       </p>
       <p>
-        Today's Timestamp: {new Date(Math.floor(Date.now() / 1000) * 1000).toLocaleString()}
+        Today&apos;s Timestamp: {new Date(Math.floor(Date.now() / 1000) * 1000).toLocaleString()}
       </p>
       <pre>{JSON.stringify(liveGAData, null, 2)}</pre>
     </div>
