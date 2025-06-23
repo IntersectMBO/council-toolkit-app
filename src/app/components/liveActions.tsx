@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getCurrentEpoch, getEpochEndTime } from "../utils/onChainData";
+import { useNetwork } from "@meshsdk/react";
 
 export const LiveActions = () => {
   const [currentEpoch, setCurrentEpoch] = useState<number | null>(null);
@@ -7,22 +7,21 @@ export const LiveActions = () => {
   const [liveGAData, setLiveGAData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const net= useNetwork();
 
   useEffect(() => {
+  
     const fetchData = async () => {
       try {
-        const epoch = await getCurrentEpoch();
-        const endTime = await getEpochEndTime(epoch);
-        const gaRes = await fetch(
-          `https://api.koios.rest/api/v1/proposal_list?select=meta_json,proposal_id,proposal_type,expiration&expiration=gte.${epoch}`
-        );
-        const gaData = await gaRes.json();
+        const res = await fetch("api/proxy?network=${net}");
+        if (!res.ok) throw new Error(`Error: ${res.status}`);
 
-        setCurrentEpoch(epoch);
-        setEpochEndTime(endTime);
-        setLiveGAData(gaData);
+        const data = await res.json();
+        setCurrentEpoch(data.epoch);
+        setEpochEndTime(data.endTime);
+        setLiveGAData(data.liveGAData);
       } catch (err: any) {
-        setError(err.message || "Something went wrong");
+        setError(err.message || "Unknown error");
       } finally {
         setLoading(false);
       }
@@ -31,12 +30,14 @@ export const LiveActions = () => {
     fetchData();
   }, []);
 
+
+
   if (loading) return <div>Loading Live Actions...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div>
-      <h2>Live Governance Actions</h2>
+      <h2>Live Governance Actions on {net}</h2>
       <p>Current Epoch: {currentEpoch}</p>
       <p>
         Epoch End Time:{" "}
