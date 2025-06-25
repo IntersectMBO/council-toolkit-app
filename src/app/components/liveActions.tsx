@@ -13,7 +13,7 @@ export const LiveActions = () => {
   
     const fetchData = async () => {
       try {
-        const res = await fetch("api/proxy?network=${net}");
+        const res = await fetch(`api/proxy?network=${net}`);
         if (!res.ok) throw new Error(`Error: ${res.status}`);
 
         const data = await res.json();
@@ -28,7 +28,7 @@ export const LiveActions = () => {
     };
 
     fetchData();
-  }, []);
+  }, [net]);
 
 
 

@@ -4,7 +4,7 @@ const mainnetUrl = "https://api.koios.rest/api/v1";
 const preProdUrl = "https://preprod.koios.rest/api/v1"
  //if wallet is not connected, default to mainnet
 
-export async function getCurrentEpoch(network: number = 1): Promise<number> {
+export async function getCurrentEpoch(network: number): Promise<number> {
   const response = await fetch(`${network === 1 ? mainnetUrl : preProdUrl}/tip?select=epoch_no`);
 
   if (!response.ok) {
@@ -16,7 +16,9 @@ export async function getCurrentEpoch(network: number = 1): Promise<number> {
   ;
 }
 
-export async function getCurrentEpochEndTime(epochNo: Number,network: number = 1) {
+export async function getCurrentEpochEndTime(epochNo: number, network: number) {
+
+  console.log(`on network: ${network === 1 ? 'mainnet' : 'preprod'}`);
   const response = await fetch(`${network === 1 ? mainnetUrl : preProdUrl}/epoch_info?select=end_time&_epoch_no=${epochNo}&_include_next_epoch=false`);
 
   if (!response.ok) {
@@ -29,7 +31,8 @@ export async function getCurrentEpochEndTime(epochNo: Number,network: number = 1
 }
 
 
-export async function getLiveGAData(currentEpoch: number , currentEpochEndTime: any , network: number = 1): Promise<any[]> {
+export async function getLiveGAData(currentEpoch: number , currentEpochEndTime: any , network: number): Promise<any[]> {
+
   const response = await fetch(`${network === 1 ? mainnetUrl : preProdUrl}/proposal_list?select=meta_json,proposal_id,proposal_type,expiration&expiration=gte.${currentEpoch}`)
   if (!response.ok){
     throw new Error(`Error fetching live governance actions: ${response.status}`);

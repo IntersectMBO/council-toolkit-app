@@ -2,12 +2,13 @@ import { getCurrentEpoch,getCurrentEpochEndTime, getLiveGAData } from "@/app/uti
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const network = Number(searchParams.get("network"))
+  const network = Number(searchParams.get("network")) || 1; 
+  console.log(` Route Network: ${network}, type ${typeof network}`);
 
   try {
-    const currentEpoch = await getCurrentEpoch();              // Step 1
-    const endTime = await getCurrentEpochEndTime(currentEpoch);       // Step 2
-    const liveGAData = await getLiveGAData(currentEpoch, endTime); // Step 3
+    const currentEpoch = await getCurrentEpoch(network);              // Step 1
+    const endTime = await getCurrentEpochEndTime(currentEpoch,network);       // Step 2
+    const liveGAData = await getLiveGAData(currentEpoch, endTime,network); // Step 3
 
     return Response.json({
       epoch: currentEpoch,
