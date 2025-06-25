@@ -11,6 +11,7 @@ export const LiveActions = () => {
 
   useEffect(() => {
   
+    console.log("Effect running with net:", net);
     const fetchData = async () => {
       try {
         const res = await fetch(`api/proxy?network=${net}`);
