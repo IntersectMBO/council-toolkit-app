@@ -1,0 +1,84 @@
+name: Deploy Image to Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-ec2:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker Buildx (needed for multi-platform builds)
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 3: Build the Docker image from the Dockerfile in src folder
+      - name: Build Docker image
+        run: |
+          DOCKER_BUILDKIT=1 docker build --build-arg NEXT_PUBLIC_REST_IPFS_GATEWAY='ipfs.io/ipfs/' -t ${{ secrets.DOCKER_USERNAME }}/council-toolkit-test:${{ github.sha }} ./src 
+
+      # Step 4: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Step 5: Push the Docker image to Docker Hub
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/council-toolkit-test:${{ github.sha }}
+
+      - name: Configure AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-3
+        
+      - name: Setup SSH Key
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" | base64 --decode > ec2_key.pem
+          chmod 600 ec2_key.pem
+
+      # Step 8: SSH into EC2 instance and check for existing containers
+      - name: SSH into EC2 and update containers
+        run: |
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no ec2-user@ec2-51-44-65-72.eu-west-3.compute.amazonaws.com << 'EOF'
+            # Get the current image ID before running the new container
+            old_image=$(docker images --format "{{.Repository}}:{{.Tag}} {{.ID}}" | grep "council-toolkit-test" | awk '{print $2}')  
+    
+            # Pull the latest Docker image from Docker Hub
+            docker pull ${{ secrets.DOCKER_USERNAME }}/council-toolkit-test:${{ github.sha }}
+
+            # List the container running the previous version of the app and remove them
+            old_containers=$(docker ps -q --filter "name=council-toolkit-test")
+            if [ ! -z "$old_containers" ]; then
+              echo "Removing old containers..."
+              docker stop $old_containers
+              docker rm $old_containers
+            fi
+
+            # Run the new container with the updated image
+            echo "Starting new container with the latest image..."
+              docker run -d \
+                --name council-toolkit-test \
+                --restart unless-stopped \
+                -e NEXT_PUBLIC_REST_IPFS_GATEWAY='ipfs.io/ipfs/' \
+                -p 3006:3000 \
+                ${{ secrets.DOCKER_USERNAME }}/council-toolkit-test:${{ github.sha }} npm run start
+            done
+            
+            # Remove old images if they exist
+            if [ ! -z "$old_image" ]; then
+              echo "Removing old image..."
+              docker rmi -f $old_image
+            fi
+          EOF
