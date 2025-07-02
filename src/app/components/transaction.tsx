@@ -122,21 +122,20 @@ export const TransactionButton = () => {
         const votes = votingProcedures[0].votes;
 
         // apply validation logic
-        const hasOneVote = voteTxValidationUtils.hasOneVoteOnTransaction(transactionBody);
+        
         const vote = votingProcedures[0].votes[0].voting_procedure.vote;
         if(!votes[0].voting_procedure.anchor) throw new Error("Vote has no anchor.");
         const voteMetadataURL = votes[0].voting_procedure.anchor.anchor_url;
         const voteMetadataHash = votes[0].voting_procedure.anchor.anchor_data_hash;
 
         voteValidationState = {
-          isOneVote: voteTxValidationUtils.hasOneVoteOnTransaction(transactionBody),
           isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash)
         }
 
         // Get the key voting details of the transaction
 
         const transactionNetworkID = transactionBody.outputs().get(0).address().to_bech32().startsWith("addr_test1") ? 0 : 1;
-        if (votes && hasOneVote) {
+        if (votes) {
           
           const govActionID = convertGAToBech(votes[0].action_id.transaction_id, votes[0].action_id.index);
           if(!votes[0].voting_procedure.anchor) throw new Error("Vote has no anchor.");
