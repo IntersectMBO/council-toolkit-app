@@ -4,7 +4,7 @@ import dotevn from "dotenv";
 import * as blake from 'blakejs';
 dotevn.config();
 const NEXT_PUBLIC_REST_IPFS_GATEWAY = (process.env.NEXT_PUBLIC_REST_IPFS_GATEWAY ?? "").split(",");
-const gateway = await getOnlineIpfsGateway();
+// const gateway = await getOnlineIpfsGateway();
 
 /**
  * Decodes a transaction from a hex string to a CardanoSerializationLib Transaction object.
@@ -56,28 +56,28 @@ export const getCardanoScanURL = (bech32String: string, networkID: number): stri
 };
 
 // Example: Check if an IPFS gateway is up
-export async function getOnlineIpfsGateway() {
-  const testCid = "bafkreievzoobom6hvlxi7brticepo3xv22kcwpdq2vab6zgzrpqsd3haua"; // Valid Test CID
-  for (let gateway of NEXT_PUBLIC_REST_IPFS_GATEWAY) {
-    console.log("Checking IPFS Gateway:", gateway);
-    const gatewayUrl = `https://${gateway}/${testCid}`;
+// export async function getOnlineIpfsGateway() {
+//   const testCid = "bafkreievzoobom6hvlxi7brticepo3xv22kcwpdq2vab6zgzrpqsd3haua"; // Valid Test CID
+//   for (let gateway of NEXT_PUBLIC_REST_IPFS_GATEWAY) {
+//     console.log("Checking IPFS Gateway:", gateway);
+//     const gatewayUrl = `https://${gateway}/${testCid}`;
 
-    try {
-      const response = await fetch(gatewayUrl, { method: "HEAD" });
+//     try {
+//       const response = await fetch(gatewayUrl, { method: "HEAD" });
 
-      if (response.ok) {
-        console.log("✅ IPFS Gateway is up:", gateway);
-        return gateway;
-      }
-    } catch (error: any) {
-      console.log(
-        `❌ Error checking gateway ${gateway}:`
-      );
-    }
-  }
+//       if (response.ok) {
+//         console.log("✅ IPFS Gateway is up:", gateway);
+//         return gateway;
+//       }
+//     } catch (error: any) {
+//       console.log(
+//         `❌ Error checking gateway ${gateway}:`
+//       );
+//     }
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
 export const openInNewTab = (url: string) => {
   // Ensure the URL is absolute
@@ -85,7 +85,7 @@ export const openInNewTab = (url: string) => {
     url.startsWith("http://") || url.startsWith("https://")
       ? url
       : url.startsWith("ipfs")
-      ? "https://" + gateway + url?.slice(7)
+      ? "https://" + NEXT_PUBLIC_REST_IPFS_GATEWAY + url?.slice(7)
       : "https://" + url;
   window.open(fullUrl, "_blank", "noopener,noreferrer");
 };
@@ -96,7 +96,7 @@ export const getDataHashFromURI = async (anchorURL: string) => {
     console.log("Anchor data null")
   }
   if (anchorURL.startsWith("ipfs")) {
-    anchorURL = "https://" + gateway + anchorURL.slice(7);
+    anchorURL = "https://" + NEXT_PUBLIC_REST_IPFS_GATEWAY + anchorURL.slice(7);
   }
   // anchorURL='https://ipfs.io/ipfs/bafkreidsmyjjfrsvj3czrsu5roy2undco2bhhcnqdgbievolgbyi7lptxy'
   const data = await fetch(anchorURL);

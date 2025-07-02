@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   // }
 
   try {
-    console.log(`Fetching data for network: ${network}`);
+    console.log(`Fetching data for network EEE: ${network}`);
     const currentEpoch = await getCurrentEpoch(network);              // Step 1
     const endTime = await getCurrentEpochEndTime(currentEpoch,network);       // Step 2
     const liveGAData = await getLiveGAData(currentEpoch, endTime,network); // Step 3
