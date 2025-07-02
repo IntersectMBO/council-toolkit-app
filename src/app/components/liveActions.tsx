@@ -42,7 +42,7 @@ export const LiveActions = () => {
     return () => {
       isActive = false; // Cleanup function to set isActive to false
     };
-    
+
   }, [net]);
 
 
@@ -54,7 +54,7 @@ export const LiveActions = () => {
   <Container maxWidth="md">
       <Box my={4}>
         <Typography variant="h4" gutterBottom>
-          Live Governance Actions on {net}
+          Live Governance Actions on {net==0 ? "Preprod" : "Mainnet"}
         </Typography>
 
         <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
@@ -68,7 +68,7 @@ export const LiveActions = () => {
               : "N/A"}
           </Typography>
           <Typography variant="body1">
-            <strong>Today's Timestamp:</strong>{" "}
+            <strong>Today&apos;s Timestamp:</strong>{" "}
             {new Date(
               Math.floor(Date.now() / 1000) * 1000
             ).toLocaleString()}
