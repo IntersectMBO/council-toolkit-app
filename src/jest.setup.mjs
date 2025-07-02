@@ -1,5 +1,13 @@
 import '@testing-library/jest-dom';
+import { TextDecoder, TextEncoder } from 'util';
 
+if (!global.TextDecoder) {
+  global.TextDecoder = TextDecoder;
+}
+
+if (!global.TextEncoder) {
+  global.TextEncoder = TextEncoder;
+}
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
