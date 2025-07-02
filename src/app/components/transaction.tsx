@@ -108,7 +108,8 @@ export const TransactionButton = () => {
       // if not vote assume its a hierarchy tx
 
       const votingProcedures = transactionBody.to_js_value().voting_procedures;
-      console.log("Voting ProceduresELENA:", votingProcedures);
+      console.log("Voting Procedures:", votingProcedures);
+      console.log("Voting ProceduresELENA:", transactionBody.voting_procedures()?.to_js_value());
 
       // if a vote transaction
       if (votingProcedures){
