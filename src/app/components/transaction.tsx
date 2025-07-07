@@ -17,6 +17,7 @@ import FileUploader from "./molecules/fileUploader";
 import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "./types/types";
 import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "./types/defaultStates";
 import SignTransactionButton from "./signTransactionButton";
+import { metadata } from "../layout";
 
 export const TransactionButton = () => {
   const { wallet, connected } = useWallet();
@@ -30,14 +31,14 @@ export const TransactionButton = () => {
   // for all transactions
   const [txValidationState, setTxValidationState] = useState<TxValidationState>(defaultTxValidationState);
   // for vote transactions
-  const [voteTransactionDetails, setVoteTransactionDetails] = useState<VoteTransactionDetails>(defaultVoteTransactionDetails);
+  const [voteTransactionDetails, setVoteTransactionDetails] = useState<VoteTransactionDetails[]>([defaultVoteTransactionDetails]);
   // for vote transactions
-  const [voteValidationState, setVoteValidationState] = useState<VoteValidationState>(defaultVoteValidationState);
+  const [voteValidationState, setVoteValidationState] = useState<VoteValidationState[]>([defaultVoteValidationState]);
 
   // add other transactions validations and details here
 
   const resetAllDetailsState = () => {
-    setVoteTransactionDetails(defaultVoteTransactionDetails);
+    setVoteTransactionDetails([defaultVoteTransactionDetails]);
     // add hierarchy details reset here
     // add other transaction details reset here
   }
@@ -47,10 +48,7 @@ export const TransactionButton = () => {
       ...prev,
       defaultTxValidationState,
     }));
-    setVoteValidationState((prev) => ({
-      ...prev,
-      defaultVoteValidationState,
-    }));
+    setVoteValidationState([defaultVoteValidationState]);
     // add other transactions validations here
   };
 
@@ -100,17 +98,17 @@ export const TransactionButton = () => {
         isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction)
       }
 
-       let voteValidationState: VoteValidationState | undefined = undefined;
       // todo add logic to work out which type of transaction is being signed
       // then from detected transaction, apply the correct validation checks
 
       // for now; if vote then assume its a vote tx
       // if not vote assume its a hierarchy tx
-
+      
+      // Get the key voting details of the transaction
+      const transactionNetworkID = transactionBody.outputs().get(0).address().to_bech32().startsWith("addr_test1") ? 0 : 1;
       const votingProcedures = transactionBody.to_js_value().voting_procedures;
       console.log("Voting Procedures:", votingProcedures);
-      console.log("Voting ProceduresELENA:", transactionBody.voting_procedures()?.to_js_value());
-
+      
       // if a vote transaction
       if (votingProcedures){
 
@@ -120,36 +118,36 @@ export const TransactionButton = () => {
 
         // todo: change logic to reference voting procedures
         const votes = votingProcedures[0].votes;
+        const voteValidations: VoteValidationState[] = [];
+        const voteDetails: VoteTransactionDetails[] = [];
+        
+        for (const vote of votes){
+          console.log("Vote:", vote);
+
+          const govActionID = convertGAToBech(vote.action_id.transaction_id, vote.action_id.index);
+          const voteChoice = (vote.voting_procedure.vote === 'Yes' ? 'Constitutional' : vote.voting_procedure.vote === 'No' ? 'Unconstitutional' : 'Abstain');
+          const metadataURL = vote.voting_procedure.anchor?.anchor_url ?? "unavailable";
+          const metadataHash = vote.voting_procedure.anchor?.anchor_data_hash ?? "unavailable";     
+   
+          voteValidations.push({
+            isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(metadataURL,metadataHash),
+          });
+
+          voteDetails.push({
+            govActionID: govActionID,
+            voteChoice: voteChoice,
+            explorerLink: getCardanoScanURL(govActionID, transactionNetworkID),
+            metadataAnchorURL: metadataURL,
+            metadataAnchorHash: metadataHash,
+            resetAckState: false,
+          });
 
         // apply validation logic
         
-        const vote = votingProcedures[0].votes[0].voting_procedure.vote;
-        if(!votes[0].voting_procedure.anchor) throw new Error("Vote has no anchor.");
-        const voteMetadataURL = votes[0].voting_procedure.anchor.anchor_url;
-        const voteMetadataHash = votes[0].voting_procedure.anchor.anchor_data_hash;
+      }
 
-        voteValidationState = {
-          isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(voteMetadataURL,voteMetadataHash)
-        }
-
-        // Get the key voting details of the transaction
-
-        const transactionNetworkID = transactionBody.outputs().get(0).address().to_bech32().startsWith("addr_test1") ? 0 : 1;
-        if (votes) {
-          
-          const govActionID = convertGAToBech(votes[0].action_id.transaction_id, votes[0].action_id.index);
-          if(!votes[0].voting_procedure.anchor) throw new Error("Vote has no anchor.");
-
-          setVoteTransactionDetails({
-            govActionID: govActionID,
-            voteChoice: vote === 'Yes' ? 'Constitutional' : vote === 'No' ? 'Unconstitutional' : 'Abstain',
-            explorerLink: getCardanoScanURL(govActionID,transactionNetworkID),
-            metadataAnchorURL: voteMetadataURL,
-            metadataAnchorHash: voteMetadataHash,
-            resetAckState: false,
-          });
-        }
-
+      setVoteTransactionDetails(voteDetails);
+      setVoteValidationState(voteValidations);
       // for now assume its a joining hierarchy transaction
       } else if (!votingProcedures) {
 
@@ -173,18 +171,18 @@ export const TransactionButton = () => {
           isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody,stakeCred),
       });
         if (voteValidationState) {
-        setVoteValidationState({
-          ...voteValidationState,
-          hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
-        });
+        // setVoteValidationState({
+        //   ...voteValidationState,
+        //   hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
+        // });
       }
       }else {
         setTxValidationState({
           ...baseTxValidationState
         });
-        if (voteValidationState){
-          setVoteValidationState({...voteValidationState});
-        }
+        // if (voteValidationState){
+        //   setVoteValidationState({...voteValidationState});
+        // }
         
       }
     }
@@ -272,7 +270,16 @@ export const TransactionButton = () => {
               <Typography variant="h6" gutterBottom color="primary">
                 Vote Validation Checks
               </Typography>
-              <VoteTransactionChecks {...voteValidationState} />
+              {/* <VoteTransactionChecks {...voteValidationState} /> */}
+              
+              {voteValidationState.map((validation, index) => (
+                <Box key={index} sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" color="textSecondary">
+                    Vote #{index + 1}
+                  </Typography>
+                  <VoteTransactionChecks {...validation} />
+                </Box>
+              ))}
             </Paper>
           )}
 
@@ -282,15 +289,22 @@ export const TransactionButton = () => {
               <Typography variant="h6" gutterBottom color="primary">
                 Vote Details
               </Typography>
-              <VotingDetails
-                govActionID={voteTransactionDetails.govActionID}
-                voteChoice={voteTransactionDetails.voteChoice}
-                explorerLink={voteTransactionDetails.explorerLink}
-                metadataAnchorURL={voteTransactionDetails.metadataAnchorURL}
-                metadataAnchorHash={voteTransactionDetails.metadataAnchorHash}
-                onAcknowledgeChange={setAcknowledgedTx}
-                resetAckState={voteTransactionDetails.resetAckState}
-              />
+               {voteTransactionDetails.map((detail, index) => (
+                  <Box key={index} sx={{ mb: 2 }}>
+                    <Typography variant="subtitle1" color="textSecondary">
+                      Vote #{index + 1} – {detail.govActionID}
+                    </Typography>
+                    <VotingDetails
+                      govActionID={detail.govActionID}
+                      voteChoice={detail.voteChoice}
+                      explorerLink={detail.explorerLink}
+                      metadataAnchorURL={detail.metadataAnchorURL}
+                      metadataAnchorHash={detail.metadataAnchorHash}
+                      onAcknowledgeChange={setAcknowledgedTx}
+                      resetAckState={detail.resetAckState}
+                    />
+                  </Box>
+                ))}
             </Paper>
           )}
 

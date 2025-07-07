@@ -6,13 +6,13 @@ import { VoteValidationState } from "./types/types";
 
 export const VoteTransactionChecks = ({
   isMetadataAnchorValid,
-  hasICCCredentials,
+  // hasICCCredentials,
 }: VoteValidationState) => {
   return (
   
     <Box display="flex" justifyContent="space-between" gap={2}>
 
-      <Box display="flex" flexDirection="column" gap={2} width="48%">
+      {/* <Box display="flex" flexDirection="column" gap={2} width="48%">
       
         <CheckItem
           label="Is Intersect ICC credential?"
@@ -20,7 +20,7 @@ export const VoteTransactionChecks = ({
           value={hasICCCredentials}
           textMsg="Connect wallet"
         />
-      </Box>
+      </Box> */}
 
       <Box display="flex" flexDirection="column" gap={2} width="48%">
         <CheckItem
