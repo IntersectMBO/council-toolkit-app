@@ -363,7 +363,7 @@ export const TransactionButton = () => {
             voteValidationState, 
             acknowledgedTx, 
             connected,
-            voteTransactionDetails, 
+            govActionIDs: voteTransactionDetails.map((detail: VoteTransactionDetails) => detail.govActionID), 
             stakeCredentialHash, 
             setMessage, 
             setSignature 
@@ -409,7 +409,7 @@ export const TransactionButton = () => {
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
             <DownloadButton 
               signature={signature} 
-              govActionID={voteTransactionDetails.govActionID} 
+              govActionID={ voteTransactionDetails.map((detail: VoteTransactionDetails) => detail.govActionID)[0] } 
               voterKeyHash={stakeCredentialHash} 
             />
           </Box>

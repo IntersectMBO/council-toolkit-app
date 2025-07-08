@@ -11,12 +11,13 @@ interface SignTransactionButtonProps {
   unsignedTransactionHex: string;
   isVoteTransaction: boolean;
   txValidationState: TxValidationState;
-  voteValidationState: VoteValidationState;
+  voteValidationState: VoteValidationState[];
   acknowledgedTx: boolean;
   connected: boolean;
-  voteTransactionDetails: {
-    govActionID: string;
-  };
+  govActionIDs: string[];
+  // voteTransactionDetails: {
+  //   govActionID: string;
+  // };
   stakeCredentialHash: string;
   setMessage: (msg: string) => void;
   setSignature: (sig: string) => void;
@@ -30,7 +31,8 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
   voteValidationState,
   acknowledgedTx,
   connected,
-  voteTransactionDetails,
+  // voteTransactionDetails,
+  govActionIDs,
   stakeCredentialHash,
   setMessage,
   setSignature,
@@ -41,7 +43,7 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     try {
         setLoading(true);
         const txValidationAllState = Object.values(txValidationState).every(Boolean);
-        const voteValidationAllState = Object.values(voteValidationState).every(Boolean);
+        const voteValidationAllState = voteValidationState.flatMap(Object.values).every(Boolean);
 
         console.log("Transaction Validation State: ", txValidationState);
         console.log("Vote Validation State: ", voteValidationState);
