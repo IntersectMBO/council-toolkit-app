@@ -170,12 +170,12 @@ export const TransactionButton = () => {
           isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody,network),
           isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody,stakeCred),
       });
-        if (voteValidationState) {
-        // setVoteValidationState({
-        //   ...voteValidationState,
-        //   hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
-        // });
-      }
+      //   if (voteValidationState) {
+      //   setVoteValidationState({
+      //     ...voteValidationState,
+      //     hasICCCredentials: voteTxValidationUtils.hasValidICCCredentials(transactionBody, network),
+      //   });
+      // }
       }else {
         setTxValidationState({
           ...baseTxValidationState
