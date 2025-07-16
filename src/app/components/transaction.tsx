@@ -198,7 +198,6 @@ export const TransactionButton = () => {
   useEffect(() => {
     if (voteTransactionDetails?.length) {
     setAcknowledgedTxs(Array(voteTransactionDetails.length).fill(false));
-    console.log("Vote Transaction Acknowledged States:", acknowledgedTxs);
    }
   }, [voteTransactionDetails]);
 
