@@ -26,7 +26,7 @@ export const TransactionButton = () => {
   const [unsignedTransactionHex, setUnsignedTransactionHex] = useState("");
   const [unsignedTransaction, setUnsignedTransaction] = useState<CSL.Transaction | null>(null);
   const [signature, setSignature] = useState<string>("");
-  const [acknowledgedTx, setAcknowledgedTx] = useState(false);
+  const [acknowledgedTxs, setAcknowledgedTxs] = useState<boolean[]>([false]);
   const [isVoteTransaction, setIsVoteTransaction] = useState(false);
   // for all transactions
   const [txValidationState, setTxValidationState] = useState<TxValidationState>(defaultTxValidationState);
@@ -59,7 +59,7 @@ export const TransactionButton = () => {
     setSignature("");
     resetAllDetailsState();
     resetAllValidationState();
-    setAcknowledgedTx(false);
+    setAcknowledgedTxs([false]);
     setIsVoteTransaction(false);
   }, []);
   
@@ -71,11 +71,12 @@ export const TransactionButton = () => {
   
   useEffect(() => {
     if (!connected) {
+      console.log("RESETTING ALL STATES");
       resetAllStates();
     }
-    else {
-      setMessage(`Connected to wallet`);
-    }
+    // else {
+    //   setMessage(`Connected to wallet`);
+    // }
   }, [connected, resetAllStates]);
 
   const checkTransaction = useCallback(async () => {
@@ -193,12 +194,20 @@ export const TransactionButton = () => {
       resetAllDetailsState();
     }
   }, [unsignedTransactionHex, walletRef, connected]);
- 
+
+  useEffect(() => {
+    if (voteTransactionDetails?.length) {
+    setAcknowledgedTxs(Array(voteTransactionDetails.length).fill(false));
+    console.log("Vote Transaction Acknowledged States:", acknowledgedTxs);
+   }
+  }, [voteTransactionDetails]);
+
   useEffect(() => {
     if (unsignedTransactionHex) {
       checkTransaction();
     }
   }, [unsignedTransactionHex, checkTransaction]);
+
   useEffect(() => {
     if (signature || unsignedTransaction) {
       const transactionElement = document.getElementById("sign-transaction");
@@ -300,8 +309,16 @@ export const TransactionButton = () => {
                       explorerLink={detail.explorerLink}
                       metadataAnchorURL={detail.metadataAnchorURL}
                       metadataAnchorHash={detail.metadataAnchorHash}
-                      onAcknowledgeChange={setAcknowledgedTx}
+                      // onAcknowledgeChange={setAcknowledgedTx}
+                      onAcknowledgeChange={(checked: boolean) => {
+                        setAcknowledgedTxs(prev => {
+                          const updated = [...prev];
+                          updated[index] = checked;
+                          return updated;
+                        });
+                      }}
                       resetAckState={detail.resetAckState}
+                      isWalletConnected={connected}
                     />
                   </Box>
                 ))}
@@ -315,7 +332,7 @@ export const TransactionButton = () => {
                 Hierarchy Details
               </Typography>
               <HierarchyDetails
-                onAcknowledgeChange={setAcknowledgedTx}
+                onAcknowledgeChange={(checked: boolean) => setAcknowledgedTxs([checked])}
               />
             </Paper>
           )}
@@ -361,7 +378,7 @@ export const TransactionButton = () => {
             isVoteTransaction, 
             txValidationState, 
             voteValidationState, 
-            acknowledgedTx, 
+            acknowledgedTx: acknowledgedTxs.every(Boolean), 
             connected,
             govActionIDs: voteTransactionDetails.map((detail: VoteTransactionDetails) => detail.govActionID), 
             stakeCredentialHash, 

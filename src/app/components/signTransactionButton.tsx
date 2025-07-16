@@ -38,7 +38,7 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
   setSignature,
 }) => {
   const [loading, setLoading] = useState(false);
-
+  console.log("acknowledgedTx state:", acknowledgedTx);
   const signTransactionWrapper = async () => {
     try {
         setLoading(true);
@@ -80,7 +80,7 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     gap: 1, // Adds spacing between elements
   }}
 >
-  {!acknowledgedTx && (
+  {!acknowledgedTx && connected && (
     <Typography color="error" sx={{ mt: 1, textAlign: { xs: "center", sm: "right" } }}>
       ⚠️ You must acknowledge the transaction details before signing!
     </Typography>
@@ -93,9 +93,9 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     color: connected ? "green" : "red",
   }}
 >
-  {connected
-    ? "✅ Wallet connected."
-    : "⚠️ Please connect your wallet before signing the transaction!"}
+  {!connected
+    ? "⚠️ Please connect your wallet before signing the transaction!"
+    : ""}
   </Typography>
 
   <Button
