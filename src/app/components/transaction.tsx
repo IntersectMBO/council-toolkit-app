@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useWallet } from "@meshsdk/react";
 import { deserializeAddress } from "@meshsdk/core";
-import { Button, TextField, Box, Typography, Container, Paper } from "@mui/material";
+import { Button, TextField, Box, Typography, Container, Paper, FormControlLabel, Checkbox } from "@mui/material";
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import ReactJsonPretty from "react-json-pretty";
 import * as voteTxValidationUtils from "../utils/txValidationUtils";
@@ -18,6 +18,8 @@ import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "./ty
 import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "./types/defaultStates";
 import SignTransactionButton from "./signTransactionButton";
 import { metadata } from "../layout";
+import InfoWithTooltip from "./molecules/infoHover";
+import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 
 export const TransactionButton = () => {
   const { wallet, connected } = useWallet();
@@ -26,7 +28,7 @@ export const TransactionButton = () => {
   const [unsignedTransactionHex, setUnsignedTransactionHex] = useState("");
   const [unsignedTransaction, setUnsignedTransaction] = useState<CSL.Transaction | null>(null);
   const [signature, setSignature] = useState<string>("");
-  const [acknowledgedTxs, setAcknowledgedTxs] = useState<boolean[]>([false]);
+  const [acknowledgedTxs, setAcknowledgedTxs] = useState<boolean>(false);
   const [isVoteTransaction, setIsVoteTransaction] = useState(false);
   // for all transactions
   const [txValidationState, setTxValidationState] = useState<TxValidationState>(defaultTxValidationState);
@@ -59,7 +61,7 @@ export const TransactionButton = () => {
     setSignature("");
     resetAllDetailsState();
     resetAllValidationState();
-    setAcknowledgedTxs([false]);
+    setAcknowledgedTxs(false);
     setIsVoteTransaction(false);
   }, []);
   
@@ -195,11 +197,11 @@ export const TransactionButton = () => {
     }
   }, [unsignedTransactionHex, walletRef, connected]);
 
-  useEffect(() => {
-    if (voteTransactionDetails?.length) {
-    setAcknowledgedTxs(Array(voteTransactionDetails.length).fill(false));
-   }
-  }, [voteTransactionDetails]);
+  // useEffect(() => {
+  //   if (voteTransactionDetails?.length) {
+  //   setAcknowledgedTxs(Array(voteTransactionDetails.length).fill(false));
+  //  }
+  // }, [voteTransactionDetails]);
 
   useEffect(() => {
     if (unsignedTransactionHex) {
@@ -222,7 +224,10 @@ export const TransactionButton = () => {
       }
     }
   }, [signature, unsignedTransaction]);
-
+  const handleAcknowledgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setAcknowledgedTxs(checked);
+  };
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
       {/* Transaction Input Section */}
@@ -297,30 +302,33 @@ export const TransactionButton = () => {
               <Typography variant="h6" gutterBottom color="primary">
                 Vote Details
               </Typography>
-               {voteTransactionDetails.map((detail, index) => (
-                  <Box key={index} sx={{ mb: 2 }}>
-                    <Typography variant="subtitle1" color="textSecondary">
-                      Vote #{index + 1} – {detail.govActionID}
-                    </Typography>
-                    <VotingDetails
-                      govActionID={detail.govActionID}
-                      voteChoice={detail.voteChoice}
-                      explorerLink={detail.explorerLink}
-                      metadataAnchorURL={detail.metadataAnchorURL}
-                      metadataAnchorHash={detail.metadataAnchorHash}
-                      // onAcknowledgeChange={setAcknowledgedTx}
-                      onAcknowledgeChange={(checked: boolean) => {
-                        setAcknowledgedTxs(prev => {
-                          const updated = [...prev];
-                          updated[index] = checked;
-                          return updated;
-                        });
-                      }}
-                      resetAckState={detail.resetAckState}
-                      isWalletConnected={connected}
-                    />
-                  </Box>
-                ))}
+              {voteTransactionDetails.map((detail, index) => (
+                <Box key={index} sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1" color="textSecondary">
+                    Vote #{index + 1} – {detail.govActionID}
+                  </Typography>
+                  <VotingDetails
+                    govActionID={detail.govActionID}
+                    voteChoice={detail.voteChoice}
+                    explorerLink={detail.explorerLink}
+                    metadataAnchorURL={detail.metadataAnchorURL}
+                    metadataAnchorHash={detail.metadataAnchorHash}
+                    // onAcknowledgeChange={setAcknowledgedTx}
+                    resetAckState={detail.resetAckState}
+                    isWalletConnected={connected}
+                  />
+                </Box>
+
+              ))}
+              {connected && (
+                <>
+                  <FormControlLabel
+                    control={<Checkbox checked={acknowledgedTxs} onChange={handleAcknowledgeChange} />}
+                    label="Please acknowledge the validity of the vote details above*"
+                  />
+                  <InfoWithTooltip info={TOOLTIP_MESSAGES.ACK_VOTING_DETAILS} />
+                </>
+              )}
             </Paper>
           )}
 
@@ -331,7 +339,7 @@ export const TransactionButton = () => {
                 Hierarchy Details
               </Typography>
               <HierarchyDetails
-                onAcknowledgeChange={(checked: boolean) => setAcknowledgedTxs([checked])}
+                onAcknowledgeChange={setAcknowledgedTxs}
               />
             </Paper>
           )}
@@ -377,7 +385,7 @@ export const TransactionButton = () => {
             isVoteTransaction, 
             txValidationState, 
             voteValidationState, 
-            acknowledgedTx: acknowledgedTxs.every(Boolean), 
+            acknowledgedTx: acknowledgedTxs, 
             connected,
             govActionIDs: voteTransactionDetails.map((detail: VoteTransactionDetails) => detail.govActionID), 
             stakeCredentialHash, 

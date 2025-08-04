@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel, Box } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel } from "@mui/material";
 import { openInNewTab } from "../utils/txUtils";
 import { useEffect, useState } from "react";
 import InfoWithTooltip from "./molecules/infoHover";
@@ -7,7 +7,7 @@ import { VoteTransactionDetails } from "./types/types";
 
 
 export interface VotingDetailsProps extends VoteTransactionDetails {
-  onAcknowledgeChange: (checked: boolean) => void;
+  // onAcknowledgeChange: (checked: boolean) => void;
   isWalletConnected?: boolean;
 }
 
@@ -17,7 +17,7 @@ export const VotingDetails = ({
     explorerLink, 
     metadataAnchorURL, 
     metadataAnchorHash,
-    onAcknowledgeChange,
+    // onAcknowledgeChange,
     resetAckState,
     isWalletConnected
 }: VotingDetailsProps) => {
@@ -28,18 +28,18 @@ export const VotingDetails = ({
     //   setCheckboxes(updatedCheckboxes);
     //   onAcknowledgeChange(Object.values(updatedCheckboxes).every(Boolean));
     // };
-    const handleAcknowledgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const checked = event.target.checked;
-      setAcknowledged(checked);
-      onAcknowledgeChange(checked);
-    };
+    // const handleAcknowledgeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //   const checked = event.target.checked;
+    //   setAcknowledged(checked);
+    //   onAcknowledgeChange(checked);
+    // };
 
-    useEffect(() => {
-      if (resetAckState) {
-        setAcknowledged(false);
-        onAcknowledgeChange(false);  
-      }
-    }, [resetAckState,onAcknowledgeChange]);
+    // useEffect(() => {
+    //   if (resetAckState) {
+    //     setAcknowledged(false);
+    //     onAcknowledgeChange(false);  
+    //   }
+    // }, [resetAckState,onAcknowledgeChange]);
 
     return (
       <TableContainer sx={{ mb: 3 }}>
@@ -107,13 +107,13 @@ export const VotingDetails = ({
               <TableCell sx={{ fontWeight: "bold", fontStyle: "italic" , color: "red"}}>
                 Acknowledge Voting Details
               </TableCell>
-              <TableCell>
+              {/* <TableCell>
                 <FormControlLabel
                   control={<Checkbox checked={acknowledged} onChange={handleAcknowledgeChange} />}
                   label="*"
                 />
                 <InfoWithTooltip info={TOOLTIP_MESSAGES.ACK_VOTING_DETAILS} />
-              </TableCell>
+              </TableCell> */}
             </TableRow>)}
           </TableBody>
         </Table>
