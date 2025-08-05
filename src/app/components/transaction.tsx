@@ -76,9 +76,6 @@ export const TransactionButton = () => {
       console.log("RESETTING ALL STATES");
       resetAllStates();
     }
-    // else {
-    //   setMessage(`Connected to wallet`);
-    // }
   }, [connected, resetAllStates]);
 
   const checkTransaction = useCallback(async () => {
@@ -197,12 +194,6 @@ export const TransactionButton = () => {
     }
   }, [unsignedTransactionHex, walletRef, connected]);
 
-  // useEffect(() => {
-  //   if (voteTransactionDetails?.length) {
-  //   setAcknowledgedTxs(Array(voteTransactionDetails.length).fill(false));
-  //  }
-  // }, [voteTransactionDetails]);
-
   useEffect(() => {
     if (unsignedTransactionHex) {
       checkTransaction();
@@ -279,16 +270,20 @@ export const TransactionButton = () => {
 
           {/* Vote Validation Section */}
           {isVoteTransaction && (
-            <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
-              <Typography variant="h6" gutterBottom color="primary">
+            <Paper elevation={2} sx={{ paddingLeft:3,paddingRight:3, borderRadius: 2,maxHeight: 300, overflowY: "auto" }}>
+              <Typography variant="h6" gutterBottom color="primary" sx={{ position: "sticky",paddingTop: 3,top: 0,
+                backgroundColor: "background.paper",
+                zIndex: 2,
+                pb: 1,
+              }}>
                 Vote Validation Checks
               </Typography>
               {/* <VoteTransactionChecks {...voteValidationState} /> */}
               
               {voteValidationState.map((validation, index) => (
-                <Box key={index} sx={{ mb: 2 }}>
+                <Box key={index} sx={{ mb: 2, maxHeight: 500, overflowY: "auto" }}>
                   <Typography variant="subtitle1" color="textSecondary">
-                    Vote #{index + 1}
+                    Vote no.{index + 1}
                   </Typography>
                   <VoteTransactionChecks {...validation} />
                 </Box>
@@ -298,14 +293,21 @@ export const TransactionButton = () => {
 
           {/* Vote Details Section */}
           {isVoteTransaction && (
-            <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
-              <Typography variant="h6" gutterBottom color="primary">
+            <Paper elevation={2} sx={{ paddingLeft:3,paddingRight:3, borderRadius: 2 ,maxHeight: 400, overflowY: "auto"  }}>
+              <Typography variant="h6" gutterBottom color="primary" sx={{
+                position: "sticky",
+                paddingTop: 3,
+                top: 0,
+                backgroundColor: "background.paper",
+                zIndex: 2,
+                pb: 1,
+              }}>
                 Vote Details
               </Typography>
               {voteTransactionDetails.map((detail, index) => (
                 <Box key={index} sx={{ mb: 2 }}>
                   <Typography variant="subtitle1" color="textSecondary">
-                    Vote #{index + 1} – {detail.govActionID}
+                    Vote no.{index + 1} – {detail.govActionID}
                   </Typography>
                   <VotingDetails
                     govActionID={detail.govActionID}
