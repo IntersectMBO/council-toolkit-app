@@ -170,6 +170,7 @@ export const TransactionButton = () => {
           isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody,network),
           isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody,stakeCred),
       });
+      // this part of code is commented out as it is not currently used, but will be reused once we set the council list
       //   if (voteValidationState) {
       //   setVoteValidationState({
       //     ...voteValidationState,
@@ -180,6 +181,7 @@ export const TransactionButton = () => {
         setTxValidationState({
           ...baseTxValidationState
         });
+        // this part of code is commented out as it is not currently used, but will be reused once we set the council list
         // if (voteValidationState){
         //   setVoteValidationState({...voteValidationState});
         // }
@@ -396,9 +398,6 @@ export const TransactionButton = () => {
           }} 
         />
       </Box>
-
-      {/* Sign Button - Aligned to Right
-      <SignTransactionButton {...{ wallet, unsignedTransactionHex, isVoteTransaction, txValidationState, voteValidationState, acknowledgedTx,connected,voteTransactionDetails, stakeCredentialHash, setMessage, setSignature }} /> */}
 
       {/* Signature Display */}
       {signature && (

@@ -12,15 +12,7 @@ export const VoteTransactionChecks = ({
   
     <Box display="flex" justifyContent="space-between" gap={2}>
 
-      {/* <Box display="flex" flexDirection="column" gap={2} width="48%">
-      
-        <CheckItem
-          label="Is Intersect ICC credential?"
-          tooltip={TOOLTIP_MESSAGES.HAVE_ICC_CREDENTIAL}
-          value={hasICCCredentials}
-          textMsg="Connect wallet"
-        />
-      </Box> */}
+      {/* TODO : add a checkitem if the tx has the chosen icc credentials */}
 
       <Box display="flex" flexDirection="column" gap={2} width="48%">
         <CheckItem
@@ -29,8 +21,6 @@ export const VoteTransactionChecks = ({
           value={isMetadataAnchorValid}
         />
       </Box>
-      
-
     </Box>
   );
 };
