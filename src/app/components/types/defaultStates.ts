@@ -11,7 +11,6 @@ export const defaultTxValidationState: TxValidationState = {
 };
 
 export const defaultVoteValidationState: VoteValidationState = {
-    isOneVote: false,
     isMetadataAnchorValid: false,
     hasICCCredentials: false,
   };

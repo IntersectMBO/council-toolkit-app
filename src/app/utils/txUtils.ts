@@ -98,7 +98,6 @@ export const getDataHashFromURI = async (anchorURL: string) => {
   if (anchorURL.startsWith("ipfs")) {
     anchorURL = "https://" + NEXT_PUBLIC_REST_IPFS_GATEWAY + anchorURL.slice(7);
   }
-  // anchorURL='https://ipfs.io/ipfs/bafkreidsmyjjfrsvj3czrsu5roy2undco2bhhcnqdgbievolgbyi7lptxy'
   const data = await fetch(anchorURL);
   const text = await data.text();
   const hash = blake.blake2bHex(text,undefined, 32);

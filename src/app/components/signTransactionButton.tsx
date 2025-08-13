@@ -11,12 +11,13 @@ interface SignTransactionButtonProps {
   unsignedTransactionHex: string;
   isVoteTransaction: boolean;
   txValidationState: TxValidationState;
-  voteValidationState: VoteValidationState;
+  voteValidationState: VoteValidationState[];
   acknowledgedTx: boolean;
   connected: boolean;
-  voteTransactionDetails: {
-    govActionID: string;
-  };
+  govActionIDs: string[];
+  // voteTransactionDetails: {
+  //   govActionID: string;
+  // };
   stakeCredentialHash: string;
   setMessage: (msg: string) => void;
   setSignature: (sig: string) => void;
@@ -30,18 +31,19 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
   voteValidationState,
   acknowledgedTx,
   connected,
-  voteTransactionDetails,
+  // voteTransactionDetails,
+  govActionIDs,
   stakeCredentialHash,
   setMessage,
   setSignature,
 }) => {
   const [loading, setLoading] = useState(false);
-
+  console.log("acknowledgedTx state:", acknowledgedTx);
   const signTransactionWrapper = async () => {
     try {
         setLoading(true);
         const txValidationAllState = Object.values(txValidationState).every(Boolean);
-        const voteValidationAllState = Object.values(voteValidationState).every(Boolean);
+        const voteValidationAllState = voteValidationState.flatMap(Object.values).every(Boolean);
 
         console.log("Transaction Validation State: ", txValidationState);
         console.log("Vote Validation State: ", voteValidationState);
@@ -78,7 +80,7 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     gap: 1, // Adds spacing between elements
   }}
 >
-  {!acknowledgedTx && (
+  {!acknowledgedTx && connected && (
     <Typography color="error" sx={{ mt: 1, textAlign: { xs: "center", sm: "right" } }}>
       ⚠️ You must acknowledge the transaction details before signing!
     </Typography>
@@ -91,9 +93,9 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     color: connected ? "green" : "red",
   }}
 >
-  {connected
-    ? "✅ Wallet connected."
-    : "⚠️ Please connect your wallet before signing the transaction!"}
+  {!connected
+    ? "⚠️ Please connect your wallet before signing the transaction!"
+    : ""}
   </Typography>
 
   <Button
