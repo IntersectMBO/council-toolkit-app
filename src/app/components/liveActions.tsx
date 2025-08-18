@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNetwork } from "@meshsdk/react";
 import { Box, Container, Divider, List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
+import { getCardanoScanURL } from "../utils/txUtils";
 
 export const LiveActions = () => {
   const [currentEpoch, setCurrentEpoch] = useState<number | null>(null);
@@ -93,8 +94,13 @@ export const LiveActions = () => {
                             component="span"
                             variant="body2"
                             color="text.secondary"
-                          >
-                            Proposal ID: {item.proposal}
+                          > 
+                          <a
+                            href={`${getCardanoScanURL(item.proposal, net || 1)}`}
+                            target="_blank"
+                            style={{ color: "blue", textDecoration: "underline" }}>
+                            {item.proposal}
+                            </a>
                           </Typography>
                         </>
                       }

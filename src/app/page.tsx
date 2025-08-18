@@ -11,9 +11,7 @@ import {
   Paper,
   Tooltip,
   Fade,
-  Alert,
   Chip,
-  Button,
   Skeleton,
   useMediaQuery,
   useTheme
@@ -206,12 +204,6 @@ export default function Home() {
                 Monitor and interact with live governance actions in real-time.
               </Typography>
               <LiveActions />
-              <Chip 
-                icon={<InfoOutlined />} 
-                label="Coming Soon" 
-                color="primary" 
-                variant="outlined" 
-              />
             </Box>
           </TabPanel>
 
