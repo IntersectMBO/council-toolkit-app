@@ -54,34 +54,56 @@ export const LiveActions = () => {
   return (
   <Container maxWidth="md">
       <Box my={4}>
-        <Typography variant="h4" gutterBottom>
-          Live Governance Actions on {net==0 ? "Preprod" : "Mainnet"}
-        </Typography>
-
-        <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
-          <Typography variant="body1">
-            <strong>Current Epoch:</strong> {currentEpoch}
-          </Typography>
-          <Typography variant="body1">
-            <strong>Epoch End Time:</strong>{" "}
-            {epochEndTime
-              ? new Date(epochEndTime * 1000).toLocaleString()
-              : "N/A"}
-          </Typography>
-          <Typography variant="body1">
-            <strong>Today&apos;s Timestamp:</strong>{" "}
-            {new Date(
-              Math.floor(Date.now() / 1000) * 1000
-            ).toLocaleString()}
-          </Typography>
+        <Paper elevation={2} sx={{
+            p: { xs: 2, sm: 4 },
+            borderRadius: 3,
+            mt: 2
+          }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'flex-start', sm: 'center' }, justifyContent: 'space-between', gap: 3 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
+                Network
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {net==0 ? "Preprod" : "Mainnet"}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
+                Current Epoch
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {currentEpoch !== null ? currentEpoch : <span style={{ color: '#aaa' }}>N/A</span>}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
+                Epoch Ends
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {epochEndTime
+                  ? new Date(epochEndTime * 1000).toLocaleString()
+                  : <span style={{ color: '#aaa' }}>N/A</span>}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
+                Today
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {new Date(
+                  Math.floor(Date.now() / 1000) * 1000
+                ).toLocaleString()}
+              </Typography>
+            </Box>
+          </Box>
         </Paper>
-
-        <Typography variant="h6" gutterBottom>
-          Governance Proposals
-        </Typography>
-
         {liveGAData && liveGAData.length > 0 ? (
-          <Paper elevation={2} sx={{ p: 2 }}>
+          <Paper elevation={2} sx={{
+            p: { xs: 2, sm: 4 },
+            borderRadius: 3,
+            mt: 2
+          }}>
             <List>
               {liveGAData.map((item, index) => (
                 <React.Fragment key={index}>
