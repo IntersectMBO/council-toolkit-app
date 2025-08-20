@@ -5,11 +5,11 @@ import { getCardanoScanURL } from "../utils/txUtils";
 
 export const LiveActions = () => {
   const [currentEpoch, setCurrentEpoch] = useState<number | null>(null);
-  const [epochEndTime, setEpochEndTime] = useState<number | null>(null);
   const [liveGAData, setLiveGAData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const net= useNetwork();
+  const [endTime, setEndTime] = useState<number | null>(null);
   console.log("LiveActions is being called with net:", net);
 
   useEffect(() => {
@@ -28,9 +28,11 @@ export const LiveActions = () => {
 
         if (!isActive) return; // Check if component is still mounted
 
+        const epochEndTime = Number(data.endTime);
         setCurrentEpoch(data.epoch);
-        setEpochEndTime(data.endTime);
         setLiveGAData(data.liveGAData);
+        setEndTime(data.endTime-Math.floor(Date.now() / 1000)); // Calculate seconds until epoch end
+
       } catch (err: any) {
         setError(err.message || "Unknown error");
       } finally {
@@ -78,22 +80,18 @@ export const LiveActions = () => {
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
-                Epoch Ends
+                Epoch Ends in 
               </Typography>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                {epochEndTime
-                  ? new Date(epochEndTime * 1000).toLocaleString()
-                  : <span style={{ color: '#aaa' }}>N/A</span>}
-              </Typography>
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
-                Today
-              </Typography>
-              <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                {new Date(
-                  Math.floor(Date.now() / 1000) * 1000
-                ).toLocaleString()}
+                {endTime !== null
+                  ? (() => {
+                    const days = Math.floor(endTime / (60 * 60 * 24));
+                    const hours = Math.floor((endTime % (60 * 60 * 24)) / (60 * 60));
+                    const minutes = Math.floor((endTime % (60 * 60)) / 60);
+                    return `${days}d ${hours}h ${minutes}m`;
+                  })()
+                  : <span style={{ color: '#aaa' }}>N/A</span>
+                }
               </Typography>
             </Box>
           </Box>
