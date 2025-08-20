@@ -134,7 +134,13 @@ export const LiveActions = () => {
             </List>
           </Paper>
         ) : (
-          <Typography>No governance actions available.</Typography>
+          <Paper elevation={2} sx={{
+            p: { xs: 2, sm: 4 },
+            borderRadius: 3,
+            mt: 2
+          }}>
+            <Typography  variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>No governance actions available.</Typography>
+          </Paper>
         )}
       </Box>
     </Container>
