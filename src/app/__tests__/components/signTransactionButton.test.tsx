@@ -131,13 +131,13 @@ describe('SignTransactionButton Component', () => {
         />
       );
 
-      expect(screen.getByText('⚠️ You must acknowledge the transaction details before signing!')).toBeInTheDocument();
+      expect(screen.getByText('Please acknowledge the transaction details.')).toBeInTheDocument();
     });
 
     it('does not show acknowledgment warning when transaction is acknowledged', () => {
       render(<SignTransactionButton {...defaultProps} />);
 
-      expect(screen.queryByText('⚠️ You must acknowledge the transaction details before signing!')).not.toBeInTheDocument();
+      expect(screen.queryByText('Please acknowledge the transaction details.')).not.toBeInTheDocument();
     });
 
     it('shows wallet connection warning when wallet is not connected', () => {
@@ -148,13 +148,29 @@ describe('SignTransactionButton Component', () => {
         />
       );
 
-      expect(screen.getByText('⚠️ Please connect your wallet before signing the transaction!')).toBeInTheDocument();
+      expect(screen.getByText('Please connect a wallet to be able to sign')).toBeInTheDocument();
     });
 
     it('does not show wallet connection warning when wallet is connected', () => {
       render(<SignTransactionButton {...defaultProps} />);
 
-      expect(screen.queryByText('⚠️ Please connect your wallet before signing the transaction!')).not.toBeInTheDocument();
+      expect(screen.queryByText('Please connect a wallet to be able to sign')).not.toBeInTheDocument();
+    });
+
+    it('shows validation warning when there are validation issues', () => {
+      const invalidTxValidationState: TxValidationState = {
+        ...mockTxValidationState,
+        isPartOfSigners: false,
+      };
+
+      render(
+        <SignTransactionButton 
+          {...defaultProps} 
+          txValidationState={invalidTxValidationState}
+        />
+      );
+
+      expect(screen.getByText('Please resolve all validation issues.')).toBeInTheDocument();
     });
   });
 
@@ -181,7 +197,7 @@ describe('SignTransactionButton Component', () => {
       expect(defaultProps.setMessage).toHaveBeenCalledWith('Transaction signed successfully!');
     });
 
-    it('handles transaction validation failure', async () => {
+    it('shows validation alert when transaction validation fails', () => {
       const invalidTxValidationState: TxValidationState = {
         ...mockTxValidationState,
         isPartOfSigners: false,
@@ -194,22 +210,18 @@ describe('SignTransactionButton Component', () => {
         />
       );
 
+      // Should show validation alert
+      expect(screen.getByText('Please resolve all validation issues.')).toBeInTheDocument();
+      
+      // Button should be disabled
       const button = screen.getByRole('button', { name: /sign transaction/i });
-      fireEvent.click(button);
-
-      await waitFor(() => {
-        expect(defaultProps.setMessage).toHaveBeenCalledWith(
-          expect.stringContaining('Ensure all transaction validations are successful')
-        );
-      });
-
-      expect(mockSignTransaction).not.toHaveBeenCalled();
+      expect(button).toBeDisabled();
     });
 
-    it('handles vote validation failure for vote transactions', async () => {
+    it('shows validation alert when vote validation fails for vote transactions', () => {
       const invalidVoteValidationState: VoteValidationState[] = [
         {
-          isMetadataAnchorValid: false, // Fixed property name
+          isMetadataAnchorValid: false,
           hasICCCredentials: true,
         }
       ];
@@ -221,22 +233,18 @@ describe('SignTransactionButton Component', () => {
         />
       );
 
+      // Should show validation alert
+      expect(screen.getByText('Please resolve all validation issues.')).toBeInTheDocument();
+      
+      // Button should be disabled
       const button = screen.getByRole('button', { name: /sign transaction/i });
-      fireEvent.click(button);
-
-      await waitFor(() => {
-        expect(defaultProps.setMessage).toHaveBeenCalledWith(
-          expect.stringContaining('Ensure all vote validations are successful')
-        );
-      });
-
-      expect(mockSignTransaction).not.toHaveBeenCalled();
+      expect(button).toBeDisabled();
     });
 
     it('skips vote validation for non-vote transactions', async () => {
       const invalidVoteValidationState: VoteValidationState[] = [
         {
-          isMetadataAnchorValid: false, // Fixed property name
+          isMetadataAnchorValid: false,
           hasICCCredentials: false,
         }
       ];
@@ -295,7 +303,7 @@ describe('SignTransactionButton Component', () => {
   describe('Multiple Vote Validations', () => {
     it('handles multiple vote validation states correctly', async () => {
       const multipleVoteValidations: VoteValidationState[] = [
-        { isMetadataAnchorValid: true, hasICCCredentials: true }, // Fixed property names
+        { isMetadataAnchorValid: true, hasICCCredentials: true },
         { isMetadataAnchorValid: true, hasICCCredentials: true },
       ];
 
@@ -314,9 +322,9 @@ describe('SignTransactionButton Component', () => {
       });
     });
 
-    it('fails when any vote validation is false', async () => {
+    it('shows validation alert when any vote validation is false', () => {
       const multipleVoteValidations: VoteValidationState[] = [
-        { isMetadataAnchorValid: true, hasICCCredentials: true }, // Fixed property names
+        { isMetadataAnchorValid: true, hasICCCredentials: true },
         { isMetadataAnchorValid: false, hasICCCredentials: true },
       ];
 
@@ -327,16 +335,12 @@ describe('SignTransactionButton Component', () => {
         />
       );
 
+      // Should show validation alert
+      expect(screen.getByText('Please resolve all validation issues.')).toBeInTheDocument();
+      
+      // Button should be disabled
       const button = screen.getByRole('button', { name: /sign transaction/i });
-      fireEvent.click(button);
-
-      await waitFor(() => {
-        expect(defaultProps.setMessage).toHaveBeenCalledWith(
-          expect.stringContaining('Ensure all vote validations are successful')
-        );
-      });
-
-      expect(mockSignTransaction).not.toHaveBeenCalled();
+      expect(button).toBeDisabled();
     });
   });
 });
