@@ -246,7 +246,7 @@ export default function Home() {
 
           <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
             <Typography variant="body2" color="text.secondary">
-              Version 2.0.2 - IntersectMBO
+              Version 2.0.3 - IntersectMBO
             </Typography>
           </Box>
         </Box>
