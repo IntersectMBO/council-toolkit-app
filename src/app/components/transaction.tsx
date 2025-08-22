@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useWallet } from "@meshsdk/react";
 import { deserializeAddress } from "@meshsdk/core";
-import { TextField, Box, Typography, Container, Paper, FormControlLabel, Checkbox } from "@mui/material";
+import { TextField, Box, Typography, Container, Paper, FormControlLabel, Checkbox, IconButton, Tooltip } from "@mui/material";
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import ReactJsonPretty from "react-json-pretty";
 import * as voteTxValidationUtils from "../utils/txValidationUtils";
@@ -18,8 +19,11 @@ import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "./ty
 import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "./types/defaultStates";
 import SignTransactionButton from "./signTransactionButton";
 import TransactionDetailsActions from "./molecules/transactionDetailsActions";
+import { metadata } from "../layout";
+import InfoWithTooltip from "./molecules/infoHover";
+import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 
-export const TransactionButton = () => {
+export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactionHex?: string | null }) => {
   const { wallet, connected } = useWallet();
   const [stakeCredentialHash, setStakeCredentialHash] = useState<string>("");
   const [message, setMessage] = useState("");
@@ -75,6 +79,138 @@ export const TransactionButton = () => {
       resetAllStates();
     }
   }, [connected, resetAllStates]);
+
+  // Handle pending transaction from URL
+  useEffect(() => {
+    if (pendingTransactionHex && !unsignedTransactionHex) {
+      console.log("Loading pending transaction from URL:", pendingTransactionHex);
+      setUnsignedTransactionHex(pendingTransactionHex);      
+      // Clear any previous errors
+      setMessage("");
+      // Automatically process the transaction after state update
+      setTimeout(() => {
+        console.log("Auto-processing transaction from URL:", pendingTransactionHex);
+        // Process the transaction directly instead of relying on state
+        processTransactionFromURL(pendingTransactionHex);
+      }, 200); // Increased timeout to ensure state is updated
+    }
+  }, [pendingTransactionHex, unsignedTransactionHex]);
+
+  // Function to process transaction directly from URL
+  const processTransactionFromURL = async (hex: string) => {
+    try {
+      console.log("Processing transaction from URL:", hex.substring(0, 50) + "...");
+
+      const unsignedTransaction = decodeHexToTx(hex);
+      setUnsignedTransaction(unsignedTransaction);
+
+      if (!unsignedTransaction) {
+        throw new Error("Invalid transaction format.");
+      }
+
+      console.log("Transaction loaded successfully from URL");
+      setMessage("Transaction loaded!");
+
+      // Continue with the rest of the validation logic
+      const transactionBody = unsignedTransaction.body();
+      if (!transactionBody) throw new Error("Transaction body is null.");
+
+      const baseTxValidationState: TxValidationState = {
+        hasNoCertificates: !voteTxValidationUtils.hasCertificates(transactionBody),
+        isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction)
+      }
+
+      // Get the key voting details of the transaction
+      const transactionNetworkID = transactionBody.outputs().get(0).address().to_bech32().startsWith("addr_test1") ? 0 : 1;
+      const votingProcedures = transactionBody.to_js_value().voting_procedures;
+      console.log("Voting Procedures:", votingProcedures);
+      
+      // if a vote transaction
+      if (votingProcedures){
+        setIsVoteTransaction(true);
+        console.log("Transaction is a vote transaction, applying vote validations");
+
+        const votes = votingProcedures[0].votes;
+        const voteValidations: VoteValidationState[] = [];
+        const voteDetails: VoteTransactionDetails[] = [];
+        
+        for (const vote of votes){
+          console.log("Vote:", vote);
+
+          const govActionID = convertGAToBech(vote.action_id.transaction_id, vote.action_id.index);
+          const voteChoice = (vote.voting_procedure.vote === 'Yes' ? 'Constitutional' : vote.voting_procedure.vote === 'No' ? 'Unconstitutional' : 'Abstain');
+          const metadataURL = vote.voting_procedure.anchor?.anchor_url ?? "unavailable";
+          const metadataHash = vote.voting_procedure.anchor?.anchor_data_hash ?? "unavailable";     
+   
+          voteValidations.push({
+            isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(metadataURL,metadataHash),
+          });
+
+          voteDetails.push({
+            govActionID: govActionID,
+            voteChoice: voteChoice,
+            explorerLink: getCardanoScanURL(govActionID, transactionNetworkID),
+            metadataAnchorURL: metadataURL,
+            metadataAnchorHash: metadataHash,
+            resetAckState: false,
+          });
+        }
+
+        // apply validation logic
+        const voteValidationsWithICCCredentials = voteValidations.map(validation => ({
+          ...validation,
+          hasICCCredentials: true, // Default to true for now
+        }));
+
+        setVoteTransactionDetails(voteDetails);
+        setVoteValidationState(voteValidationsWithICCCredentials);
+        
+      } else {
+        setIsVoteTransaction(false);
+        console.log("Transaction is not a vote transaction");
+      }
+
+      if (connected){
+        const network = await walletRef.current.getNetworkId();
+        const changeAddress = await walletRef.current.getChangeAddress();
+        const stakeCred = deserializeAddress(changeAddress).stakeCredentialHash;
+        setStakeCredentialHash(stakeCred);
+        setTxValidationState({
+          ...baseTxValidationState,
+          isPartOfSigners: voteTxValidationUtils.isPartOfSigners(transactionBody,stakeCred),
+          isSameNetwork: voteTxValidationUtils.isSameNetwork(transactionBody,network),
+          isInOutputPlutusData: voteTxValidationUtils.isSignerInPlutusData(transactionBody,stakeCred),
+        });
+      } else {
+        setTxValidationState({
+          ...baseTxValidationState
+        });
+      }
+      
+    } catch (error) {
+      console.error("Error processing transaction from URL:", error);
+      setMessage("Failed to process transaction from URL: " + error);
+    }
+  };
+
+  // URL sharing functionality
+  const getShareableUrl = () => {
+    if (!unsignedTransactionHex) return '';
+    return `${window.location.origin}/tx#tx=${unsignedTransactionHex}`;
+  };
+
+  const copyShareableUrl = async () => {
+    const url = getShareableUrl();
+    if (url) {
+      try {
+        await navigator.clipboard.writeText(url);
+        setMessage("Shareable URL copied to clipboard!");
+      } catch (err) {
+        console.error('Failed to copy URL:', err);
+        setMessage("Failed to copy URL to clipboard");
+      }
+    }
+  };    
 
   const checkTransaction = useCallback(async () => {
 
@@ -244,6 +380,22 @@ export const TransactionButton = () => {
             sx={{ flex: 1 }}
           />
           
+          {/* Copy button - only show when there's a transaction */}
+          {unsignedTransactionHex && (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1, minWidth: "fit-content" }}>
+              <Tooltip title="Copy shareable URL">
+                <IconButton
+                  onClick={copyShareableUrl}
+                  sx={{ 
+                    backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                    '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.2)' }
+                  }}
+                >
+                  <ContentCopyIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+          )}
         </Box>
         <Box sx={{ display: "flex", alignItems: { xs: "stretch", sm: "flex-start" }, mt: 2 }}>
             <FileUploader 
@@ -255,6 +407,39 @@ export const TransactionButton = () => {
               setMessage={setMessage} 
             />
           </Box>
+
+          {/* Message Display */}
+          {message && (
+            <Box sx={{ mt: 2 }}>
+              <Paper 
+                elevation={1} 
+                sx={{ 
+                  p: 2, 
+                  borderRadius: 1,
+                  backgroundColor: message.includes('failed') || message.includes('error') 
+                    ? 'rgba(244, 67, 54, 0.1)' 
+                    : 'rgba(76, 175, 80, 0.1)',
+                  border: `1px solid ${
+                    message.includes('failed') || message.includes('error') 
+                      ? 'rgba(244, 67, 54, 0.3)' 
+                      : 'rgba(76, 175, 80, 0.3)'
+                  }`
+                }}
+              >
+                <Typography 
+                  variant="body2" 
+                  sx={{ 
+                    color: message.includes('failed') || message.includes('error') 
+                      ? 'error.main' 
+                      : 'success.main',
+                    fontWeight: 500
+                  }}
+                >
+                  {message}
+                </Typography>
+              </Paper>
+            </Box>
+          )}
       </Paper>
 
       {/* Validation and Details Sections */}
