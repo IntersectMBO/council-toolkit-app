@@ -9,5 +9,6 @@
     CORRECT_METADATA_ANCHOR: "Does the document hosted at the provided metadata URL match the provided hash?", 
     ACK_GOV_ACTION_ID: "Please acknowledge that you have checked the governance action details.",
     ACK_VOTE_CHOICE: "Please acknowledge that you have checked and agreed to the vote choice.",
-    ACK_METADATA_ANCHOR: "Please acknowledge that you have checked and agreed to the metadata anchor.",   
+    ACK_METADATA_ANCHOR: "Please acknowledge that you have checked and agreed to the metadata anchor.", 
+    ACK_VOTING_DETAILS: "Please acknowledge that you have checked the vote details.",  
   };

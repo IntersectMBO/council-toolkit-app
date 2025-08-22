@@ -7,7 +7,8 @@ import { VoteTransactionDetails } from "./types/types";
 
 
 export interface VotingDetailsProps extends VoteTransactionDetails {
-  onAcknowledgeChange: (checked: boolean) => void;
+  // onAcknowledgeChange: (checked: boolean) => void;
+  isWalletConnected?: boolean;
 }
 
 export const VotingDetails = ({ 
@@ -16,32 +17,10 @@ export const VotingDetails = ({
     explorerLink, 
     metadataAnchorURL, 
     metadataAnchorHash,
-    onAcknowledgeChange,
-    resetAckState  
+    // onAcknowledgeChange,
+    resetAckState,
+    isWalletConnected
 }: VotingDetailsProps) => {
-    const [checkboxes, setCheckboxes] = useState({
-        ackGovAction: false,
-        ackVoteChoice: false,
-        ackMetadataAnchor: false,
-    });
-
-    const handleCheckBoxChange = (name: keyof typeof checkboxes) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const updatedCheckboxes = { ...checkboxes, [name]: event.target.checked };
-      setCheckboxes(updatedCheckboxes);
-      onAcknowledgeChange(Object.values(updatedCheckboxes).every(Boolean));
-    };
-
-    useEffect(() => {
-      if (resetAckState) {
-        setCheckboxes({
-          ackGovAction: false,
-          ackVoteChoice: false,
-          ackMetadataAnchor: false,
-        });
-        onAcknowledgeChange(false);  
-      }
-    }, [resetAckState,onAcknowledgeChange]);
-
     return (
       <TableContainer sx={{ mb: 3 }}>
         <Table sx={{ mt: 3 }}>
@@ -59,24 +38,10 @@ export const VotingDetails = ({
                   {govActionID}
                 </a>
               </TableCell>
-                <TableCell style={{ display: 'flex'}}>
-                  <FormControlLabel
-                  control={<Checkbox checked={checkboxes.ackGovAction} onChange={handleCheckBoxChange("ackGovAction")} />}
-                  label="*"
-                  />
-                  <InfoWithTooltip info={TOOLTIP_MESSAGES.ACK_GOV_ACTION_ID} />
-                </TableCell>
             </TableRow>
             <TableRow>
               <TableCell sx={{ fontWeight: "bold" }}>Vote Choice </TableCell>
               <TableCell>{voteChoice}</TableCell>
-              <TableCell >
-                <FormControlLabel
-                  control={<Checkbox checked={checkboxes.ackVoteChoice} onChange={handleCheckBoxChange("ackVoteChoice")} />}
-                  label="*"
-                />
-                 <InfoWithTooltip info={TOOLTIP_MESSAGES.ACK_VOTE_CHOICE} />
-              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell sx={{ fontWeight: "bold" }}>
@@ -90,13 +55,6 @@ export const VotingDetails = ({
                   {metadataAnchorURL}
                 </Link>
               </TableCell>
-              <TableCell>
-                <FormControlLabel
-                  control={<Checkbox checked={checkboxes.ackMetadataAnchor} onChange={handleCheckBoxChange("ackMetadataAnchor")} />}
-                  label="*"
-                />
-                <InfoWithTooltip info={TOOLTIP_MESSAGES.ACK_METADATA_ANCHOR} />
-              </TableCell>
             </TableRow>
             <TableRow>
               <TableCell sx={{ fontWeight: "bold" }}>
@@ -104,6 +62,11 @@ export const VotingDetails = ({
               </TableCell>
               <TableCell>{metadataAnchorHash}</TableCell>
             </TableRow>
+            {isWalletConnected && ( <TableRow>
+              <TableCell sx={{ fontWeight: "bold", fontStyle: "italic" , color: "red"}}>
+                Acknowledge Voting Details
+              </TableCell>
+            </TableRow>)}
           </TableBody>
         </Table>
       </TableContainer>
