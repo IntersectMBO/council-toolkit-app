@@ -16,7 +16,6 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@emurgo/cardano-serialization-lib-browser": "^13.2.1",
-    "@emurgo/cardano-serialization-lib-nodejs": "^15.0.0",
     "@meshsdk/core": "^1.7.13",
     "@meshsdk/react": "^1.7.13",
     "@mui/icons-material": "^6.4.4",
