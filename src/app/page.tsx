@@ -58,6 +58,9 @@ export default function Home() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // Get version from environment variable
+  const version = process.env.PACKAGE_VERSION;
+
   useEffect(() => {
     // Simulate initial loading
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -198,7 +201,7 @@ export default function Home() {
           </TabPanel>
         </Paper>
 
-        {/* Footer with improved styling */}
+        {/* Footer with dynamic version */}
         <Box sx={{ 
           display: "flex", 
           alignItems: "center", 
@@ -224,7 +227,7 @@ export default function Home() {
 
           <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
             <Typography variant="body2" color="text.secondary">
-              Version 2.0.3 - Intersect
+              Version {version} - Intersect
             </Typography>
           </Box>
         </Box>

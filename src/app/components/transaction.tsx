@@ -328,7 +328,7 @@ export const TransactionButton = () => {
                 <>
                   <FormControlLabel
                     control={<Checkbox checked={acknowledgedTxs} onChange={handleAcknowledgeChange} />}
-                    label="Please acknowledge the validity of the vote details above*"
+                    label="Please acknowledge the correctness of the vote details"
                   />
                   <InfoWithTooltip info={TOOLTIP_MESSAGES.ACK_VOTING_DETAILS} />
                 </>
