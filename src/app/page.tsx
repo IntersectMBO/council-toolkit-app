@@ -100,9 +100,6 @@ export default function Home() {
           <Box sx={{ display: "flex", justifyContent: 'space-between', alignItems: "center", width: "100%" ,gap: 2 }}>
             
             <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-              <Typography variant="h5" sx={{ lineHeight: 1 }}>
-                CC Toolkit
-              </Typography>
               <Chip 
                 label="Beta" 
                 size="small" 
@@ -115,6 +112,9 @@ export default function Home() {
                   ml: 0.5,
                 }} 
               />
+              <Typography variant="h5" sx={{ lineHeight: 1, ml: 2 }}>
+                🗳️ Constitutional Committee Toolkit
+              </Typography>
             </Box>
             <Image 
               src="/images/Logo.svg" 
