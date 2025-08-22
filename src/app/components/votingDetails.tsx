@@ -64,7 +64,7 @@ export const VotingDetails = ({
             </TableRow>
             {isWalletConnected && ( <TableRow>
               <TableCell sx={{ fontWeight: "bold", fontStyle: "italic" , color: "red"}}>
-                Acknowledge Voting Details
+                Acknowledge the voting details to be able to sign
               </TableCell>
             </TableRow>)}
           </TableBody>
