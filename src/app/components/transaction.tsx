@@ -17,9 +17,7 @@ import FileUploader from "./molecules/fileUploader";
 import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "./types/types";
 import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "./types/defaultStates";
 import SignTransactionButton from "./signTransactionButton";
-import InfoWithTooltip from "./molecules/infoHover";
-import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
-import TransactionDetailsActions from "./molecules/TransactionDetailsActions";
+import TransactionDetailsActions from "./molecules/transactionDetailsActions";
 
 export const TransactionButton = () => {
   const { wallet, connected } = useWallet();
