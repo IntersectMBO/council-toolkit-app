@@ -3,13 +3,15 @@
 @tailwind utilities;
 
 .background-container {
-  background-image: url('/background.png');
+  background: #2196F3;
+  background: radial-gradient(circle, rgba(33, 150, 243, 1) 0%, rgba(33, 150, 243, 0) 100%);
   background-size: cover;
   background-position: center top;
   height: 100vh;
   padding: 2rem;
   overflow: auto; 
 }
+
 /* Mobile devices or smaller screens */
 @media (max-width: 768px) {
   .wallet-icon {
