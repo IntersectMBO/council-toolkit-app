@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNetwork } from "@meshsdk/react";
 import { Box, Container, Divider, List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
+import { getCardanoScanURL } from "../utils/txUtils";
 
 export const LiveActions = () => {
   const [currentEpoch, setCurrentEpoch] = useState<number | null>(null);
-  const [epochEndTime, setEpochEndTime] = useState<number | null>(null);
   const [liveGAData, setLiveGAData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const net= useNetwork();
+  const [endTime, setEndTime] = useState<number | null>(null);
   console.log("LiveActions is being called with net:", net);
 
   useEffect(() => {
@@ -27,9 +28,11 @@ export const LiveActions = () => {
 
         if (!isActive) return; // Check if component is still mounted
 
+        const epochEndTime = Number(data.endTime);
         setCurrentEpoch(data.epoch);
-        setEpochEndTime(data.endTime);
         setLiveGAData(data.liveGAData);
+        setEndTime(data.endTime-Math.floor(Date.now() / 1000)); // Calculate seconds until epoch end
+
       } catch (err: any) {
         setError(err.message || "Unknown error");
       } finally {
@@ -53,34 +56,52 @@ export const LiveActions = () => {
   return (
   <Container maxWidth="md">
       <Box my={4}>
-        <Typography variant="h4" gutterBottom>
-          Live Governance Actions on {net==0 ? "Preprod" : "Mainnet"}
-        </Typography>
-
-        <Paper elevation={3} sx={{ p: 2, mb: 3 }}>
-          <Typography variant="body1">
-            <strong>Current Epoch:</strong> {currentEpoch}
-          </Typography>
-          <Typography variant="body1">
-            <strong>Epoch End Time:</strong>{" "}
-            {epochEndTime
-              ? new Date(epochEndTime * 1000).toLocaleString()
-              : "N/A"}
-          </Typography>
-          <Typography variant="body1">
-            <strong>Today&apos;s Timestamp:</strong>{" "}
-            {new Date(
-              Math.floor(Date.now() / 1000) * 1000
-            ).toLocaleString()}
-          </Typography>
+        <Paper elevation={2} sx={{
+            p: { xs: 2, sm: 4 },
+            borderRadius: 3,
+            mt: 2
+          }}>
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'flex-start', sm: 'center' }, justifyContent: 'space-between', gap: 3 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
+                Network
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {net==0 ? "Preprod" : "Mainnet"}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
+                Current Epoch
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {currentEpoch !== null ? currentEpoch : <span style={{ color: '#aaa' }}>N/A</span>}
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
+                Epoch Ends in 
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                {endTime !== null
+                  ? (() => {
+                    const days = Math.floor(endTime / (60 * 60 * 24));
+                    const hours = Math.floor((endTime % (60 * 60 * 24)) / (60 * 60));
+                    const minutes = Math.floor((endTime % (60 * 60)) / 60);
+                    return `${days}d ${hours}h ${minutes}m`;
+                  })()
+                  : <span style={{ color: '#aaa' }}>N/A</span>
+                }
+              </Typography>
+            </Box>
+          </Box>
         </Paper>
-
-        <Typography variant="h6" gutterBottom>
-          Governance Proposals
-        </Typography>
-
         {liveGAData && liveGAData.length > 0 ? (
-          <Paper elevation={2} sx={{ p: 2 }}>
+          <Paper elevation={2} sx={{
+            p: { xs: 2, sm: 4 },
+            borderRadius: 3,
+            mt: 2
+          }}>
             <List>
               {liveGAData.map((item, index) => (
                 <React.Fragment key={index}>
@@ -93,8 +114,13 @@ export const LiveActions = () => {
                             component="span"
                             variant="body2"
                             color="text.secondary"
-                          >
-                            Proposal ID: {item.proposal}
+                          > 
+                          <a
+                            href={`${getCardanoScanURL(item.proposal, net || 1)}`}
+                            target="_blank"
+                            style={{ color: "blue", textDecoration: "underline" }}>
+                            {item.proposal}
+                            </a>
                           </Typography>
                         </>
                       }
@@ -106,7 +132,13 @@ export const LiveActions = () => {
             </List>
           </Paper>
         ) : (
-          <Typography>No governance actions available.</Typography>
+          <Paper elevation={2} sx={{
+            p: { xs: 2, sm: 4 },
+            borderRadius: 3,
+            mt: 2
+          }}>
+            <Typography  variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>No governance actions available.</Typography>
+          </Paper>
         )}
       </Box>
     </Container>

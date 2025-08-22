@@ -10,8 +10,9 @@ export async function GET(request: Request) {
   // }
 
   try {
-    console.log(`Fetching data for network EEE: ${network}`);
-    const currentEpoch = await getCurrentEpoch(network);              // Step 1
+    console.log(`Fetching data for network server side: ${network}`);
+    const currentEpoch = await getCurrentEpoch(network);       
+    console.log(`Current epoch: ${currentEpoch}`);       // Step 1
     const endTime = await getCurrentEpochEndTime(currentEpoch,network);       // Step 2
     const liveGAData = await getLiveGAData(currentEpoch, endTime,network); // Step 3
 
@@ -21,7 +22,13 @@ export async function GET(request: Request) {
       liveGAData: liveGAData,
     });
   } catch (error: any) {
-    return new Response(JSON.stringify({ error: error.message || "Unknown error" }), {
+    // Improved error logging
+    console.error('API /api/proxy error:', error);
+    return new Response(JSON.stringify({
+      error: error.message || "Unknown error",
+      stack: error.stack || null,
+      full: error
+    }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

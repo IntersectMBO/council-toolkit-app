@@ -35,7 +35,7 @@ export async function getCurrentEpochEndTime(epochNo: number, network: number) {
 export async function getLiveGAData(currentEpoch: number , currentEpochEndTime: any , network: number): Promise<any[]> {
 
   console.log(`Fetching live governance actions for epoch: ${currentEpoch} on network: ${network === 1 ? 'mainnet' : 'preprod'}`);
-  const response = await fetch(`${network === 0 ?preProdUrl : mainnetUrl}/proposal_list?select=meta_json,proposal_id,proposal_type,expiration&expiration=gte.${currentEpoch}`)
+  const response = await fetch(`${network === 0 ?preProdUrl : mainnetUrl}/proposal_list?select=meta_json,proposal_id,proposal_type,ratified_epoch,enacted_epoch,dropped_epoch,expired_epoch&enacted_epoch=is.null&ratified_epoch=is.null&dropped_epoch=is.null&expired_epoch=is.null`)
   if (!response.ok){
     throw new Error(`Error fetching live governance actions: ${response.status}`);
   }
