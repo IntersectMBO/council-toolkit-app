@@ -325,13 +325,12 @@ export const TransactionButton = () => {
 
               ))}
               {connected && (
-                <>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                   <FormControlLabel
                     control={<Checkbox checked={acknowledgedTxs} onChange={handleAcknowledgeChange} />}
-                    label="Please acknowledge the correctness of the vote details"
+                    label="Acknowledge the correctness of the vote details"
                   />
-                  <InfoWithTooltip info={TOOLTIP_MESSAGES.ACK_VOTING_DETAILS} />
-                </>
+                </Box>
               )}
             </Paper>
           )}
