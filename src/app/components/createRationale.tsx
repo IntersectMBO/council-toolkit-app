@@ -79,18 +79,6 @@ export const CreateRationale = () => {
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
                 type="string"
-                label="Statement"
-                variant="outlined"
-                fullWidth
-                multiline
-                rows={3}
-                value={statement}
-                onChange={(e) => {
-                    setStatement(e.target.value);
-                }}
-            />
-            <TextField
-                type="string"
                 label="Summary"
                 variant="outlined"
                 fullWidth
@@ -103,7 +91,19 @@ export const CreateRationale = () => {
             />
             <TextField
                 type="string"
-                label="Discussion"
+                label="Rationale Statement"
+                variant="outlined"
+                fullWidth
+                multiline
+                rows={3}
+                value={statement}
+                onChange={(e) => {
+                    setStatement(e.target.value);
+                }}
+            />
+            <TextField
+                type="string"
+                label="Precedent Discussion"
                 variant="outlined"
                 fullWidth
                 multiline
@@ -115,7 +115,7 @@ export const CreateRationale = () => {
             />
             <TextField
                 type="string"
-                label="Counter Arguments"
+                label="Counter Argument Discussion"
                 variant="outlined"
                 fullWidth
                 multiline
