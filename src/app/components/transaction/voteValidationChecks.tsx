@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import InfoWithTooltip from "./molecules/infoHover";
-import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
-import CheckItem from "./molecules/validationCheckItem";
-import { VoteValidationState } from "./types/types";
+import InfoWithTooltip from "../common/infoHover";
+import { TOOLTIP_MESSAGES } from "../../constants/infoMessages";
+import CheckItem from "../common/validationCheckItem";
+import { VoteValidationState } from "../types/types";
 
 export const VoteTransactionChecks = ({
   isMetadataAnchorValid,

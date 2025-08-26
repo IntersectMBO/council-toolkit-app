@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import "../globals.css";
+import "../../globals.css";
 import "@meshsdk/react/styles.css"
 import { useWallet } from "@meshsdk/react";
 import { BrowserWallet, deserializeAddress } from "@meshsdk/core";

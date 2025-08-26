@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNetwork } from "@meshsdk/react";
 import { Box, Container, Divider, List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
-import { getCardanoScanURL } from "../utils/txUtils";
+import { getCardanoScanURL } from "../../utils/txUtils";
 
 export const LiveActions = () => {
   const [currentEpoch, setCurrentEpoch] = useState<number | null>(null);
