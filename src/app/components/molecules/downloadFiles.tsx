@@ -16,32 +16,23 @@ const downloadFile = (data : any, filename : string , fileExtension = "json") =>
     URL.revokeObjectURL(data);
 };
 
-const downloadSignature = (govActionID : string, voterKeyHash : string , signature : string) => {   
-    const data = {
-        type: "TxWitness ConwayEra",
-        description: "Key Witness ShelleyEra",
-        govActionID,
-        voterKeyHash,
-        cborHex: signature
-    };
-    // Extract information for file name
-    const voterPrefix = voterKeyHash.substring(0, 5);
-    const govPrefix = govActionID.substring(0, 15);
-    const filename = `${govPrefix}-vote-from-${voterPrefix}`;
-
-    downloadFile(data, filename, "witness");
-}
-
 interface DownloadButtonProps {
-    govActionID: string;
-    voterKeyHash: string;
-    signature: string;
+    data : any ;
+    filename : string ;
+    fileExtension? : string ;
+    buttonText? : string ;
+    icon? : boolean ;
   }
 
-export default function DownloadButton({ govActionID, voterKeyHash, signature }: DownloadButtonProps) {
-    return <Button variant="contained"
-    color="success"
-    sx={{ whiteSpace: "nowrap", px: 3 }} 
-    onClick={() => downloadSignature(govActionID,voterKeyHash, signature)}>Download Signature</Button>;
-  }
-  
+export default function DownloadButton({ data, filename, fileExtension = "json", buttonText = "Download", icon = false }: DownloadButtonProps) {
+    return (
+        !icon && (<Button
+            variant="contained"
+            color="success"
+            sx={{ whiteSpace: "nowrap", px: 3 }}
+            onClick={() => downloadFile(data, filename, fileExtension)}
+        >
+            {buttonText}
+        </Button>)
+    )
+}

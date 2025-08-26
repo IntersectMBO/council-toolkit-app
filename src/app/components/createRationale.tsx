@@ -2,6 +2,8 @@ import { Box, IconButton, TextField, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import React from "react";
+import voteRationaleTemplate from "../../templates/cardano-file-templates/voteRationaleTemplate.json";
+import DownloadButton from "./molecules/downloadFiles";
 
 interface Votes {
     yes: number;
@@ -47,6 +49,30 @@ export const CreateRationale = () => {
         setReferences((prev) => prev.filter((_, i) => i !== index));
     };
 
+    const rationaleData = {
+        ...voteRationaleTemplate,
+        body: {
+            ...voteRationaleTemplate.body,
+            summary,
+            rationaleStatement: statement,
+            precedentDiscussion: discussion,
+            counterargumentDiscussion: counterarguments,
+            conclusion,
+            internalVote: {
+            constitutional: votes.yes,
+            unconstitutional: votes.no,
+            abstain: votes.abstain,
+            didNotVote: votes.didNotVote,
+            againstVote: votes.againstVoting
+            },
+            references: references.map(ref => ({
+            "@type": "Other",
+            label: ref.label,
+            uri: ref.url
+            }))
+        }
+        // authors: ... // Optionally update authors if needed
+    };
 
     return (
 
@@ -208,7 +234,7 @@ export const CreateRationale = () => {
                     </Box>
                 ))}
             </Box>
-
+            <DownloadButton data={rationaleData} filename={"rationale"} fileExtension="jsonld"/>
         </Box>
     );
 };
