@@ -14,7 +14,7 @@ interface InternalVotes {
 }
 
 interface Reference {
-    // todo: allow users to include other "@types"
+    "@type": "Other" | "GovernanceMetadata" | "RelevantArticles";
     label: string;
     uri: string;
 }
@@ -26,7 +26,7 @@ export const CreateRationale = () => {
     const [counterArguments, setCounterArguments] = React.useState<string>("");
     const [conclusion, setConclusion] = React.useState<string>("");
     const [internalVotes, setInternalVotes] = React.useState<InternalVotes>({ yes: 0, no: 0, abstain: 0, didNotVote: 0, againstVoting: 0 });
-    const [references, setReferences] = React.useState<Reference[]>([{ label: "", uri: "" }]);
+    const [references, setReferences] = React.useState<Reference[]>([{ "@type": "Other", label: "", uri: "" }]);
 
     // used to check if required fields are filled
     const isValid = summary.trim().length > 0 && statement.trim().length > 0;
@@ -34,7 +34,7 @@ export const CreateRationale = () => {
     // todo: allow user to add authors field
 
     const addReference = () => {
-        setReferences((prev) => [...prev, { label: "", uri: "" }]);
+        setReferences((prev) => [...prev, { "@type": "Other", label: "", uri: "" }]);
     };
 
     const updateReference = (
@@ -58,7 +58,6 @@ export const CreateRationale = () => {
         summary,
         rationaleStatement: statement
     };
-
 
     // if these fields have been filled, include them in the rationaleBody
     const hasInternalVote =
