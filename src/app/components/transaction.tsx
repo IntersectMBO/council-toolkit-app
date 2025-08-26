@@ -72,7 +72,7 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
   
   useEffect(() => {
     if (!connected) {
-      console.log("Wallet not connected - resetting all state");
+      console.log("[useEffect] Wallet not connected - resetting all state");
       resetAllStates();
     }
   }, [connected, resetAllStates]);
@@ -91,20 +91,20 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
 
     // Get the key voting details of the transaction
     const votingProcedures = transactionBody.to_js_value().voting_procedures;
-    console.log("Voting Procedures:", votingProcedures);
+    console.log("[processTransactionBody] Voting Procedures:", votingProcedures);
     
     // if a vote transaction
     // todo: right now we just assume that if there is one vote, then its a vote transaction -- this can be improved
     if (votingProcedures) {
       setIsVoteTransaction(true);
-      console.log("Transaction is a vote transaction, applying vote validations");
+      console.log("[processTransactionBody] Transaction is a vote transaction, applying vote validations");
 
       const votes = votingProcedures[0].votes; // todo work for multiple procedures
       const voteValidations: VoteValidationState[] = [];
       const voteDetails: VoteTransactionDetails[] = [];
       
       for (const vote of votes) {
-        console.log("Vote:", vote);
+        console.log("[processTransactionBody] Vote:", vote);
 
         const govActionID = convertGAToBech(vote.action_id.transaction_id, vote.action_id.index);
         const voteChoice = (vote.voting_procedure.vote === 'Yes' ? 'Constitutional' : vote.voting_procedure.vote === 'No' ? 'Unconstitutional' : 'Abstain');
@@ -129,7 +129,7 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
       setVoteValidationState(voteValidations);
     } else {
       setIsVoteTransaction(false);
-      console.log("Transaction is not a vote transaction");
+      console.log("[processTransactionBody] Transaction is not a vote transaction");
       // todo: add other types of transaction
       // todo: add hierarchy details
       // todo: add hierarchy validation checks
@@ -165,9 +165,9 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
   const processTransaction = useCallback(async (hex: string, isFromURL: boolean = false) => {
     try {
       if (isFromURL) {
-        console.log("Processing transaction from URL:", hex.substring(0, 50) + "...");
+        console.log("[processWalletValidation] Processing transaction from URL:", hex.substring(0, 50) + "...");
       } else {
-        console.log("Unsigned transaction:", hex);
+        console.log("[processWalletValidation] Unsigned transaction:", hex);
       }
 
       const unsignedTransaction = decodeHexToTx(hex);
@@ -178,7 +178,7 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
       }
 
       if (isFromURL) {
-        console.log("Transaction loaded successfully from URL");
+        console.log("[processWalletValidation] Transaction loaded successfully from URL");
         setMessage("Transaction loaded!");
       }
 
@@ -215,13 +215,13 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
   // Handle pending transaction from URL
   useEffect(() => {
     if (pendingTransactionHex && !unsignedTransactionHex) {
-      console.log("Loading pending transaction from URL:", pendingTransactionHex);
+      console.log("[useEffect] Loading pending transaction from URL:", pendingTransactionHex);
       setUnsignedTransactionHex(pendingTransactionHex);      
       // Clear any previous errors
       setMessage("");
       // Automatically process the transaction after state update
       setTimeout(() => {
-        console.log("Auto-processing transaction from URL:", pendingTransactionHex);
+        console.log("[useEffect] Auto-processing transaction from URL:", pendingTransactionHex);
         // Process the transaction directly instead of relying on state
         processTransactionFromURL(pendingTransactionHex);
       }, 200); // Increased timeout to ensure state is updated
