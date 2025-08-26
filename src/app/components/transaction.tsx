@@ -78,7 +78,11 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
   }, [connected, resetAllStates]);
 
   // Generic transaction validation
-  const processTransactionBody = useCallback(async (transactionBody: any, transactionNetworkID: number, unsignedTransaction: CSL.Transaction) => {
+  const processTransactionBody = useCallback(async (transactionBody: any, unsignedTransaction: CSL.Transaction) => {
+
+    // Get network ID from output address
+    const transactionNetworkID = transactionBody.outputs().get(0).address().to_bech32().startsWith("addr_test1") ? 0 : 1;
+    
     // Set certificate validation state and unsigned state
     const baseTxValidationState: TxValidationState = {
       hasNoCertificates: !voteTxValidationUtils.hasCertificates(transactionBody),
@@ -90,6 +94,7 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
     console.log("Voting Procedures:", votingProcedures);
     
     // if a vote transaction
+    // todo: right now we just assume that if there is one vote, then its a vote transaction -- this can be improved
     if (votingProcedures) {
       setIsVoteTransaction(true);
       console.log("Transaction is a vote transaction, applying vote validations");
@@ -182,12 +187,9 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
       if (!transactionBody) {
         setMessage("Transaction body is null.");
         throw new Error("Transaction body is null.");
-      }
-      // Get network ID from output address
-      const transactionNetworkID = transactionBody.outputs().get(0).address().to_bech32().startsWith("addr_test1") ? 0 : 1;
-      
+      }      
       // Process transaction and get base transaction validation state
-      const baseTxValidationState = await processTransactionBody(transactionBody, transactionNetworkID, unsignedTransaction);
+      const baseTxValidationState = await processTransactionBody(transactionBody, unsignedTransaction);
       // Process transaction through wallet related validation
       await processWalletValidation(baseTxValidationState, transactionBody);
 
