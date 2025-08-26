@@ -323,7 +323,7 @@ export const TransactionButton = () => {
 
               ))}
               {connected && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
+                <Box sx={{ display: 'flex',mt: 2 }}>
                   <FormControlLabel
                     control={<Checkbox checked={acknowledgedTxs} onChange={handleAcknowledgeChange} />}
                     label="Acknowledge the correctness of the vote details"
