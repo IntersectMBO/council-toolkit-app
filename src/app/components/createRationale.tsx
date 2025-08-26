@@ -5,7 +5,7 @@ import React from "react";
 import voteRationaleTemplate from "../../templates/cardano-file-templates/cip136-template.json";
 import DownloadButton from "./molecules/downloadFiles";
 
-interface Votes {
+interface InternalVotes {
     yes: number;
     no: number;
     abstain: number;
@@ -23,9 +23,9 @@ export const CreateRationale = () => {
     const [summary, setSummary] = React.useState<string>("");
     const [statement, setStatement] = React.useState<string>("");
     const [discussion, setDiscussion] = React.useState<string>("");
-    const [counterarguments, setCounterarguments] = React.useState<string>("");
+    const [counterArguments, setCounterArguments] = React.useState<string>("");
     const [conclusion, setConclusion] = React.useState<string>("");
-    const [votes, setVotes] = React.useState<Votes>({ yes: 0, no: 0, abstain: 0, didNotVote: 0, againstVoting: 0 });
+    const [internalVotes, setInternalVotes] = React.useState<InternalVotes>({ yes: 0, no: 0, abstain: 0, didNotVote: 0, againstVoting: 0 });
     const [references, setReferences] = React.useState<Reference[]>([{ label: "", uri: "" }]);
 
     // used to check if required fields are filled
@@ -62,23 +62,23 @@ export const CreateRationale = () => {
 
     // if these fields have been filled, include them in the rationaleBody
     const hasInternalVote =
-        votes.yes !== 0 ||
-        votes.no !== 0 ||
-        votes.abstain !== 0 ||
-        votes.didNotVote !== 0 ||
-        votes.againstVoting !== 0;
-    
+        internalVotes.yes !== 0 ||
+        internalVotes.no !== 0 ||
+        internalVotes.abstain !== 0 ||
+        internalVotes.didNotVote !== 0 ||
+        internalVotes.againstVoting !== 0;
+
     if (hasInternalVote) {
     rationaleBody.internalVote = {
-            constitutional: votes.yes,
-            unconstitutional: votes.no,
-            abstain: votes.abstain,
-            didNotVote: votes.didNotVote,
-            againstVote: votes.againstVoting
+            constitutional: internalVotes.yes,
+            unconstitutional: internalVotes.no,
+            abstain: internalVotes.abstain,
+            didNotVote: internalVotes.didNotVote,
+            againstVote: internalVotes.againstVoting
         };
     }
     if (discussion.trim()) rationaleBody.precedentDiscussion = discussion;
-    if (counterarguments.trim()) rationaleBody.counterargumentDiscussion = counterarguments;
+    if (counterArguments.trim()) rationaleBody.counterArgumentDiscussion = counterArguments;
     if (conclusion.trim()) rationaleBody.conclusion = conclusion;
 
     // Only include references that have label or uri
@@ -148,9 +148,9 @@ export const CreateRationale = () => {
                 fullWidth
                 multiline
                 rows={3}
-                value={counterarguments}
+                value={counterArguments}
                 onChange={(e) => {
-                    setCounterarguments(e.target.value);
+                    setCounterArguments(e.target.value);
                 }}
             />
             <TextField
@@ -171,9 +171,9 @@ export const CreateRationale = () => {
                     label="Yes"
                     variant="outlined"
                     fullWidth
-                    value={votes.yes}
+                    value={internalVotes.yes}
                     onChange={(e) => {
-                        setVotes({ ...votes, yes: Number(e.target.value) });
+                        setInternalVotes({ ...internalVotes, yes: Number(e.target.value) });
                     }}
                 />
                 <TextField
@@ -181,9 +181,9 @@ export const CreateRationale = () => {
                     label="No"
                     variant="outlined"
                     fullWidth
-                    value={votes.no}
+                    value={internalVotes.no}
                     onChange={(e) => {
-                        setVotes({ ...votes, no: Number(e.target.value) });
+                        setInternalVotes({ ...internalVotes, no: Number(e.target.value) });
                     }}
                 />
                 <TextField
@@ -191,9 +191,9 @@ export const CreateRationale = () => {
                     label="Abstain"
                     variant="outlined"
                     fullWidth
-                    value={votes.abstain}
+                    value={internalVotes.abstain}
                     onChange={(e) => {
-                        setVotes({ ...votes, abstain: Number(e.target.value) });
+                        setInternalVotes({ ...internalVotes, abstain: Number(e.target.value) });
                     }}
                 />
                 <TextField
@@ -201,9 +201,9 @@ export const CreateRationale = () => {
                     label="Did not vote"
                     variant="outlined"
                     fullWidth
-                    value={votes.didNotVote}
+                    value={internalVotes.didNotVote}
                     onChange={(e) => {
-                        setVotes({ ...votes, didNotVote: Number(e.target.value) });
+                        setInternalVotes({ ...internalVotes, didNotVote: Number(e.target.value) });
                     }}
                 />
                 <TextField
@@ -211,9 +211,9 @@ export const CreateRationale = () => {
                     label="Against Voting"
                     variant="outlined"
                     fullWidth
-                    value={votes.againstVoting}
+                    value={internalVotes.againstVoting}
                     onChange={(e) => {
-                        setVotes({ ...votes, againstVoting: Number(e.target.value) });
+                        setInternalVotes({ ...internalVotes, againstVoting: Number(e.target.value) });
                     }}
                 />
             </Box>

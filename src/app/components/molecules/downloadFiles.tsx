@@ -29,7 +29,7 @@ interface DownloadButtonProps {
 export default function DownloadButton({ data, filename, fileExtension = "json", buttonText = "Download", icon = false, disabled = false }: DownloadButtonProps) {
     return (
         icon ? (
-            // change the tooltip to something generic, or let it get passed in
+            // todo: change the tooltip to something generic, or let it get passed in
             <Tooltip title="Download transaction JSON">
                 <IconButton
                     size="small"
