@@ -9,7 +9,6 @@ import {
   Tabs, 
   Tab, 
   Paper,
-  Tooltip,
   Fade,
   Chip,
   Skeleton,
@@ -21,7 +20,6 @@ import { useState, useEffect } from "react";
 import Description from "@mui/icons-material/Description";
 import Stream from "@mui/icons-material/Stream";
 import Create from "@mui/icons-material/Create";
-import HelpOutline from "@mui/icons-material/HelpOutline";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import { LiveActions } from "./components/liveActions";
 
@@ -59,6 +57,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Get version from environment variable
+  const version = process.env.PACKAGE_VERSION;
 
   useEffect(() => {
     // Simulate initial loading
@@ -100,9 +101,6 @@ export default function Home() {
           <Box sx={{ display: "flex", justifyContent: 'space-between', alignItems: "center", width: "100%" ,gap: 2 }}>
             
             <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-              <Typography variant="h5" sx={{ lineHeight: 1 }}>
-                CC Toolkit
-              </Typography>
               <Chip 
                 label="Beta" 
                 size="small" 
@@ -115,38 +113,22 @@ export default function Home() {
                   ml: 0.5,
                 }} 
               />
+              <Typography variant="h5" sx={{ lineHeight: 1, ml: 2 }}>
+                🗳️ Constitutional Committee Toolkit
+              </Typography>
             </Box>
-            <Image 
-              src="/images/Logo.svg" 
-              alt="Credential Manager Logo" 
-              width={80} 
-              height={80} 
-              style={{ filter: "brightness(0) invert(1)" }}
-            />
+            {isLoading ? (
+              <Skeleton
+                variant="rectangular"
+                height={56}
+                sx={{ borderRadius: 1 }}
+                data-testid="loading-skeleton"
+              />
+            ) : (
+              <Wallet />
+            )}
           </Box>
         </Box>
-
-        {/* Wallet Section with Paper background */}
-        <Paper elevation={2} sx={{ width: "100%", mt: 3, p: 3, borderRadius: 2 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h6" sx={{ color: "text.secondary" }}>
-              Connect Wallet
-            </Typography>
-            <Tooltip title="Connect your wallet to interact with governance actions" arrow>
-              <HelpOutline sx={{ ml: 1, color: 'text.secondary', cursor: 'pointer' }} />
-            </Tooltip>
-          </Box>
-          {isLoading ? (
-            <Skeleton 
-              variant="rectangular" 
-              height={56} 
-              sx={{ borderRadius: 1 }} 
-              data-testid="loading-skeleton"
-            />
-          ) : (
-            <Wallet />
-          )}
-        </Paper>
 
         {/* Tabs Section */}
         <Paper elevation={3} sx={{ width: '100%', mt: 3, borderRadius: 2 }}>
@@ -219,13 +201,12 @@ export default function Home() {
           </TabPanel>
         </Paper>
 
-        {/* Footer with improved styling */}
+        {/* Footer with dynamic version */}
         <Box sx={{ 
           display: "flex", 
           alignItems: "center", 
           width: "100%", 
-          mt: 4,
-          mb: 2,
+          mt: 'auto',
           px: 2,
           py: 1,
           borderTop: "1px solid",
@@ -246,7 +227,7 @@ export default function Home() {
 
           <Box sx={{ flexGrow: 1, display: "flex", justifyContent: "center" }}>
             <Typography variant="body2" color="text.secondary">
-              Version 2.0.3 - IntersectMBO
+              Version {version} - Intersect
             </Typography>
           </Box>
         </Box>

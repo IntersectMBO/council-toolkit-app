@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useWallet } from "@meshsdk/react";
 import { deserializeAddress } from "@meshsdk/core";
-import { Button, TextField, Box, Typography, Container, Paper, FormControlLabel, Checkbox } from "@mui/material";
+import { TextField, Box, Typography, Container, Paper, FormControlLabel, Checkbox } from "@mui/material";
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import ReactJsonPretty from "react-json-pretty";
 import * as voteTxValidationUtils from "../utils/txValidationUtils";
@@ -17,9 +17,7 @@ import FileUploader from "./molecules/fileUploader";
 import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "./types/types";
 import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "./types/defaultStates";
 import SignTransactionButton from "./signTransactionButton";
-import { metadata } from "../layout";
-import InfoWithTooltip from "./molecules/infoHover";
-import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
+import TransactionDetailsActions from "./molecules/transactionDetailsActions";
 
 export const TransactionButton = () => {
   const { wallet, connected } = useWallet();
@@ -325,13 +323,12 @@ export const TransactionButton = () => {
 
               ))}
               {connected && (
-                <>
+                <Box sx={{ display: 'flex',mt: 2 }}>
                   <FormControlLabel
                     control={<Checkbox checked={acknowledgedTxs} onChange={handleAcknowledgeChange} />}
-                    label="Please acknowledge the validity of the vote details above*"
+                    label="Acknowledge the correctness of the vote details"
                   />
-                  <InfoWithTooltip info={TOOLTIP_MESSAGES.ACK_VOTING_DETAILS} />
-                </>
+                </Box>
               )}
             </Paper>
           )}
@@ -350,9 +347,16 @@ export const TransactionButton = () => {
 
           {/* Transaction JSON View */}
           <Paper elevation={2} sx={{ p: 3, borderRadius: 2 }}>
-            <Typography variant="h6" gutterBottom color="primary">
-              Transaction Details
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" color="primary">
+                Transaction Details
+              </Typography>
+              <TransactionDetailsActions 
+                unsignedTransaction={unsignedTransaction}
+                setMessage={setMessage}
+              />
+            </Box>
+            
             <Box
               sx={{
                 backgroundColor: "#f8f9fa",
