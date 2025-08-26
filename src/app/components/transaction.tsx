@@ -19,9 +19,6 @@ import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "./ty
 import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "./types/defaultStates";
 import SignTransactionButton from "./signTransactionButton";
 import TransactionDetailsActions from "./molecules/transactionDetailsActions";
-import { metadata } from "../layout";
-import InfoWithTooltip from "./molecules/infoHover";
-import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
 
 export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactionHex?: string | null }) => {
   const { wallet, connected } = useWallet();
@@ -80,24 +77,8 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
     }
   }, [connected, resetAllStates]);
 
-  // Handle pending transaction from URL
-  useEffect(() => {
-    if (pendingTransactionHex && !unsignedTransactionHex) {
-      console.log("Loading pending transaction from URL:", pendingTransactionHex);
-      setUnsignedTransactionHex(pendingTransactionHex);      
-      // Clear any previous errors
-      setMessage("");
-      // Automatically process the transaction after state update
-      setTimeout(() => {
-        console.log("Auto-processing transaction from URL:", pendingTransactionHex);
-        // Process the transaction directly instead of relying on state
-        processTransactionFromURL(pendingTransactionHex);
-      }, 200); // Increased timeout to ensure state is updated
-    }
-  }, [pendingTransactionHex, unsignedTransactionHex]);
-
-  // Function to process transaction directly from URL
-  const processTransactionFromURL = async (hex: string) => {
+    // Function to process transaction directly from URL
+  const processTransactionFromURL = useCallback(async (hex: string) => {
     try {
       console.log("Processing transaction from URL:", hex.substring(0, 50) + "...");
 
@@ -191,7 +172,33 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
       console.error("Error processing transaction from URL:", error);
       setMessage("Failed to process transaction from URL: " + error);
     }
-  };
+  }, [
+    connected,
+    walletRef,
+    setUnsignedTransaction,
+    setMessage,
+    setIsVoteTransaction,
+    setVoteTransactionDetails,
+    setVoteValidationState,
+    setTxValidationState,
+    setStakeCredentialHash
+  ]);
+
+  // Handle pending transaction from URL
+  useEffect(() => {
+    if (pendingTransactionHex && !unsignedTransactionHex) {
+      console.log("Loading pending transaction from URL:", pendingTransactionHex);
+      setUnsignedTransactionHex(pendingTransactionHex);      
+      // Clear any previous errors
+      setMessage("");
+      // Automatically process the transaction after state update
+      setTimeout(() => {
+        console.log("Auto-processing transaction from URL:", pendingTransactionHex);
+        // Process the transaction directly instead of relying on state
+        processTransactionFromURL(pendingTransactionHex);
+      }, 200); // Increased timeout to ensure state is updated
+    }
+  }, [pendingTransactionHex, unsignedTransactionHex, processTransactionFromURL]);
 
   // URL sharing functionality
   const getShareableUrl = () => {
