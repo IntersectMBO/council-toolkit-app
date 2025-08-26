@@ -16,7 +16,7 @@ interface Votes {
 
 interface Reference {
     label: string;
-    url: string;
+    uri: string;
 }
 
 
@@ -27,10 +27,10 @@ export const CreateRationale = () => {
     const [counterarguments, setCounterarguments] = React.useState<string>("");
     const [conclusion, setConclusion] = React.useState<string>("");
     const [votes, setVotes] = React.useState<Votes>({ yes: 0, no: 0, abstain: 0, didNotVote: 0, againstVoting: 0 });
-    const [references, setReferences] = React.useState<Reference[]>([{ label: "", url: "" }]);
+    const [references, setReferences] = React.useState<Reference[]>([{ label: "", uri: "" }]);
 
     const addReference = () => {
-        setReferences((prev) => [...prev, { label: "", url: "" }]);
+        setReferences((prev) => [...prev, { label: "", uri: "" }]);
     };
 
     const updateReference = (
@@ -68,7 +68,7 @@ export const CreateRationale = () => {
             references: references.map(ref => ({
             "@type": "Other",
             label: ref.label,
-            uri: ref.url
+            uri: ref.uri
             }))
         }
         // authors: ... // Optionally update authors if needed
@@ -207,12 +207,12 @@ export const CreateRationale = () => {
                         />
                         <TextField
                             type="url"
-                            label="Reference URL"
+                            label="Reference URI"
                             variant="outlined"
                             fullWidth
-                            value={ref.url}
+                            value={ref.uri}
                             onChange={(e) =>
-                                updateReference(index, "url", e.target.value)
+                                updateReference(index, "uri", e.target.value)
                             }
                         />
                         {index === references.length - 1 && (
