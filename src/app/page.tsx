@@ -1,59 +1,18 @@
 "use client";
 
-import Wallet from "./components/wallet";
-import { TransactionButton } from "./components/transaction";
 import { 
   Container, 
-  Typography, 
   Box, 
-  Tabs, 
-  Tab, 
-  Paper,
-  Fade,
-  Chip,
-  Skeleton,
+  Typography,
   useMediaQuery,
   useTheme
 } from "@mui/material";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import Description from "@mui/icons-material/Description";
-import Stream from "@mui/icons-material/Stream";
-import Create from "@mui/icons-material/Create";
-import InfoOutlined from "@mui/icons-material/InfoOutlined";
-import { LiveActions } from "./components/liveActions";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-      {...other}
-      style={{ width: '100%' }}
-    >
-      {value === index && (
-        <Fade in={true} timeout={500}>
-          <Box sx={{ p: 3 }}>
-            {children}
-          </Box>
-        </Fade>
-      )}
-    </div>
-  );
-}
+import { Header } from "./components/layout/Header";
+import { TabLayout } from "./components/layout/TabLayout";
 
 export default function Home() {
-  const [tabValue, setTabValue] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -66,10 +25,6 @@ export default function Home() {
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
-
-  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue);
-  };
 
   return (
     <Box className="background-container">
@@ -86,120 +41,10 @@ export default function Home() {
         my: { xs: 0, sm: 4 }
       }}>
         {/* Header */}
-        <Box sx={{
-          width: "100%",
-          background: "linear-gradient(45deg, #1976d2, #2196f3)",
-          marginTop: { xs: 0, sm: "20px" },
-          padding: "20px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          borderRadius: { xs: "0", sm: "8px 8px 0 0" },
-          color: "white",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-        }}>
-          <Box sx={{ display: "flex", justifyContent: 'space-between', alignItems: "center", width: "100%" ,gap: 2 }}>
-            
-            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-              <Chip 
-                label="Beta" 
-                size="small" 
-                sx={{ 
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  color: 'white',
-                  mt: 0.5,
-                  fontSize: '0.6rem',
-                  height: 18,
-                  ml: 0.5,
-                }} 
-              />
-              <Typography variant="h5" sx={{ lineHeight: 1, ml: 2 }}>
-                🗳️ Constitutional Committee Toolkit
-              </Typography>
-            </Box>
-            {isLoading ? (
-              <Skeleton
-                variant="rectangular"
-                height={56}
-                sx={{ borderRadius: 1 }}
-                data-testid="loading-skeleton"
-              />
-            ) : (
-              <Wallet />
-            )}
-          </Box>
-        </Box>
+        <Header isLoading={isLoading} />
 
         {/* Tabs Section */}
-        <Paper elevation={3} sx={{ width: '100%', mt: 3, borderRadius: 2 }}>
-          <Tabs 
-            value={tabValue} 
-            onChange={handleTabChange}
-            variant="fullWidth"
-            sx={{
-              borderBottom: 1,
-              borderColor: 'divider',
-              '& .MuiTab-root': {
-                fontSize: { xs: '0.8rem', sm: '1rem' },
-                minHeight: { xs: '48px', sm: '64px' }
-              }
-            }}
-          >
-            <Tab 
-              label={isMobile ? "Inspector" : "Transaction Inspector"} 
-              icon={<Description />} 
-              iconPosition="start"
-              aria-label="Transaction Inspector Tab" 
-            />
-            <Tab 
-              label={isMobile ? "Live" : "Live Actions"} 
-              icon={<Stream />} 
-              iconPosition="start"
-              aria-label="Live Actions Tab"
-            />
-            <Tab 
-              label={isMobile ? "Rationale" : "Rationale Generator"} 
-              icon={<Create />} 
-              iconPosition="start"
-              aria-label="Rationale Generator Tab"
-            />
-          </Tabs>
-
-          {/* Tab Panels with consistent styling */}
-          <TabPanel value={tabValue} index={0}>
-            {isLoading ? (
-              <Box sx={{ p: 3 }}>
-                <Skeleton variant="rectangular" height={200} sx={{ borderRadius: 2, mb: 2 }} />
-                <Skeleton variant="rectangular" height={56} sx={{ borderRadius: 1 }} />
-              </Box>
-            ) : (
-              <TransactionButton />
-            )}
-          </TabPanel>
-
-          <TabPanel value={tabValue} index={1}>
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-              <LiveActions />
-            </Box>
-          </TabPanel>
-
-          <TabPanel value={tabValue} index={2}>
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-              <Typography variant="h6" color="primary" gutterBottom>
-                Rationale Generator
-              </Typography>
-              <Typography color="text.secondary" sx={{ maxWidth: "600px", mx: "auto", mb: 2 }}>
-                Create and verify rationales following proper CIP standards.
-              </Typography>
-              <Chip 
-                icon={<InfoOutlined />} 
-                label="Coming Soon" 
-                color="primary" 
-                variant="outlined" 
-              />
-            </Box>
-          </TabPanel>
-        </Paper>
+        <TabLayout />
 
         {/* Footer with dynamic version */}
         <Box sx={{ 
