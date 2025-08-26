@@ -179,6 +179,9 @@ export const CreateRationale = () => {
                 }}
                 helperText={"The author SHOULD use this field to conclude their rationale."}
             />
+            <Typography variant="h6" gutterBottom color="primary">
+                Internal Vote Totals
+            </Typography>
             <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                 <TextField
                     type="number"
@@ -231,6 +234,9 @@ export const CreateRationale = () => {
                     }}
                 />
             </Box>
+            <Typography variant="h6" gutterBottom color="primary">
+                References
+            </Typography>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {references.map((ref, index) => (
                     <Box
