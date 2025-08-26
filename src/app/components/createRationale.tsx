@@ -4,6 +4,8 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import React from "react";
 import voteRationaleTemplate from "../../templates/cardano-file-templates/cip136-template.json";
 import DownloadButton from "./molecules/downloadFiles";
+import { FormControl, FormHelperText } from "@mui/material";
+
 
 interface InternalVotes {
     yes: number;
@@ -102,32 +104,42 @@ export const CreateRationale = () => {
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <TextField
-                type="string"
-                label="Summary"
-                variant="outlined"
-                fullWidth
-                multiline
-                rows={3}
-                required
-                value={summary}
-                onChange={(e) => setSummary(e.target.value)}
-                error={summary.trim().length === 0}
-                helperText={summary.trim().length === 0 ? "Summary is required" : ""}
-            />
-            <TextField
-                type="string"
-                label="Rationale Statement"
-                variant="outlined"
-                fullWidth
-                multiline
-                rows={3}
-                required
-                value={statement}
-                onChange={(e) => setStatement(e.target.value)}
-                error={statement.trim().length === 0}
-                helperText={statement.trim().length === 0 ? "Rationale Statement is required" : ""}
-            />
+            <FormControl error={summary.trim().length === 0} fullWidth variant="outlined" sx={{ mb: 2 }}>
+                <TextField
+                    type="string"
+                    label="Summary"
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    rows={3}
+                    required
+                    value={summary}
+                    onChange={(e) => setSummary(e.target.value)}
+                />
+                {summary.trim().length === 0 ? (
+                    <FormHelperText>Summary is required</FormHelperText>
+                ) : (
+                    <FormHelperText>{`(${summary.length}/300 characters) Authors SHOULD use this field to succinctly describe their rationale.`}</FormHelperText>
+                )}
+            </FormControl>
+            <FormControl error={statement.trim().length === 0} fullWidth variant="outlined" sx={{ mb: 2 }}>
+                <TextField
+                    type="string"
+                    label="Rationale Statement"
+                    variant="outlined"
+                    fullWidth
+                    multiline
+                    rows={3}
+                    required
+                    value={statement}
+                    onChange={(e) => setStatement(e.target.value)}
+                />
+                <FormHelperText>
+                    {statement.trim().length === 0
+                        ? "Rationale Statement is required"
+                        : `Authors SHOULD use this field to fully describe their rationale.`}
+                </FormHelperText>
+            </FormControl>
             <TextField
                 type="string"
                 label="Precedent Discussion"
@@ -139,6 +151,7 @@ export const CreateRationale = () => {
                 onChange={(e) => {
                     setDiscussion(e.target.value);
                 }}
+                helperText={"The author should use this field to discuss what they feel is relevant precedent."}
             />
             <TextField
                 type="string"
@@ -151,6 +164,7 @@ export const CreateRationale = () => {
                 onChange={(e) => {
                     setCounterArguments(e.target.value);
                 }}
+                helperText={"The author SHOULD use this field to discuss significant counter arguments to the position taken."}
             />
             <TextField
                 type="string"
@@ -163,11 +177,12 @@ export const CreateRationale = () => {
                 onChange={(e) => {
                     setConclusion(e.target.value);
                 }}
+                helperText={"The author SHOULD use this field to conclude their rationale."}
             />
             <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                 <TextField
                     type="number"
-                    label="Yes"
+                    label="Constitutional"
                     variant="outlined"
                     fullWidth
                     value={internalVotes.yes}
@@ -177,7 +192,7 @@ export const CreateRationale = () => {
                 />
                 <TextField
                     type="number"
-                    label="No"
+                    label="Unconstitutional"
                     variant="outlined"
                     fullWidth
                     value={internalVotes.no}
@@ -231,6 +246,7 @@ export const CreateRationale = () => {
                             onChange={(e) =>
                                 updateReference(index, "label", e.target.value)
                             }
+                            helperText={"Give a human-readable label for the reference"}
                         />
                         <TextField
                             type="url"
@@ -241,6 +257,8 @@ export const CreateRationale = () => {
                             onChange={(e) =>
                                 updateReference(index, "uri", e.target.value)
                             }
+                            error={!((ref.uri).trim().length === 0) && !ref.uri.startsWith("http://") && !ref.uri.startsWith("https://") && !ref.uri.startsWith("ipfs://")}
+                            helperText={!ref.uri.startsWith("http://") && !ref.uri.startsWith("https://") && !ref.uri.startsWith("ipfs://") ? "URI must be a link (http, https, ipfs)" : ""}
                         />
                         {index === references.length - 1 && (
                             <IconButton color="primary" onClick={addReference}>
