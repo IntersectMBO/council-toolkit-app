@@ -23,26 +23,29 @@ interface DownloadButtonProps {
     fileExtension? : string ;
     buttonText? : string ;
     icon? : boolean ;
+    disabled?: boolean ;
   }
 
-export default function DownloadButton({ data, filename, fileExtension = "json", buttonText = "Download", icon = false }: DownloadButtonProps) {
+export default function DownloadButton({ data, filename, fileExtension = "json", buttonText = "Download", icon = false, disabled = false }: DownloadButtonProps) {
     return (
         icon ? (
+            // change the tooltip to something generic, or let it get passed in
             <Tooltip title="Download transaction JSON">
                 <IconButton
                     size="small"
                     onClick={() => downloadFile(data, filename, fileExtension)}
+                    disabled={disabled}
                 >
                     <DownloadIcon fontSize="small" />
                 </IconButton>
             </Tooltip>
-            
         ) : (
             <Button
                 variant="contained"
                 color="success"
                 sx={{ whiteSpace: "nowrap", px: 3 }}
                 onClick={() => downloadFile(data, filename, fileExtension)}
+                disabled={disabled}
             >
                 {buttonText}
             </Button>

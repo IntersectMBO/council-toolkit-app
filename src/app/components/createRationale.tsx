@@ -2,7 +2,6 @@ import { Box, IconButton, TextField, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import React from "react";
-//import voteRationaleTemplate from "../../templates/cardano-file-templates/voteRationaleTemplate.json";
 import voteRationaleTemplate from "../../templates/cardano-file-templates/cip136-template.json";
 import DownloadButton from "./molecules/downloadFiles";
 
@@ -267,7 +266,7 @@ export const CreateRationale = () => {
                 data={rationaleData} 
                 filename={"rationale"} 
                 fileExtension="jsonld"
-                //todo something like this disabled={!isValid}
+                disabled={!isValid}
             />
         </Box>
     );
