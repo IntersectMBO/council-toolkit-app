@@ -1,4 +1,5 @@
-import { Button } from '@mui/material';
+import { Button, IconButton, Tooltip } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
 import React from 'react';
 
 const downloadFile = (data : any, filename : string , fileExtension = "json") => {
@@ -26,13 +27,25 @@ interface DownloadButtonProps {
 
 export default function DownloadButton({ data, filename, fileExtension = "json", buttonText = "Download", icon = false }: DownloadButtonProps) {
     return (
-        !icon && (<Button
-            variant="contained"
-            color="success"
-            sx={{ whiteSpace: "nowrap", px: 3 }}
-            onClick={() => downloadFile(data, filename, fileExtension)}
-        >
-            {buttonText}
-        </Button>)
+        icon ? (
+            <Tooltip title="Download transaction JSON">
+                <IconButton
+                    size="small"
+                    onClick={() => downloadFile(data, filename, fileExtension)}
+                >
+                    <DownloadIcon fontSize="small" />
+                </IconButton>
+            </Tooltip>
+            
+        ) : (
+            <Button
+                variant="contained"
+                color="success"
+                sx={{ whiteSpace: "nowrap", px: 3 }}
+                onClick={() => downloadFile(data, filename, fileExtension)}
+            >
+                {buttonText}
+            </Button>
+        )
     )
 }
