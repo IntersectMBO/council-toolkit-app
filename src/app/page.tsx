@@ -1,6 +1,7 @@
 "use client";
 
 import Wallet from "./components/wallet";
+import { MemberContext } from "./components/memberSelector";
 import { TransactionButton } from "./components/transaction";
 import { 
   Container, 
@@ -23,6 +24,7 @@ import Create from "@mui/icons-material/Create";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import { LiveActions } from "./components/liveActions";
 import { CreateRationale } from "./components/createRationale";
+import MemberSelector from "./components/memberSelector";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,6 +59,7 @@ export default function Home() {
   const [tabValue, setTabValue] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [pendingTransactionHex, setPendingTransactionHex] = useState<string | null>(null);
+  const [selectedCCMember, setSelectedCCMember] = useState<any>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -88,19 +91,20 @@ export default function Home() {
   };
 
   return (
-    <Box className="background-container">
-      <Container maxWidth="lg" sx={{ 
-        display: "flex", 
-        backgroundColor: "white", 
-        flexDirection: "column", 
-        alignItems: "center", 
-        justifyContent: "flex-start", 
-        minHeight: "100vh", 
-        padding: 2,
-        borderRadius: { xs: 0, sm: 2 },
-        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-        my: { xs: 0, sm: 4 }
-      }}>
+    <MemberContext.Provider value={{ selectedCCMember, setSelectedCCMember }}>
+      <Box className="background-container">
+        <Container maxWidth="lg" sx={{ 
+          display: "flex", 
+          backgroundColor: "white", 
+          flexDirection: "column", 
+          alignItems: "center", 
+          justifyContent: "flex-start", 
+          minHeight: "100vh", 
+          padding: 2,
+          borderRadius: { xs: 0, sm: 2 },
+          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+          my: { xs: 0, sm: 4 }
+        }}>
         {/* Header */}
         <Box sx={{
           width: "100%",
@@ -108,41 +112,67 @@ export default function Home() {
           marginTop: { xs: 0, sm: "20px" },
           padding: "20px",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "space-between",
           borderRadius: { xs: "0", sm: "8px 8px 0 0" },
           color: "white",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          minHeight: "120px",
+          position: "relative"
         }}>
-          <Box sx={{ display: "flex", justifyContent: 'space-between', alignItems: "center", width: "100%" ,gap: 2 }}>
+          <Box sx={{ 
+            display: "flex", 
+            justifyContent: 'space-between', 
+            alignItems: "flex-start", 
+            width: "100%",
+            gap: 3,
+            flexWrap: "nowrap"
+          }}>
             
-            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-              <Chip 
-                label="Beta" 
-                size="small" 
-                sx={{ 
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  color: 'white',
-                  mt: 0.5,
-                  fontSize: '0.6rem',
-                  height: 18,
-                  ml: 0.5,
-                }} 
-              />
-              <Typography variant="h5" sx={{ lineHeight: 1, ml: 2 }}>
-                🗳️ Constitutional Committee Toolkit
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'flex-start', 
+              minWidth: 0, 
+              flexShrink: 0,
+              flex: "0 0 auto"
+            }}>
+              <Typography variant="h5" sx={{ 
+                lineHeight: 1.2, 
+                ml: 2, 
+                whiteSpace: 'pre-line',
+                textAlign: 'left'
+              }}>
+                Constitutional{'\n'}Committee{'\n'}Toolkit 🗳️
               </Typography>
             </Box>
-            {isLoading ? (
-              <Skeleton
-                variant="rectangular"
-                height={56}
-                sx={{ borderRadius: 1 }}
-                data-testid="loading-skeleton"
-              />
-            ) : (
-              <Wallet />
-            )}
+            
+            <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column',
+              alignItems: 'flex-end', 
+              gap: 2, 
+              flexShrink: 0,
+              minWidth: 0,
+              flex: "0 0 auto",
+              justifyContent: 'flex-start'
+            }}>
+              {isLoading ? (
+                <Skeleton
+                  variant="rectangular"
+                  height={56}
+                  sx={{ borderRadius: 1 }}
+                  data-testid="loading-skeleton"
+                />
+              ) : (
+                <>
+                  <Wallet />
+                  <MemberSelector 
+                    selectedCCMember={selectedCCMember}
+                    setSelectedCCMember={setSelectedCCMember}
+                  />
+                </>
+              )}
+            </Box>
           </Box>
         </Box>
 
@@ -245,5 +275,6 @@ export default function Home() {
         </Box>
       </Container>
     </Box>
+    </MemberContext.Provider>
   );
 }
