@@ -18,6 +18,7 @@ import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "./ty
 import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "./types/defaultStates";
 import SignTransactionButton from "./signTransactionButton";
 import TransactionDetailsActions from "./molecules/transactionDetailsActions";
+import txWitnessTemplate from "../../templates/cardano-file-templates/txWitnessTemplate.json";
 
 export const TransactionButton = () => {
   const { wallet, connected } = useWallet();
@@ -436,10 +437,25 @@ export const TransactionButton = () => {
             </Typography>
           </Box>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-            <DownloadButton 
-              signature={signature} 
-              govActionID={ voteTransactionDetails.map((detail: VoteTransactionDetails) => detail.govActionID)[0] } 
-              voterKeyHash={stakeCredentialHash} 
+            <DownloadButton
+              {...(() => {
+                const govId = voteTransactionDetails[0]?.govActionID;
+                const filename =
+                  (govId?.substring(0, 15) || "unknown") +
+                  "-vote-from-" +
+                  (stakeCredentialHash?.substring(0, 6) || "unknown");
+
+                return {
+                  data: {
+                    ...txWitnessTemplate,
+                    govActionID: govId,
+                    voterKeyHash: stakeCredentialHash,
+                    cborHex: signature,
+                  },
+                  filename,
+                  fileExtension: "witness",
+                };
+              })()}
             />
           </Box>
         </Paper>

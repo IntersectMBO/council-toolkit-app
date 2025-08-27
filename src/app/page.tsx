@@ -22,6 +22,7 @@ import Stream from "@mui/icons-material/Stream";
 import Create from "@mui/icons-material/Create";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
 import { LiveActions } from "./components/liveActions";
+import { CreateRationale } from "./components/createRationale";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -186,17 +187,13 @@ export default function Home() {
           <TabPanel value={tabValue} index={2}>
             <Box sx={{ p: 3, textAlign: 'center' }}>
               <Typography variant="h6" color="primary" gutterBottom>
-                Rationale Generator
+                Vote Rationale Metadata Generator
               </Typography>
-              <Typography color="text.secondary" sx={{ maxWidth: "600px", mx: "auto", mb: 2 }}>
+              {/* <Typography color="text.secondary" sx={{ maxWidth: "600px", mx: "auto", mb: 2 }}>
                 Create and verify rationales following proper CIP standards.
-              </Typography>
-              <Chip 
-                icon={<InfoOutlined />} 
-                label="Coming Soon" 
-                color="primary" 
-                variant="outlined" 
-              />
+              </Typography> */}
+              <CreateRationale/>
+              
             </Box>
           </TabPanel>
         </Paper>
