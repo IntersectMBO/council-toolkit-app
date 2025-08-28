@@ -211,19 +211,25 @@ export const TransactionButton = ({
     }
   }, [processTransactionBody, processWalletValidation, resetAllValidationState, resetAllDetailsState]);
 
-  useEffect(() => {
+// Process the transaction
+  useEffect(() => {    
+    // If there's a pending transaction from the URL
     if (pendingTransactionHex && !unsignedTransactionHex) {
-      console.log("[useEffect] Loading pending transaction from URL:", pendingTransactionHex);
-      setUnsignedTransactionHex(pendingTransactionHex);
-      processTransaction(unsignedTransactionHex, true);
       // Clear any previous errors
       setMessage("");
+      console.log("[useEffect] Processing pending transaction from URL");
+      setUnsignedTransactionHex(pendingTransactionHex);
+      processTransaction(unsignedTransactionHex, true);
       // Process the transaction after state update
       setTimeout(() => {
         // Reset the pending transaction after processing
         resetPendingTransaction();
       }, 200);
+    // else if the user has uploaded or pasted a transaction
     } else if (!pendingTransactionHex && unsignedTransactionHex) {
+      console.log("[useEffect] Processing user inputted transaction");
+      // Clear any previous errors
+      setMessage("");
       processTransaction(unsignedTransactionHex, false);
     }
     
