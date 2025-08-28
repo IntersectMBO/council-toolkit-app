@@ -62,6 +62,10 @@ export default function Home() {
   // Get version from environment variable
   const version = process.env.PACKAGE_VERSION;
 
+  const resetPendingTransaction = () => {
+    setPendingTransactionHex(null);
+  };
+
   useEffect(() => {
     // Simulate initial loading
     const timer = setTimeout(() => setIsLoading(false), 1000);
@@ -78,7 +82,6 @@ export default function Home() {
     
     return () => clearTimeout(timer);
   }, []);
-
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
@@ -185,7 +188,7 @@ export default function Home() {
                 <Skeleton variant="rectangular" height={56} sx={{ borderRadius: 1 }} />
               </Box>
             ) : (
-              <TransactionButton pendingTransactionHex={pendingTransactionHex} />
+              <TransactionButton pendingTransactionHex={pendingTransactionHex} resetPendingTransaction={resetPendingTransaction} />
             )}
           </TabPanel>
 

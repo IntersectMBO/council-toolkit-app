@@ -20,7 +20,13 @@ import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValida
 import SignTransactionButton from "./signTransactionButton";
 import TransactionDetailsActions from "./molecules/transactionDetailsActions";
 
-export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactionHex?: string | null }) => {
+export const TransactionButton = ({ 
+  pendingTransactionHex, 
+  resetPendingTransaction 
+}: { 
+  pendingTransactionHex?: string | null;
+  resetPendingTransaction: () => void;
+}) => {
   const { wallet, connected } = useWallet();
   const [stakeCredentialHash, setStakeCredentialHash] = useState<string>("");
   const [message, setMessage] = useState("");
@@ -62,6 +68,7 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
     resetAllValidationState();
     setAcknowledgedTxs(false);
     setIsVoteTransaction(false);
+    // Note: resetPendingTransaction is handled separately to avoid conflicts
   }, [resetAllDetailsState, resetAllValidationState]);
   
   const walletRef = useRef(wallet);
@@ -167,15 +174,12 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
       if (isFromURL) {
         console.log("[processWalletValidation] Processing transaction from URL:", hex.substring(0, 50) + "...");
       } else {
-        console.log("[processWalletValidation] Unsigned transaction:", hex);
+        console.log("[processWalletValidation] Unsigned transaction");
       }
 
       const unsignedTransaction = decodeHexToTx(hex);
+      if (!unsignedTransaction) throw new Error("Invalid transaction format.");
       setUnsignedTransaction(unsignedTransaction);
-
-      if (!unsignedTransaction) {
-        throw new Error("Invalid transaction format.");
-      }
 
       if (isFromURL) {
         console.log("[processWalletValidation] Transaction loaded successfully from URL");
@@ -207,26 +211,23 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
     }
   }, [processTransactionBody, processWalletValidation, resetAllValidationState, resetAllDetailsState]);
 
-  // Function to process transaction directly from URL
-  const processTransactionFromURL = useCallback(async (hex: string) => {
-    await processTransaction(hex, true);
-  }, [processTransaction]);
-
-  // Handle pending transaction from URL
   useEffect(() => {
     if (pendingTransactionHex && !unsignedTransactionHex) {
       console.log("[useEffect] Loading pending transaction from URL:", pendingTransactionHex);
-      setUnsignedTransactionHex(pendingTransactionHex);      
+      setUnsignedTransactionHex(pendingTransactionHex);
+      processTransaction(unsignedTransactionHex, true);
       // Clear any previous errors
       setMessage("");
-      // Automatically process the transaction after state update
+      // Process the transaction after state update
       setTimeout(() => {
-        console.log("[useEffect] Auto-processing transaction from URL:", pendingTransactionHex);
-        // Process the transaction directly instead of relying on state
-        processTransactionFromURL(pendingTransactionHex);
-      }, 200); // Increased timeout to ensure state is updated
+        // Reset the pending transaction after processing
+        resetPendingTransaction();
+      }, 200);
+    } else if (!pendingTransactionHex && unsignedTransactionHex) {
+      processTransaction(unsignedTransactionHex, false);
     }
-  }, [pendingTransactionHex, unsignedTransactionHex, processTransactionFromURL]);
+    
+  },[pendingTransactionHex, unsignedTransactionHex, processTransaction, resetPendingTransaction]);
 
   // URL sharing functionality
   const getShareableUrl = () => {
@@ -246,16 +247,6 @@ export const TransactionButton = ({ pendingTransactionHex }: { pendingTransactio
       }
     }
   };    
-
-  const checkTransaction = useCallback(async () => {
-    await processTransaction(unsignedTransactionHex, false);
-  }, [unsignedTransactionHex, processTransaction]);
-
-  useEffect(() => {
-    if (unsignedTransactionHex) {
-      checkTransaction();
-    }
-  }, [unsignedTransactionHex, checkTransaction]);
 
   useEffect(() => {
     if (signature || unsignedTransaction) {
