@@ -40,7 +40,7 @@ const CREDENTIALS: CCMember[] = [
     id: "cc1",
     name: "Atlantic Council",
     coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy9",
-    hotCredential: "cc_hot1qv7fa08xua5s7qscy9zct3asaa5a3hvtdc8sxexetcv3unq7cfkq5"
+    hotCredential: "cc_hot1qvr7p6ms588athsgfd0uez5m9rlhwu3g9dt7wcxkjtr4hhsq6ytv2"
   },
   {
     id: "cc2", 
@@ -51,32 +51,32 @@ const CREDENTIALS: CCMember[] = [
   {
     id: "cc3",
     name: "Eastern Council", 
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy7",
-    hotCredential: "cc_hot1qv7fa08xua5s7qscy9zct3asaa5a3hvtdc8sxexetcv3unq7cfkq3"
+    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy3",
+    hotCredential: "cc_hot1qvh20fuwhy2dnz9e6d5wmzysduaunlz5y9n8m6n2xen3pmqqvyw8v"
   },
   {
     id: "cc4",
     name: "Ktorz",
     coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy6",
-    hotCredential: "cc_hot1qv7fa08xua5s7qscy9zct3asaa5a3hvtdc8sxexetcv3unq7cfkq2"
+    hotCredential: "cc_hot1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
   },
   {
     id: "cc5",
     name: "Phil_uplc",
     coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
-    hotCredential: "cc_hot1qv7fa08xua5s7qscy9zct3asaa5a3hvtdc8sxexetcv3unq7cfkq1"
+    hotCredential: "cc_hot1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
   },
   {
     id: "cc6",
     name: "Tingvard",
     coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
-    hotCredential: "cc_hot1qv7fa08xua5s7qscy9zct3asaa5a3hvtdc8sxexetcv3unq7cfkq1"
+    hotCredential: "cc_hot1ccccccccccccccccccccccccccccccccccccccccccccccccccccc"
   },
   {
     id: "cc7",
     name: "Ace Alliance",
     coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
-    hotCredential: "cc_hot1qv7fa08xua5s7qscy9zct3asaa5a3hvtdc8sxexetcv3unq7cfkq1"
+    hotCredential: "cc_hot1ddddddddddddddddddddddddddddddddddddddddddddddddddddd"
   }
 ];
 
