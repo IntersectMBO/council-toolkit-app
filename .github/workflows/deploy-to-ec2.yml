@@ -22,7 +22,7 @@ jobs:
       # Step 3: Build the Docker image from the Dockerfile in src folder
       - name: Build Docker image
         run: |
-          DOCKER_BUILDKIT=1 docker build --build-arg -t ${{ secrets.DOCKER_USERNAME }}/council-toolkit:${{ github.sha }} ./src
+          DOCKER_BUILDKIT=1 docker build --build-arg NEXT_PUBLIC_REST_IPFS_GATEWAY='ipfs.io/ipfs/,gateway.pinata.cloud/ipfs/,w3s.link/ipfs/' -t ${{ secrets.DOCKER_USERNAME }}/council-toolkit:${{ github.sha }} ./src
 
       # Step 4: Log in to Docker Hub
       - name: Log in to Docker Hub

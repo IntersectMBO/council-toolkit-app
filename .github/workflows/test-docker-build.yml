@@ -1,0 +1,21 @@
+name: PR Docker Build Test
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  build-docker-image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image (test only, do not push)
+        run: |
+          DOCKER_BUILDKIT=1 docker build --build-arg NEXT_PUBLIC_REST_IPFS_GATEWAY='ipfs.io/ipfs/,gateway.pinata.cloud/ipfs/,w3s.link/ipfs/' -t council-toolkit-test:${{ github.sha }} ./src
