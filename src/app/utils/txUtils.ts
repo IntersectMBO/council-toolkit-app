@@ -4,7 +4,7 @@ import dotevn from "dotenv";
 import * as blake from 'blakejs';
 dotevn.config();
 const NEXT_PUBLIC_REST_IPFS_GATEWAY = (process.env.NEXT_PUBLIC_REST_IPFS_GATEWAY ?? "").split(",");
-const gateway = getOnlineIpfsGateway();
+const goodGateway = getOnlineIpfsGateway();
 // let cachedGoodGateway: string | null = null;
 
 // export async function getIpfsGateway(refresh: boolean = false): Promise<string | null> {
@@ -93,7 +93,7 @@ export const openInNewTab = async (url: string) => {
     url.startsWith("http://") || url.startsWith("https://")
       ? url
       : url.startsWith("ipfs")
-      ? "https://" + gateway + url?.slice(7)
+      ? "https://" + goodGateway + url?.slice(7)
       : "https://" + url;
   window.open(fullUrl, "_blank", "noopener,noreferrer");
 };
@@ -104,7 +104,7 @@ export const getDataHashFromURI = async (anchorURL: string) => {
     console.log("[getDataHashFromURI] Anchor data null");
   }
   if (anchorURL.startsWith("ipfs")) {
-    anchorURL = "https://" + gateway + anchorURL.slice(7);
+    anchorURL = "https://" + goodGateway + anchorURL.slice(7);
   }
   const data = await fetch(anchorURL);
   const text = await data.text();
