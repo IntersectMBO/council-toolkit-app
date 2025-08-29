@@ -85,7 +85,7 @@ export const openInNewTab = (url: string) => {
     url.startsWith("http://") || url.startsWith("https://")
       ? url
       : url.startsWith("ipfs")
-      ? "https://" + NEXT_PUBLIC_REST_IPFS_GATEWAY + url?.slice(7)
+      ? "https://" + gateway + url?.slice(7)
       : "https://" + url;
   window.open(fullUrl, "_blank", "noopener,noreferrer");
 };
@@ -96,7 +96,7 @@ export const getDataHashFromURI = async (anchorURL: string) => {
     console.log("Anchor data null")
   }
   if (anchorURL.startsWith("ipfs")) {
-    anchorURL = "https://" + NEXT_PUBLIC_REST_IPFS_GATEWAY + anchorURL.slice(7);
+    anchorURL = "https://" + gateway + anchorURL.slice(7);
   }
   const data = await fetch(anchorURL);
   const text = await data.text();
