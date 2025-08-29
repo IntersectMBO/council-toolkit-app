@@ -7,8 +7,10 @@ const NEXT_PUBLIC_REST_IPFS_GATEWAY = (process.env.NEXT_PUBLIC_REST_IPFS_GATEWAY
 
 let cachedGoodGateway: string | null = null;
 
+cachedGoodGateway = await getOnlineIpfsGateway();
+
 export async function getIpfsGateway(refresh: boolean = false): Promise<string | null> {
-  if (!refresh && cachedGoodGateway) return cachedGoodGateway;
+  if (cachedGoodGateway) return cachedGoodGateway;
   cachedGoodGateway = await getOnlineIpfsGateway();
   return cachedGoodGateway;
 }
