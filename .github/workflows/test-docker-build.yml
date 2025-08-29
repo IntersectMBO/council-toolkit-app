@@ -18,4 +18,4 @@ jobs:
 
       - name: Build Docker image (test only, do not push)
         run: |
-          DOCKER_BUILDKIT=1 docker build -t council-toolkit-test:${{ github.sha }} ./src
+          DOCKER_BUILDKIT=1 docker build --build-arg NEXT_PUBLIC_REST_IPFS_GATEWAY='ipfs.io/ipfs/,gateway.pinata.cloud/ipfs/,w3s.link/ipfs/' -t council-toolkit-test:${{ github.sha }} ./src
