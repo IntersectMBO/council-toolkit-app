@@ -4,7 +4,14 @@ import dotevn from "dotenv";
 import * as blake from 'blakejs';
 dotevn.config();
 const NEXT_PUBLIC_REST_IPFS_GATEWAY = (process.env.NEXT_PUBLIC_REST_IPFS_GATEWAY ?? "").split(",");
-const gateway = await getOnlineIpfsGateway();
+
+let cachedGoodGateway: string | null = null;
+
+export async function getIpfsGateway(refresh: boolean = false): Promise<string | null> {
+  if (!refresh && cachedGoodGateway) return cachedGoodGateway;
+  cachedGoodGateway = await getOnlineIpfsGateway();
+  return cachedGoodGateway;
+}
 
 /**
  * Decodes a transaction from a hex string to a CardanoSerializationLib Transaction object.
@@ -80,8 +87,9 @@ export async function getOnlineIpfsGateway() {
   return null;
 }
 
-export const openInNewTab = (url: string) => {
+export const openInNewTab = async (url: string) => {
   // Ensure the URL is absolute
+  const gateway = await getIpfsGateway();
   const fullUrl =
     url.startsWith("http://") || url.startsWith("https://")
       ? url
@@ -97,6 +105,7 @@ export const getDataHashFromURI = async (anchorURL: string) => {
     console.log("[getDataHashFromURI] Anchor data null");
   }
   if (anchorURL.startsWith("ipfs")) {
+    const gateway = await getIpfsGateway();
     anchorURL = "https://" + gateway + anchorURL.slice(7);
   }
   const data = await fetch(anchorURL);
