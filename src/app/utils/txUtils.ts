@@ -55,27 +55,28 @@ export const getCardanoScanURL = (bech32String: string, networkID: number): stri
   return "";
 };
 
-// Example: Check if an IPFS gateway is up
+// iterate through gateways and see if a test file is accessible
 export async function getOnlineIpfsGateway() {
-  const testCid = "bafkreiamr5e5khvz5gtkorzkbgp3o3nobdcx65xj5hqxpmlnwbc6br4fc4"; // Valid Test CID
+  // use a known good CID to test ipfs gateways
+  const testCid = "bafkreiamr5e5khvz5gtkorzkbgp3o3nobdcx65xj5hqxpmlnwbc6br4fc4";
   for (let gateway of NEXT_PUBLIC_REST_IPFS_GATEWAY) {
-    console.log("Checking IPFS Gateway:", gateway);
+    console.log("[getOnlineIpfsGateway] Checking IPFS Gateway:", gateway);
     const gatewayUrl = `https://${gateway}${testCid}`;
 
     try {
       const response = await fetch(gatewayUrl, { method: "HEAD" });
 
       if (response.ok) {
-        console.log("✅ IPFS Gateway is up:", gateway);
+        console.log("[getOnlineIpfsGateway] IPFS gateway is up:", gateway);
         return gateway;
       }
     } catch (error: any) {
       console.log(
-        `❌ Error checking gateway ${gateway}:`
+        `[getOnlineIpfsGateway] Error checking ipfs gateway ${gateway}:`,
+        error
       );
     }
   }
-
   return null;
 }
 
@@ -93,15 +94,15 @@ export const openInNewTab = (url: string) => {
 export const getDataHashFromURI = async (anchorURL: string) => {
 
   if (anchorURL !== "") {
-    console.log("Anchor data null")
+    console.log("[getDataHashFromURI] Anchor data null");
   }
   if (anchorURL.startsWith("ipfs")) {
     anchorURL = "https://" + gateway + anchorURL.slice(7);
   }
   const data = await fetch(anchorURL);
   const text = await data.text();
-  const hash = blake.blake2bHex(text,undefined, 32);
-  console.log("Hash from text:", hash);
+  const hash = blake.blake2bHex(text, undefined, 32);
+  console.log("[getDataHashFromURI] Hash from data at URI:", hash);
   return hash
 }
 
