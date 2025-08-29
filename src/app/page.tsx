@@ -56,18 +56,33 @@ function TabPanel(props: TabPanelProps) {
 export default function Home() {
   const [tabValue, setTabValue] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [pendingTransactionHex, setPendingTransactionHex] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   // Get version from environment variable
   const version = process.env.PACKAGE_VERSION;
 
+  const resetPendingTransaction = () => {
+    setPendingTransactionHex(null);
+  };
+
   useEffect(() => {
     // Simulate initial loading
     const timer = setTimeout(() => setIsLoading(false), 1000);
+    
+    // Check for pending transaction from URL
+    const storedTransaction = localStorage.getItem('pendingTransactionHex');
+    if (storedTransaction) {
+      // Clean the transaction hex by removing whitespace and newlines
+      const cleanTransaction = storedTransaction.trim();
+      setPendingTransactionHex(cleanTransaction);
+      // Clear it from localStorage after reading
+      localStorage.removeItem('pendingTransactionHex');
+    }
+    
     return () => clearTimeout(timer);
   }, []);
-
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
@@ -174,7 +189,7 @@ export default function Home() {
                 <Skeleton variant="rectangular" height={56} sx={{ borderRadius: 1 }} />
               </Box>
             ) : (
-              <TransactionButton />
+              <TransactionButton pendingTransactionHex={pendingTransactionHex} resetPendingTransaction={resetPendingTransaction} />
             )}
           </TabPanel>
 
