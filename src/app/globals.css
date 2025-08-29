@@ -3,17 +3,157 @@
 @tailwind utilities;
 
 .background-container {
-  background-image: url('/background.png');
+  background: #2196F3;
+  background: radial-gradient(circle, rgba(33, 150, 243, 1) 0%, rgba(33, 150, 243, 0) 100%);
   background-size: cover;
   background-position: center top;
   height: 100vh;
   padding: 2rem;
   overflow: auto; 
 }
+
 /* Mobile devices or smaller screens */
 @media (max-width: 768px) {
   .wallet-icon {
     width: 15px;  
     height: 15px;
   }
+}
+
+/* Custom styling for Mesh wallet component to match project theme */
+.mesh-wallet-container {
+  /* Override default Mesh styles */
+  display: flex !important;
+  align-items: center !important;
+}
+
+.mesh-wallet-container button {
+  background: linear-gradient(135deg, #1976d2, #2196f3) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  text-transform: none !important;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3) !important;
+  transition: all 0.2s ease-in-out !important;
+  min-height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-family: inherit !important;
+  cursor: pointer !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.mesh-wallet-container button::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: -100% !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+  transition: left 0.5s !important;
+}
+
+.mesh-wallet-container button:hover::before {
+  left: 100% !important;
+}
+
+.mesh-wallet-container button:hover {
+  background: linear-gradient(135deg, #1565c0, #1976d2) !important;
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.mesh-wallet-container button:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 4px rgba(25, 118, 210, 0.3) !important;
+}
+
+.mesh-wallet-container button:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5) !important;
+  outline-offset: 2px !important;
+}
+
+/* Connected wallet state styling */
+.mesh-wallet-container button[data-connected="true"] {
+  background: linear-gradient(135deg, #2e7d32, #4caf50) !important;
+  box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3) !important;
+}
+
+.mesh-wallet-container button[data-connected="true"]:hover {
+  background: linear-gradient(135deg, #1b5e20, #2e7d32) !important;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4) !important;
+}
+
+/* Disconnect button styling */
+.mesh-wallet-container button[data-action="disconnect"] {
+  background: linear-gradient(135deg, #d32f2f, #f44336) !important;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3) !important;
+}
+
+.mesh-wallet-container button[data-action="disconnect"]:hover {
+  background: linear-gradient(135deg, #c62828, #d32f2f) !important;
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4) !important;
+}
+
+/* Wallet icon styling within buttons */
+.mesh-wallet-container button img,
+.mesh-wallet-container button svg {
+  width: 20px !important;
+  height: 20px !important;
+  filter: brightness(0) invert(1) !important;
+  transition: transform 0.2s ease-in-out !important;
+}
+
+.mesh-wallet-container button:hover img,
+.mesh-wallet-container button:hover svg {
+  transform: scale(1.1) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mesh-wallet-container button {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+    min-height: 36px !important;
+  }
+  
+  .mesh-wallet-container button img,
+  .mesh-wallet-container button svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+/* Enhanced wallet status indicators */
+.wallet-status-indicator {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Smooth transitions for wallet state changes */
+.wallet-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading spinner animation for sign transaction button */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

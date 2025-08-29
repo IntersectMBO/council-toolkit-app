@@ -1,4 +1,5 @@
-import { Button } from '@mui/material';
+import { Button, IconButton, Tooltip } from '@mui/material';
+import DownloadIcon from '@mui/icons-material/Download';
 import React from 'react';
 
 const downloadFile = (data : any, filename : string , fileExtension = "json") => {
@@ -16,32 +17,38 @@ const downloadFile = (data : any, filename : string , fileExtension = "json") =>
     URL.revokeObjectURL(data);
 };
 
-const downloadSignature = (govActionID : string, voterKeyHash : string , signature : string) => {   
-    const data = {
-        type: "TxWitness ConwayEra",
-        description: "Key Witness ShelleyEra",
-        govActionID,
-        voterKeyHash,
-        cborHex: signature
-    };
-    // Extract information for file name
-    const voterPrefix = voterKeyHash.substring(0, 5);
-    const govPrefix = govActionID.substring(0, 15);
-    const filename = `${govPrefix}-vote-from-${voterPrefix}`;
-
-    downloadFile(data, filename, "witness");
-}
-
 interface DownloadButtonProps {
-    govActionID: string;
-    voterKeyHash: string;
-    signature: string;
+    data : any ;
+    filename : string ;
+    fileExtension? : string ;
+    buttonText? : string ;
+    icon? : boolean ;
+    disabled?: boolean ;
   }
 
-export default function DownloadButton({ govActionID, voterKeyHash, signature }: DownloadButtonProps) {
-    return <Button variant="contained"
-    color="success"
-    sx={{ whiteSpace: "nowrap", px: 3 }} 
-    onClick={() => downloadSignature(govActionID,voterKeyHash, signature)}>Download Signature</Button>;
-  }
-  
+export default function DownloadButton({ data, filename, fileExtension = "json", buttonText = "Download", icon = false, disabled = false }: DownloadButtonProps) {
+    return (
+        icon ? (
+            // todo: change the tooltip to something generic, or let it get passed in
+            <Tooltip title="Download transaction JSON">
+                <IconButton
+                    size="small"
+                    onClick={() => downloadFile(data, filename, fileExtension)}
+                    disabled={disabled}
+                >
+                    <DownloadIcon fontSize="small" />
+                </IconButton>
+            </Tooltip>
+        ) : (
+            <Button
+                variant="contained"
+                color="success"
+                sx={{ whiteSpace: "nowrap", px: 3 }}
+                onClick={() => downloadFile(data, filename, fileExtension)}
+                disabled={disabled}
+            >
+                {buttonText}
+            </Button>
+        )
+    )
+}

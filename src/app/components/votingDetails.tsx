@@ -62,11 +62,6 @@ export const VotingDetails = ({
               </TableCell>
               <TableCell>{metadataAnchorHash}</TableCell>
             </TableRow>
-            {isWalletConnected && ( <TableRow>
-              <TableCell sx={{ fontWeight: "bold", fontStyle: "italic" , color: "red"}}>
-                Acknowledge Voting Details
-              </TableCell>
-            </TableRow>)}
           </TableBody>
         </Table>
       </TableContainer>

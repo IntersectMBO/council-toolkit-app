@@ -1,0 +1,7 @@
+{
+  "type": "TxWitness ConwayEra",
+  "description": "Key Witness ShelleyEra",
+  "govActionID": "",
+  "voterKeyHash": "",
+  "cborHex": ""
+}

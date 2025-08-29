@@ -4,7 +4,14 @@ import dotevn from "dotenv";
 import * as blake from 'blakejs';
 dotevn.config();
 const NEXT_PUBLIC_REST_IPFS_GATEWAY = (process.env.NEXT_PUBLIC_REST_IPFS_GATEWAY ?? "").split(",");
-// const gateway = await getOnlineIpfsGateway();
+
+let cachedGoodGateway: string | null = null;
+
+export async function getIpfsGateway(refresh: boolean = false): Promise<string | null> {
+  if (!refresh && cachedGoodGateway) return cachedGoodGateway;
+  cachedGoodGateway = await getOnlineIpfsGateway();
+  return cachedGoodGateway;
+}
 
 /**
  * Decodes a transaction from a hex string to a CardanoSerializationLib Transaction object.
@@ -55,37 +62,39 @@ export const getCardanoScanURL = (bech32String: string, networkID: number): stri
   return "";
 };
 
-// Example: Check if an IPFS gateway is up
-// export async function getOnlineIpfsGateway() {
-//   const testCid = "bafkreievzoobom6hvlxi7brticepo3xv22kcwpdq2vab6zgzrpqsd3haua"; // Valid Test CID
-//   for (let gateway of NEXT_PUBLIC_REST_IPFS_GATEWAY) {
-//     console.log("Checking IPFS Gateway:", gateway);
-//     const gatewayUrl = `https://${gateway}/${testCid}`;
+// iterate through gateways and see if a test file is accessible
+export async function getOnlineIpfsGateway() {
+  // use a known good CID to test ipfs gateways
+  const testCid = "bafkreiamr5e5khvz5gtkorzkbgp3o3nobdcx65xj5hqxpmlnwbc6br4fc4";
+  for (let gateway of NEXT_PUBLIC_REST_IPFS_GATEWAY) {
+    console.log("[getOnlineIpfsGateway] Checking IPFS Gateway:", gateway);
+    const gatewayUrl = `https://${gateway}${testCid}`;
 
-//     try {
-//       const response = await fetch(gatewayUrl, { method: "HEAD" });
+    try {
+      const response = await fetch(gatewayUrl, { method: "HEAD" });
 
-//       if (response.ok) {
-//         console.log("✅ IPFS Gateway is up:", gateway);
-//         return gateway;
-//       }
-//     } catch (error: any) {
-//       console.log(
-//         `❌ Error checking gateway ${gateway}:`
-//       );
-//     }
-//   }
+      if (response.ok) {
+        console.log("[getOnlineIpfsGateway] IPFS gateway is up:", gateway);
+        return gateway;
+      }
+    } catch (error: any) {
+      console.log(
+        `[getOnlineIpfsGateway] Error checking ipfs gateway ${gateway}:`,
+        error
+      );
+    }
+  }
+  return null;
+}
 
-//   return null;
-// }
-
-export const openInNewTab = (url: string) => {
+export const openInNewTab = async (url: string) => {
   // Ensure the URL is absolute
+  const gateway = await getIpfsGateway();
   const fullUrl =
     url.startsWith("http://") || url.startsWith("https://")
       ? url
       : url.startsWith("ipfs")
-      ? "https://" + NEXT_PUBLIC_REST_IPFS_GATEWAY + url?.slice(7)
+      ? "https://" + gateway + url?.slice(7)
       : "https://" + url;
   window.open(fullUrl, "_blank", "noopener,noreferrer");
 };
@@ -93,15 +102,16 @@ export const openInNewTab = (url: string) => {
 export const getDataHashFromURI = async (anchorURL: string) => {
 
   if (anchorURL !== "") {
-    console.log("Anchor data null")
+    console.log("[getDataHashFromURI] Anchor data null");
   }
   if (anchorURL.startsWith("ipfs")) {
-    anchorURL = "https://" + NEXT_PUBLIC_REST_IPFS_GATEWAY + anchorURL.slice(7);
+    const gateway = await getIpfsGateway();
+    anchorURL = "https://" + gateway + anchorURL.slice(7);
   }
   const data = await fetch(anchorURL);
   const text = await data.text();
-  const hash = blake.blake2bHex(text,undefined, 32);
-  console.log("Hash from text:", hash);
+  const hash = blake.blake2bHex(text, undefined, 32);
+  console.log("[getDataHashFromURI] Hash from data at URI:", hash);
   return hash
 }
 
