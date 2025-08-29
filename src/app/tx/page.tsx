@@ -13,8 +13,8 @@ export default function TransactionPage() {
   useEffect(() => {
     // Get transaction hex from URL hash
     const hash = window.location.hash;
-    if (hash && hash.startsWith('#tx=')) {
-      let hex = hash.substring(4); // Remove the #tx=
+    if (hash && hash.startsWith('#')) {
+      let hex = hash.substring(1); // Remove the #
       hex = hex.trim();
       
       if (hex && hex.length > 0) {

@@ -238,7 +238,7 @@ export const TransactionButton = ({
   // URL sharing functionality
   const getShareableUrl = () => {
     if (!unsignedTransactionHex) return '';
-    return `${window.location.origin}/tx#tx=${unsignedTransactionHex}`;
+    return `${window.location.origin}/tx#${unsignedTransactionHex}`;
   };
 
   const copyShareableUrl = async () => {
