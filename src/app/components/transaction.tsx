@@ -219,7 +219,7 @@ export const TransactionButton = ({
       setMessage("");
       console.log("[useEffect] Processing pending transaction from URL");
       setUnsignedTransactionHex(pendingTransactionHex);
-      processTransaction(unsignedTransactionHex, true);
+      processTransaction(pendingTransactionHex, true);
       // Process the transaction after state update
       setTimeout(() => {
         // Reset the pending transaction after processing
