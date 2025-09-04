@@ -2,8 +2,8 @@ import { Box, IconButton, TextField, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import React from "react";
-import voteRationaleTemplate from "../../templates/cardano-file-templates/cip136-template.json";
-import DownloadButton from "./molecules/downloadFiles";
+import voteRationaleTemplate from "../../lib/templates/cardano-file-templates/cip136-template.json";
+import DownloadButton from "../shared/downloadFiles";
 import { FormControl, FormHelperText } from "@mui/material";
 
 

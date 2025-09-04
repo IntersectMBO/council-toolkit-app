@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableContainer, TableRow, Checkbox, FormControlLabel } from "@mui/material";
 import { useState } from "react";
-import InfoWithTooltip from "./molecules/infoHover";
+import InfoWithTooltip from "../shared/infoHover";
 
 interface HierarchyDetailsProps {
   // add stuff here as needed
