@@ -8,8 +8,8 @@ import {
   useTheme,
   useMediaQuery
 } from "@mui/material";
-import { signTransaction, validateWitness } from "../utils/txUtils";
-import { TxValidationState, VoteValidationState } from "./types/types";
+import { signTransaction, validateWitness } from "../../utils/cardano";
+import { TxValidationState, VoteValidationState } from "../../types/types";
 import { IWallet } from "@meshsdk/core";
 
 interface SignTransactionButtonProps {

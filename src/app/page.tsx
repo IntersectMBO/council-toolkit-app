@@ -1,7 +1,7 @@
 "use client";
 
-import Wallet from "./components/wallet";
-import { TransactionButton } from "./components/transaction";
+import Wallet from "../components/wallet/Wallet";
+import { TransactionButton as TransactionInspector } from "../components/transaction-inspector/TransactionInspector";
 import { 
   Container, 
   Typography, 
@@ -21,8 +21,8 @@ import Description from "@mui/icons-material/Description";
 import Stream from "@mui/icons-material/Stream";
 import Create from "@mui/icons-material/Create";
 import InfoOutlined from "@mui/icons-material/InfoOutlined";
-import { LiveActions } from "./components/liveActions";
-import { CreateRationale } from "./components/createRationale";
+import { LiveActions } from "../components/live-actions/LiveActions";
+import { CreateRationale } from "../components/rationale-generator/RationaleGenerator";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -189,7 +189,7 @@ export default function Home() {
                 <Skeleton variant="rectangular" height={56} sx={{ borderRadius: 1 }} />
               </Box>
             ) : (
-              <TransactionButton pendingTransactionHex={pendingTransactionHex} resetPendingTransaction={resetPendingTransaction} />
+              <TransactionInspector pendingTransactionHex={pendingTransactionHex} resetPendingTransaction={resetPendingTransaction} />
             )}
           </TabPanel>
 
