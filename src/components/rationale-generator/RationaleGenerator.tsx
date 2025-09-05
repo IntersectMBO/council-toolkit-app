@@ -2,8 +2,8 @@ import { Box, IconButton, TextField, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import React from "react";
-import voteRationaleTemplate from "../../templates/cardano-file-templates/cip136-template.json";
-import DownloadButton from "./molecules/downloadFiles";
+import voteRationaleTemplate from "../../lib/templates/cardano-file-templates/cip136-template.json";
+import DownloadButton from "../shared/downloadFiles";
 import { FormControl, FormHelperText } from "@mui/material";
 
 
@@ -68,7 +68,10 @@ export const CreateRationale = () => {
         internalVotes.abstain !== 0 ||
         internalVotes.didNotVote !== 0 ||
         internalVotes.againstVoting !== 0;
-
+    
+    if (discussion.trim()) rationaleBody.precedentDiscussion = discussion;
+    if (counterArguments.trim()) rationaleBody.counterArgumentDiscussion = counterArguments;
+    if (conclusion.trim()) rationaleBody.conclusion = conclusion;
     if (hasInternalVote) {
     rationaleBody.internalVote = {
             constitutional: internalVotes.yes,
@@ -78,9 +81,6 @@ export const CreateRationale = () => {
             againstVote: internalVotes.againstVoting
         };
     }
-    if (discussion.trim()) rationaleBody.precedentDiscussion = discussion;
-    if (counterArguments.trim()) rationaleBody.counterArgumentDiscussion = counterArguments;
-    if (conclusion.trim()) rationaleBody.conclusion = conclusion;
 
     // Only include references that have label or uri
     // todo: allow other "@types"
