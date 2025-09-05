@@ -8,7 +8,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import ReactJsonPretty from "react-json-pretty";
 import * as voteTxValidationUtils from "../../utils/validation";
-import { ValidationChecks as TransactionChecks } from "./ValidationChecks";
+import { TransactionChecks } from "./ValidationChecks";
 import { VoteTransactionChecks } from "./VoteValidationChecks";
 import { decodeHexToTx, convertGAToBech, getCardanoScanURL } from "../../utils/cardano";
 import { VotingDetails } from "./VotingDetails";
@@ -17,7 +17,7 @@ import DownloadButton from "../shared/downloadFiles";
 import FileUploader from "../shared/fileUploader";
 import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "../../types/types";
 import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "../../types/defaultStates";
-import { SignTransaction as SignTransactionButton } from "./SignTransaction";
+import SignTransactionButton from "./SignTransaction";
 import TransactionDetailsActions from "../shared/transactionDetailsActions";
 import txWitnessTemplate from "../../lib/templates/cardano-file-templates/txWitnessTemplate.json";
 

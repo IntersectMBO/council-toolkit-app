@@ -1,6 +1,7 @@
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import { deserializeAddress } from "@meshsdk/core";
 import dotevn from "dotenv";
+import * as blake from 'blakejs';	
 
 dotevn.config();
 const NEXT_PUBLIC_REST_IPFS_GATEWAY = (process.env.NEXT_PUBLIC_REST_IPFS_GATEWAY ?? "").split(",");
@@ -34,6 +35,12 @@ export async function getOnlineIpfsGateway() {
 }
 
 // Transaction Utilities
+
+/**	
+ * Decodes a transaction from a hex string to a CardanoSerializationLib Transaction object.	
+ * @param unsignedTransactionHex hex string of the unsigned transaction.	
+ * @returns {CSL.Transaction} the decoded transaction object, or null if the decoding fails.	
+ */	
 export const decodeHexToTx = (unsignedTransactionHex: string) => {
   try {
     const unsignedTransaction = CSL.Transaction.from_hex(unsignedTransactionHex);
@@ -55,7 +62,25 @@ export const openInNewTab = async (url: string) => {
   window.open(fullUrl, "_blank", "noopener,noreferrer");
 };
 
+export const getDataHashFromURI = async (anchorURL: string) => {	
+
+  if (anchorURL !== "") {	
+    console.log("[getDataHashFromURI] Anchor data null");	
+  }	
+  if (anchorURL.startsWith("ipfs")) {	
+    const gateway = await getIpfsGateway();	
+    anchorURL = "https://" + gateway + anchorURL.slice(7);	
+  }	
+  const data = await fetch(anchorURL);	
+  const text = await data.text();	
+  const hash = blake.blake2bHex(text, undefined, 32);	
+  console.log("[getDataHashFromURI] Hash from data at URI:", hash);	
+  return hash	
+}	
 // Governance Action Utilities
+
+// convert basic GA ID to Bech32 as per CIP129 standard	
+// https://github.com/cardano-foundation/CIPs/tree/master/CIP-0129	
 export const convertGAToBech = (gaTxHash: string, gaTxIndex: number) => {
   const bech32 = require('bech32-buffer');
   const indexHex = gaTxIndex.toString(16).padStart(2, '0');
@@ -77,27 +102,42 @@ export const getCardanoScanURL = (bech32String: string, networkID: number): stri
 };
 
 // Transaction Signing and Validation
-export const signTransaction = async (wallet: any, unsignedTransactionHex: string) => {
-  try {
-    const signedTransaction = await wallet.signTx(unsignedTransactionHex);
-    return {
-      signedTransactionObj: signedTransaction,
-      witnessHex: signedTransaction
-    };
-  } catch (error) {
-    console.error("Error signing transaction:", error);
-    throw error;
-  }
-};
 
-export const validateWitness = async (signedTransactionObj: any, wallet: any, unsignedTransactionHex: string) => {
-  try {
-    // Validate that the witness was created correctly
-    // This is a placeholder for actual witness validation logic
-    console.log("Witness validation passed");
-    return true;
-  } catch (error) {
-    console.error("Error validating witness:", error);
-    throw error;
-  }
+export const signTransaction = async (wallet: any, unsignedTransactionHex: string) => {	
+
+  const signedTx = await wallet.signTx(unsignedTransactionHex, true);	
+  if (!signedTx) {	
+    throw new Error("Error signing transaction.");	
+  }	
+  const signedTransactionObj = decodeHexToTx(signedTx);	
+  const witnessHex = signedTransactionObj?.witness_set().vkeys()?.get(0)?.to_hex() || "";	
+
+  return { signedTransactionObj, witnessHex }; 	
+  //returning the decoded transaction object (we don't need to return the hex form)and the witness hex	
+
+};	
+
+export const validateWitness = async (signedTransactionObj: any, wallet: any, unsignedTransactionHex: string) => {	
+  const signature = signedTransactionObj?.witness_set().vkeys()?.get(0).signature().to_hex() || "";	
+  let providedVkey = signedTransactionObj?.witness_set().vkeys()?.get(0).vkey().to_hex() || "";	
+
+      // Remove the CBOR header	
+      providedVkey = providedVkey.substring(4);	
+      const providedVKeyObj = CSL.PublicKey.from_hex(providedVkey);	
+
+      const expectedVKeyHash = deserializeAddress(await wallet.getChangeAddress()).stakeCredentialHash;	
+      const providedVKeyHash = providedVKeyObj.hash().to_hex();	
+
+      if (providedVKeyHash !== expectedVKeyHash) {	
+        throw new Error("Wallet returned unexpected VKey.");	
+      }	
+
+      const txHash = CSL.FixedTransaction.from_hex(unsignedTransactionHex).transaction_hash().to_bytes();	
+      const validSignature = providedVKeyObj.verify(txHash, CSL.Ed25519Signature.from_hex(signature));	
+
+      if (!validSignature) {	
+        throw new Error("Wallet created an invalid signature.");	
+      }	
+
+      console.log("Signature is valid.");	
 };

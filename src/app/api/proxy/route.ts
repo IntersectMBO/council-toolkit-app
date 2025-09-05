@@ -1,4 +1,4 @@
-import { getCurrentEpoch,getCurrentEpochEndTime, getLiveGAData } from "@/app/utils/onChainData";
+import { getCurrentEpoch,getCurrentEpochEndTime, getLiveGAData } from "@/utils/onChainData";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
