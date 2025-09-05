@@ -1,16 +1,17 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import SignTransactionButton from '../../components/signTransactionButton';
-import { TxValidationState, VoteValidationState } from '../../components/types/types';
+import SignTransactionButton from './SignTransaction';
+import { TxValidationState, VoteValidationState } from '../../types/types';
 import { IWallet } from '@meshsdk/core';
 
 // Mock the txUtils module - fix the path
-jest.mock('../../utils/txUtils', () => ({
+jest.mock('../../utils/cardano', () => ({
   signTransaction: jest.fn(),
   validateWitness: jest.fn(),
 }));
 
-const mockSignTransaction = jest.requireMock('../../utils/txUtils').signTransaction;
-const mockValidateWitness = jest.requireMock('../../utils/txUtils').validateWitness;
+
+const mockSignTransaction = jest.requireMock('../../utils/cardano').signTransaction;
+const mockValidateWitness = jest.requireMock('../../utils/cardano').validateWitness;
 
 describe('SignTransactionButton Component', () => {
   const mockWallet: IWallet = {
