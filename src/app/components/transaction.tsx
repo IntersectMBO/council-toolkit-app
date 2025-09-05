@@ -42,11 +42,13 @@ export const TransactionButton = ({
   const [voteTransactionDetails, setVoteTransactionDetails] = useState<VoteTransactionDetails[]>([defaultVoteTransactionDetails]);
   // for vote transactions
   const [voteValidationState, setVoteValidationState] = useState<VoteValidationState[]>([defaultVoteValidationState]);
+  const [transactionHash, setTransactionHash] = useState<string>("");
 
   // add other transactions validations and details here
 
   const resetAllDetailsState = useCallback(() => {
     setVoteTransactionDetails([defaultVoteTransactionDetails]);
+    setTransactionHash("");
     // add hierarchy details reset here
     // add other transaction details reset here
   }, []);
@@ -168,6 +170,17 @@ export const TransactionButton = ({
     }
   }, [connected, walletRef]);
 
+  // Get transaction hash from hex
+  const getTransactionHash = useCallback((hex: string) => {
+    try {
+      const fixedTx = CSL.FixedTransaction.from_hex(hex);
+      return fixedTx.transaction_hash().to_hex();
+    } catch (error) {
+      console.error("Error getting transaction hash:", error);
+      return "";
+    }
+  }, []);
+
   // Process inputted transaction
   // apply all validation functions
   const processTransaction = useCallback(async (hex: string, isFromURL: boolean = false) => {
@@ -181,6 +194,10 @@ export const TransactionButton = ({
       const unsignedTransaction = decodeHexToTx(hex);
       if (!unsignedTransaction) throw new Error("Invalid transaction format.");
       setUnsignedTransaction(unsignedTransaction);
+      
+      // Set transaction hash
+      const txHash = getTransactionHash(hex);
+      setTransactionHash(txHash);
 
       if (isFromURL) {
         console.log("[processWalletValidation] Transaction loaded successfully from URL");
@@ -210,7 +227,7 @@ export const TransactionButton = ({
         resetAllDetailsState();
       }
     }
-  }, [processTransactionBody, processWalletValidation, resetAllValidationState, resetAllDetailsState]);
+  }, [processTransactionBody, processWalletValidation, resetAllValidationState, resetAllDetailsState, getTransactionHash]);
 
 // Process the transaction
   useEffect(() => {    
@@ -357,6 +374,46 @@ export const TransactionButton = ({
                   {message}
                 </Typography>
               </Paper>
+            </Box>
+          )}
+
+          {/* Transaction Hash Display - Integrated */}
+          {transactionHash && (
+            <Box sx={{ mt: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 500 }}>
+                  Transaction Hash:
+                </Typography>
+                <Tooltip title="Copy transaction hash">
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      navigator.clipboard.writeText(transactionHash);
+                      setMessage("Transaction hash copied to clipboard!");
+                    }}
+                    sx={{ 
+                      backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                      '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.2)' }
+                    }}
+                  >
+                    <ContentCopyIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  fontFamily: "monospace",
+                  wordBreak: "break-all",
+                  backgroundColor: "#f8f9fa",
+                  p: 1.5,
+                  borderRadius: 1,
+                  border: "1px solid #e0e0e0",
+                  fontSize: "0.875rem"
+                }}
+              >
+                {transactionHash}
+              </Typography>
             </Box>
           )}
       </Paper>
