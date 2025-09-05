@@ -68,7 +68,10 @@ export const CreateRationale = () => {
         internalVotes.abstain !== 0 ||
         internalVotes.didNotVote !== 0 ||
         internalVotes.againstVoting !== 0;
-
+    
+    if (discussion.trim()) rationaleBody.precedentDiscussion = discussion;
+    if (counterArguments.trim()) rationaleBody.counterArgumentDiscussion = counterArguments;
+    if (conclusion.trim()) rationaleBody.conclusion = conclusion;
     if (hasInternalVote) {
     rationaleBody.internalVote = {
             constitutional: internalVotes.yes,
@@ -78,9 +81,6 @@ export const CreateRationale = () => {
             againstVote: internalVotes.againstVoting
         };
     }
-    if (discussion.trim()) rationaleBody.precedentDiscussion = discussion;
-    if (counterArguments.trim()) rationaleBody.counterArgumentDiscussion = counterArguments;
-    if (conclusion.trim()) rationaleBody.conclusion = conclusion;
 
     // Only include references that have label or uri
     // todo: allow other "@types"
