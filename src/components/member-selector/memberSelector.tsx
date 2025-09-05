@@ -26,13 +26,13 @@ interface CCMember {
 // Create context for sharing selected credential across components
 export const MemberContext = createContext<{
   selectedCCMember: CCMember | null;
-  setSelectedCCMember: (credential: CCMember | null) => void;
+  setSelectedCCMember: (member: CCMember | null) => void;
 }>({
   selectedCCMember: null,
   setSelectedCCMember: () => {},
 });
 
-export const useCredential = () => useContext(MemberContext);
+export const useMember = () => useContext(MemberContext);
 
 // todo update these
 const CREDENTIALS: CCMember[] = [
@@ -77,6 +77,12 @@ const CREDENTIALS: CCMember[] = [
     name: "Ace Alliance",
     coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
     hotCredential: "cc_hot1ddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  {
+    id: "cc8",
+    name: "Intersect",
+    coldCredential: "cc_cold1z0cdctqqmy4y25sjv7lz6h0pcjzld7w3g3nd0ctqv2yheacw3r2se",
+    hotCredential: "cc_hot1qwzuglw5hx3wwr5gjewerhtfhcvz64s9kgam2fgtrj2t7eqs00fzv"
   }
 ];
 

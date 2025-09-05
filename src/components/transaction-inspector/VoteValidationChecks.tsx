@@ -11,9 +11,6 @@ export const VoteTransactionChecks = ({
   return (
   
     <Box display="flex" justifyContent="space-between" gap={2}>
-
-      {/* TODO : add a checkitem if the tx has the chosen icc credentials */}
-
       <Box display="flex" flexDirection="column" gap={2} width="48%">
         <CheckItem
           label="Does the metadata match the provided hash?"
@@ -24,7 +21,7 @@ export const VoteTransactionChecks = ({
 
       <Box display="flex" flexDirection="column" gap={2} width="48%">
         <CheckItem
-          label="Is the selected member the voter in this transaction?"
+          label="Is the selected member the voter in the transaction?"
           tooltip="Verifies that the selected Constitutional Committee member's hot credential matches the voter in the transaction"
           value={isSelectedMemberVoter}
           textMsg={isSelectedMemberVoter === undefined ? "Select member" : undefined}

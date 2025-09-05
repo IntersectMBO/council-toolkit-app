@@ -20,7 +20,7 @@ import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValida
 import SignTransactionButton from "./SignTransaction";
 import TransactionDetailsActions from "../shared/transactionDetailsActions";
 import txWitnessTemplate from "../../lib/templates/cardano-file-templates/txWitnessTemplate.json";
-import { useCredential } from "../member-selector/memberSelector";
+import { useMember } from "../member-selector/memberSelector";
 
 export const TransactionButton = ({ 
   pendingTransactionHex, 
@@ -30,7 +30,7 @@ export const TransactionButton = ({
   resetPendingTransaction: () => void;
 }) => {
   const { wallet, connected } = useWallet();
-  const { selectedCCMember } = useCredential();
+  const { selectedCCMember } = useMember();
   const [stakeCredentialHash, setStakeCredentialHash] = useState<string>("");
   const [message, setMessage] = useState("");
   const [unsignedTransactionHex, setUnsignedTransactionHex] = useState("");
