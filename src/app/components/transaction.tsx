@@ -20,6 +20,7 @@ import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValida
 import SignTransactionButton from "./signTransactionButton";
 import TransactionDetailsActions from "./molecules/transactionDetailsActions";
 import txWitnessTemplate from "../../templates/cardano-file-templates/txWitnessTemplate.json";
+import { useCredential } from "./memberSelector";
 
 export const TransactionButton = ({ 
   pendingTransactionHex, 
@@ -29,6 +30,7 @@ export const TransactionButton = ({
   resetPendingTransaction: () => void;
 }) => {
   const { wallet, connected } = useWallet();
+  const { selectedCCMember } = useCredential();
   const [stakeCredentialHash, setStakeCredentialHash] = useState<string>("");
   const [message, setMessage] = useState("");
   const [unsignedTransactionHex, setUnsignedTransactionHex] = useState("");
@@ -104,7 +106,8 @@ export const TransactionButton = ({
     console.log("[processTransactionBody] Voting Procedures:", votingProcedures);
     
     // if a vote transaction
-    // todo: right now we just assume that if there is one vote, then its a vote transaction -- this can be improved
+    // todo: right now we just assume that there is one voting procedure
+    // each voting procedure can have multiple votes inside of it
     if (votingProcedures) {
       setIsVoteTransaction(true);
       console.log("[processTransactionBody] Transaction is a vote transaction, applying vote validations");
@@ -123,6 +126,9 @@ export const TransactionButton = ({
  
         voteValidations.push({
           isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(metadataURL, metadataHash),
+          isSelectedMemberVoter: selectedCCMember ? 
+            voteTxValidationUtils.isSelectedMemberVoter(votes, selectedCCMember.hotCredential) : 
+            undefined,
         });
 
         voteDetails.push({
@@ -250,7 +256,9 @@ export const TransactionButton = ({
       setMessage("");
       processTransaction(unsignedTransactionHex, false);
     }
-    
+
+    // todo: add refresh/re-validate when a member is selected
+
   },[pendingTransactionHex, unsignedTransactionHex, processTransaction, resetPendingTransaction]);
 
   // URL sharing functionality
@@ -439,8 +447,6 @@ export const TransactionButton = ({
               }}>
                 Vote Validation Checks
               </Typography>
-              {/* <VoteTransactionChecks {...voteValidationState} /> */}
-              
               {voteValidationState.map((validation, index) => (
                 <Box key={index} sx={{ mb: 2, maxHeight: 500, overflowY: "auto" }}>
                   <Typography variant="subtitle1" color="textSecondary">

@@ -185,3 +185,38 @@ export const isUnsignedTransaction = (transaction: CSL.Transaction): boolean => 
   return false;
 }
 
+/**
+ * Checks if the selected member's hot credential matches the voter in the transaction.
+ * @param votingProcedure The voting procedure to check.
+ * @param selectedHotCredential The hot credential of the selected member.
+ * @returns {boolean} True if the hot credential matches the voter, false otherwise.
+ */
+export const isSelectedMemberVoter = (votingProcedure: any, selectedHotCredential: string): boolean => {
+
+  if (!votingProcedure) {
+    console.log("No voting procedure provided");
+    return false;
+  }
+
+  if (!selectedHotCredential) {
+    console.log("No selected member hot credential provided");
+    return false;
+  }
+
+  // todo fix
+
+  const voter = votingProcedure.voter;
+  let voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Script;
+  voterHotCredential = voter.ConstitutionalCommitteeHotCred?.key;
+
+  // generate hex representation of the hot credential
+  console.log("Selected member hot credential:", selectedHotCredential);
+  console.log("Voter hot credential from transaction:", voterHotCredential);
+  
+  // Compare the credentials (assuming they are in the same format)
+  const matches = selectedHotCredential === voterHotCredential;
+  console.log("Hot credentials match:", matches);
+  
+  return matches;
+}
+
