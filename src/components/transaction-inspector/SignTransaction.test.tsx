@@ -41,7 +41,6 @@ describe('SignTransactionButton Component', () => {
   const mockVoteValidationState: VoteValidationState[] = [
     {
       isMetadataAnchorValid: true,
-      hasICCCredentials: true,
     }
   ];
 
@@ -223,7 +222,6 @@ describe('SignTransactionButton Component', () => {
       const invalidVoteValidationState: VoteValidationState[] = [
         {
           isMetadataAnchorValid: false,
-          hasICCCredentials: true,
         }
       ];
 
@@ -246,7 +244,6 @@ describe('SignTransactionButton Component', () => {
       const invalidVoteValidationState: VoteValidationState[] = [
         {
           isMetadataAnchorValid: false,
-          hasICCCredentials: false,
         }
       ];
 
@@ -304,8 +301,8 @@ describe('SignTransactionButton Component', () => {
   describe('Multiple Vote Validations', () => {
     it('handles multiple vote validation states correctly', async () => {
       const multipleVoteValidations: VoteValidationState[] = [
-        { isMetadataAnchorValid: true, hasICCCredentials: true },
-        { isMetadataAnchorValid: true, hasICCCredentials: true },
+        { isMetadataAnchorValid: true },
+        { isMetadataAnchorValid: true },
       ];
 
       render(
@@ -325,8 +322,8 @@ describe('SignTransactionButton Component', () => {
 
     it('shows validation alert when any vote validation is false', () => {
       const multipleVoteValidations: VoteValidationState[] = [
-        { isMetadataAnchorValid: true, hasICCCredentials: true },
-        { isMetadataAnchorValid: false, hasICCCredentials: true },
+        { isMetadataAnchorValid: true},
+        { isMetadataAnchorValid: false },
       ];
 
       render(
