@@ -19,5 +19,5 @@ export interface TxValidationState {
   
   export interface VoteValidationState {
     isMetadataAnchorValid: boolean;
-    hasICCCredentials?: boolean;
+    isSelectedMemberVoter?: boolean;
   }

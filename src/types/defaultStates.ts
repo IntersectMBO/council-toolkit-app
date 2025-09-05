@@ -12,7 +12,7 @@ export const defaultTxValidationState: TxValidationState = {
 
 export const defaultVoteValidationState: VoteValidationState = {
     isMetadataAnchorValid: false,
-    hasICCCredentials: false,
+    isSelectedMemberVoter: false,
   };
   
 export const defaultVoteTransactionDetails: VoteTransactionDetails = {

@@ -6,7 +6,7 @@ import { VoteValidationState } from "../../types/types";
 
 export const VoteTransactionChecks = ({
   isMetadataAnchorValid,
-  // hasICCCredentials,
+  isSelectedMemberVoter
 }: VoteValidationState) => {
   return (
   
@@ -19,6 +19,15 @@ export const VoteTransactionChecks = ({
           label="Does the metadata match the provided hash?"
           tooltip={TOOLTIP_MESSAGES.CORRECT_METADATA_ANCHOR}
           value={isMetadataAnchorValid}
+        />
+      </Box>
+
+      <Box display="flex" flexDirection="column" gap={2} width="48%">
+        <CheckItem
+          label="Is the selected member the voter in this transaction?"
+          tooltip="Verifies that the selected Constitutional Committee member's hot credential matches the voter in the transaction"
+          value={isSelectedMemberVoter}
+          textMsg={isSelectedMemberVoter === undefined ? "Select member" : undefined}
         />
       </Box>
     </Box>
