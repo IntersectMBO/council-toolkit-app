@@ -152,7 +152,7 @@ export const TransactionButton = ({
     }
 
     return baseTxValidationState;
-  }, []);
+  }, [selectedCCMember]);
 
   // Wallet related validations
   const processWalletValidation = useCallback(async (baseTxValidationState: TxValidationState, transactionBody: any) => {
