@@ -91,7 +91,8 @@ export const convertGAToBech = (gaTxHash: string, gaTxIndex: number) => {
 export const bech32ToHex = (bech32String: string, prefix: string) => {
   const bech32 = require('bech32-buffer');
   const decoded = bech32.decode(bech32String, prefix);
-  return decoded.data.toString('hex');
+
+  return Buffer.from(decoded.data).toString('hex');
 }
 
 export const getCardanoScanURL = (bech32String: string, networkID: number): string => {
