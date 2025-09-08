@@ -107,12 +107,13 @@ export const TransactionButton = ({
     
     // if a vote transaction
     // todo: right now we just assume that there is one voting procedure
+    // each transaction can have multiple voting procedures
     // each voting procedure can have multiple votes inside of it
     if (votingProcedures) {
       setIsVoteTransaction(true);
       console.log("[processTransactionBody] Transaction is a vote transaction, applying vote validations");
 
-      const votes = votingProcedures[0].votes; // todo work for multiple procedures
+      const votes = votingProcedures[0].votes;
       const voteValidations: VoteValidationState[] = [];
       const voteDetails: VoteTransactionDetails[] = [];
       
@@ -127,7 +128,7 @@ export const TransactionButton = ({
         voteValidations.push({
           isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(metadataURL, metadataHash),
           isSelectedMemberVoter: selectedCCMember ? 
-            voteTxValidationUtils.isSelectedMemberVoter(votes, selectedCCMember.hotCredential) : 
+            voteTxValidationUtils.isSelectedMemberVoter(votingProcedures[0], selectedCCMember.hotCredential) : 
             undefined,
         });
 

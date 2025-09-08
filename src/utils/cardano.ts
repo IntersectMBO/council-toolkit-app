@@ -87,6 +87,13 @@ export const convertGAToBech = (gaTxHash: string, gaTxIndex: number) => {
   return bech32.encode("gov_action", Buffer.from(gaTxHash + indexHex, 'hex')).toString();
 };
 
+// Generic utility function to decode bech32 to hex
+export const bech32ToHex = (bech32String: string, prefix: string) => {
+  const bech32 = require('bech32-buffer');
+  const decoded = bech32.decode(bech32String, prefix);
+  return decoded.data.toString('hex');
+}
+
 export const getCardanoScanURL = (bech32String: string, networkID: number): string => {
   const baseURL = networkID === 0 ? "https://preprod.cardanoscan.io/" : "https://cardanoscan.io/";
   const isAddress = bech32String.startsWith("addr");

@@ -1,5 +1,5 @@
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
-import { getDataHashFromURI } from "./cardano";
+import { getDataHashFromURI, bech32ToHex } from "./cardano";
 
 // Transaction Validation Functions
 
@@ -200,18 +200,20 @@ export const isSelectedMemberVoter = (votingProcedure: any, selectedHotCredentia
     return false;
   }
 
-  // todo fix
-
   const voter = votingProcedure.voter;
-  let voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Script;
-  voterHotCredential = voter.ConstitutionalCommitteeHotCred?.key;
+  console.log("[isSelectedMemberVoter] Voter from transaction:", voter);
 
-  // generate hex representation of the hot credential
-  console.log("Selected member hot credential:", selectedHotCredential);
-  console.log("Voter hot credential from transaction:", voterHotCredential);
+  // todo: for now assume they are using Script credential
+  const voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Script;
+  
+  // convert to hex and
+  // remove byte header as this is a CIP-129 id
+  console.log("[isSelectedMemberVoter] Voter hot credential from transaction (hex):", voterHotCredential);
+  const selectedCredentialHex = bech32ToHex(selectedHotCredential, "cc_hot").slice(2);
+  console.log("[isSelectedMemberVoter] Selected member hot credential (hex):", selectedCredentialHex);
 
   // Compare the credentials (assuming they are in the same format)
-  const matches = selectedHotCredential === voterHotCredential;
+  const matches = selectedCredentialHex === voterHotCredential;
   console.log("Hot credentials match:", matches);
 
   return matches;
