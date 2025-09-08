@@ -124,7 +124,7 @@ export const TransactionButton = ({
         const voteChoice = (vote.voting_procedure.vote === 'Yes' ? 'Constitutional' : vote.voting_procedure.vote === 'No' ? 'Unconstitutional' : 'Abstain');
         const metadataURL = vote.voting_procedure.anchor?.anchor_url ?? "unavailable";
         const metadataHash = vote.voting_procedure.anchor?.anchor_data_hash ?? "unavailable";     
- 
+
         voteValidations.push({
           isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(metadataURL, metadataHash),
           isSelectedMemberVoter: selectedCCMember ? 

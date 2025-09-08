@@ -208,23 +208,21 @@ export const isSelectedMemberVoter = (votingProcedure: any, selectedHotCredentia
   // If the voter does not have a hot credential script hash
   // try hot credential key hash
   if (!voterHotCredential) {
+    console.log("[isSelectedMemberVoter] No hot credential script found in voter, trying key hash");
     voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Key;
   }
   // If still no hot credential found, return false
   if (!voterHotCredential) {
-    console.log("No hot credential found in voter");
+    console.log("[isSelectedMemberVoter] No hot credential found in voter");
     return false;
   }
-  
-  // convert to hex and
-  // remove byte header as this is a CIP-129 id
+  // convert to hex and remove byte header as this is a CIP-129 id
   console.log("[isSelectedMemberVoter] Voter hot credential from transaction (hex):", voterHotCredential);
   const selectedCredentialHex = bech32ToHex(selectedHotCredential, "cc_hot").slice(2);
   console.log("[isSelectedMemberVoter] Selected member hot credential (hex):", selectedCredentialHex);
-
   // Compare the credentials (assuming they are in the same format)
   const matches = selectedCredentialHex === voterHotCredential;
-  console.log("Hot credentials match:", matches);
+  console.log("[isSelectedMemberVoter] Hot credentials match:", matches);
 
   return matches;
 }

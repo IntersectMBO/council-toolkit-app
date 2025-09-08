@@ -1,5 +1,4 @@
-import { Box, Typography } from "@mui/material";
-import InfoWithTooltip from "../shared/infoHover";
+import { Box } from "@mui/material";
 import { TOOLTIP_MESSAGES } from "../../lib/constants/infoMessages";
 import CheckItem from "../shared/validationCheckItem";
 import { VoteValidationState } from "../../types/types";
@@ -18,7 +17,6 @@ export const VoteTransactionChecks = ({
           value={isMetadataAnchorValid}
         />
       </Box>
-
       <Box display="flex" flexDirection="column" gap={2} width="48%">
         <CheckItem
           label="Is the selected member the voter in the transaction?"
