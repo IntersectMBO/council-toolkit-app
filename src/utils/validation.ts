@@ -203,15 +203,14 @@ export const isSelectedMemberVoter = (votingProcedure: any, selectedHotCredentia
   const voter = votingProcedure.voter;
   console.log("[isSelectedMemberVoter] Voter from transaction:", voter);
 
-  // todo: for now assume they are using Script credential
+  // assume voter has a hot credential script hash
   let voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Script;
-
   // If the voter does not have a hot credential script hash
   // try hot credential key hash
   if (!voterHotCredential) {
     voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Key;
   }
-
+  // If still no hot credential found, return false
   if (!voterHotCredential) {
     console.log("No hot credential found in voter");
     return false;
