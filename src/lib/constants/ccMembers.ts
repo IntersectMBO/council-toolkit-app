@@ -52,9 +52,16 @@ export const CC_MEMBERS: CCMember[] = [
   },
   {
     id: "cc8",
-    name: "Intersect",
+    name: "Intersect mainnet",
     coldCredential: "cc_cold1z0cdctqqmy4y25sjv7lz6h0pcjzld7w3g3nd0ctqv2yheacw3r2se",
     hotCredential: "cc_hot1qwzuglw5hx3wwr5gjewerhtfhcvz64s9kgam2fgtrj2t7eqs00fzv",
     network: "mainnet"
+  },
+  {
+    id: "cc9",
+    name: "Intersect Preprod",
+    coldCredential: "idkkk",
+    hotCredential: "cc_hot1qd8spxz05uhzvku0lrluu3q9mftze57kk94y5wx7xdewa6s3guxzr",
+    network: "preprod"
   }
 ];
