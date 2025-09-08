@@ -1,5 +1,5 @@
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
-import { getDataHashFromURI } from "./cardano";
+import { getDataHashFromURI, bech32ToHex } from "./cardano";
 
 // Transaction Validation Functions
 
@@ -180,3 +180,49 @@ export const checkMetadataAnchor = async (anchorURL: string, anchor_data_hash: s
     return false;	
   }	
 };	
+
+
+/**
+ * Checks if the selected member's hot credential matches the voter in the transaction.
+ * @param votingProcedure The voting procedure to check.
+ * @param selectedHotCredential The hot credential of the selected member.
+ * @returns {boolean} True if the hot credential matches the voter, false otherwise.
+ */
+export const isSelectedMemberVoter = (votingProcedure: any, selectedHotCredential: string): boolean => {
+
+  if (!votingProcedure) {
+    console.log("No voting procedure provided");
+    return false;
+  }
+
+  if (!selectedHotCredential) {
+    console.log("No selected member hot credential provided");
+    return false;
+  }
+
+  const voter = votingProcedure.voter;
+  console.log("[isSelectedMemberVoter] Voter from transaction:", voter);
+
+  // assume voter has a hot credential script hash
+  let voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Script;
+  // If the voter does not have a hot credential script hash
+  // try hot credential key hash
+  if (!voterHotCredential) {
+    console.log("[isSelectedMemberVoter] No hot credential script found in voter, trying key hash");
+    voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Key;
+  }
+  // If still no hot credential found, return false
+  if (!voterHotCredential) {
+    console.log("[isSelectedMemberVoter] No hot credential found in voter");
+    return false;
+  }
+  // convert to hex and remove byte header as this is a CIP-129 id
+  console.log("[isSelectedMemberVoter] Voter hot credential from transaction (hex):", voterHotCredential);
+  const selectedCredentialHex = bech32ToHex(selectedHotCredential, "cc_hot").slice(2);
+  console.log("[isSelectedMemberVoter] Selected member hot credential (hex):", selectedCredentialHex);
+  // Compare the credentials (assuming they are in the same format)
+  const matches = selectedCredentialHex === voterHotCredential;
+  console.log("[isSelectedMemberVoter] Hot credentials match:", matches);
+
+  return matches;
+}
