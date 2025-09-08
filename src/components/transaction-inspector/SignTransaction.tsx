@@ -16,11 +16,9 @@ interface SignTransactionButtonProps {
   unsignedTransactionHex: string;
   isVoteTransaction: boolean;
   txValidationState: TxValidationState;
-  votingProcedureValidationState: VotingProcedureValidationState;
+  votingProcedureValidationState?: VotingProcedureValidationState;
   acknowledgedTx: boolean;
   connected: boolean;
-  govActionIDs: string[];
-  stakeCredentialHash: string;
   setMessage: (msg: string) => void;
   setSignature: (sig: string) => void;
 }
@@ -33,8 +31,6 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
   votingProcedureValidationState,
   acknowledgedTx,
   connected,
-  govActionIDs,
-  stakeCredentialHash,
   setMessage,
   setSignature,
 }) => {
@@ -46,14 +42,23 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     try {
       setLoading(true);
       const txValidationAllState = Object.values(txValidationState).every(Boolean);
-      // todo: fix to check all properties of votingProcedureValidationState not just the votes state
-      const votingProcedureValidationAllState = votingProcedureValidationState.votesValidation.flatMap(Object.values).every(Boolean);
+
+      // if is vote transaction, check voting procedure validation state
+      let allVoteValidationState;
+      if (isVoteTransaction && votingProcedureValidationState) {
+        allVoteValidationState = Object.values(votingProcedureValidationState).every(value => {
+          if (Array.isArray(value)) {
+            return value.flatMap(Object.values).every(Boolean);
+          }
+          return Boolean(value);
+        });
+      }
 
       if (!txValidationAllState) {
         throw new Error("Ensure all transaction validations are successful before proceeding.");
       }
 
-      if (!votingProcedureValidationAllState && isVoteTransaction) {
+      if (!allVoteValidationState && isVoteTransaction) {
         throw new Error("Ensure all voting procedure validations are successful before proceeding.");
       }
 
@@ -69,10 +74,20 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     }
   };
 
-  // todo: fix to check all properties of votingProcedureValidationState not just the votes state
+  // Flatten voting procedure validation states to determine if all are valid
+  let allVoteValidationState;
+  if (isVoteTransaction && votingProcedureValidationState) {
+    allVoteValidationState = Object.values(votingProcedureValidationState).every(value => {
+      if (Array.isArray(value)) {
+        return value.flatMap(Object.values).every(Boolean);
+      }
+      return Boolean(value);
+    });
+  }
+
   const canSign = acknowledgedTx && connected && 
     Object.values(txValidationState).every(Boolean) && 
-    (isVoteTransaction ? votingProcedureValidationState.votesValidation.flatMap(Object.values).every(Boolean) : true);
+    (isVoteTransaction ? allVoteValidationState : true);
 
   return (
     <Box sx={{ mt: 3 }}>
