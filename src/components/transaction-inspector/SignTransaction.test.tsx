@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SignTransactionButton from './SignTransaction';
-import { TxValidationState, VoteValidationState } from '../../types/types';
+import { TxValidationState, VoteValidationState, VotingProcedureValidationState } from '../../types/types';
 import { IWallet } from '@meshsdk/core';
 
 // Mock the txUtils module - fix the path
@@ -37,19 +37,21 @@ describe('SignTransactionButton Component', () => {
     isUnsignedTransaction: true,
   };
 
-  // Fixed VoteValidationState to match the actual interface
-  const mockVoteValidationState: VoteValidationState[] = [
-    {
-      isMetadataAnchorValid: true,
-    }
-  ];
+  
+  const mockVoteValidationState: VotingProcedureValidationState = {
+    oneVotingProcedure: true,
+    isSelectedMemberVoter: true,
+    votesValidation: [
+      { isMetadataAnchorValid: true },
+    ],
+  };
 
   const defaultProps = {
     wallet: mockWallet,
     unsignedTransactionHex: '84a400818258201234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef00',
-    isVoteTransaction: true,
+    isVoteTransaction: false,
     txValidationState: mockTxValidationState,
-    voteValidationState: mockVoteValidationState,
+    votingProcedureValidationState: mockVoteValidationState,
     acknowledgedTx: true,
     connected: true,
     govActionIDs: ['gov_action_123'],
@@ -219,16 +221,21 @@ describe('SignTransactionButton Component', () => {
     });
 
     it('shows validation alert when vote validation fails for vote transactions', () => {
-      const invalidVoteValidationState: VoteValidationState[] = [
-        {
-          isMetadataAnchorValid: false,
-        }
-      ];
+      const invalidVotingProcedureValidationState: VotingProcedureValidationState = {
+        oneVotingProcedure: true,
+        isSelectedMemberVoter: true,
+        votesValidation: [
+          {
+            isMetadataAnchorValid: false,
+          }
+        ]
+      };
 
       render(
         <SignTransactionButton 
-          {...defaultProps} 
-          voteValidationState={invalidVoteValidationState}
+          {...defaultProps}
+          isVoteTransaction={true} 
+          votingProcedureValidationState={invalidVotingProcedureValidationState}
         />
       );
 
@@ -241,17 +248,21 @@ describe('SignTransactionButton Component', () => {
     });
 
     it('skips vote validation for non-vote transactions', async () => {
-      const invalidVoteValidationState: VoteValidationState[] = [
-        {
-          isMetadataAnchorValid: false,
-        }
-      ];
+      const invalidVotingProcedureValidationState: VotingProcedureValidationState = {
+        oneVotingProcedure: false,
+        isSelectedMemberVoter: false,
+        votesValidation: [
+          {
+            isMetadataAnchorValid: false,
+          }
+        ]
+      };
 
       render(
         <SignTransactionButton 
           {...defaultProps} 
           isVoteTransaction={false}
-          voteValidationState={invalidVoteValidationState}
+          votingProcedureValidationState={invalidVotingProcedureValidationState}
         />
       );
 
@@ -300,15 +311,20 @@ describe('SignTransactionButton Component', () => {
 
   describe('Multiple Vote Validations', () => {
     it('handles multiple vote validation states correctly', async () => {
-      const multipleVoteValidations: VoteValidationState[] = [
-        { isMetadataAnchorValid: true },
-        { isMetadataAnchorValid: true },
-      ];
+      const multipleVotingProcedureValidations: VotingProcedureValidationState = {
+        oneVotingProcedure: true,
+        isSelectedMemberVoter: true,
+        votesValidation: [
+          { isMetadataAnchorValid: true },
+          { isMetadataAnchorValid: true },
+        ],
+      };
 
       render(
         <SignTransactionButton 
-          {...defaultProps} 
-          voteValidationState={multipleVoteValidations}
+          {...defaultProps}
+          isVoteTransaction={true}
+          votingProcedureValidationState={multipleVotingProcedureValidations}
         />
       );
 
@@ -321,15 +337,20 @@ describe('SignTransactionButton Component', () => {
     });
 
     it('shows validation alert when any vote validation is false', () => {
-      const multipleVoteValidations: VoteValidationState[] = [
-        { isMetadataAnchorValid: true},
-        { isMetadataAnchorValid: false },
-      ];
+      const multipleVotingProcedureValidations: VotingProcedureValidationState = {
+        oneVotingProcedure: true,
+        isSelectedMemberVoter: true,
+        votesValidation: [
+          { isMetadataAnchorValid: true },
+          { isMetadataAnchorValid: false },
+        ],
+      };
 
       render(
         <SignTransactionButton 
-          {...defaultProps} 
-          voteValidationState={multipleVoteValidations}
+          {...defaultProps}
+          isVoteTransaction={true}
+          votingProcedureValidationState={multipleVotingProcedureValidations}
         />
       );
 
