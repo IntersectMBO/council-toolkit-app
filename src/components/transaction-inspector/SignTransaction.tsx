@@ -6,10 +6,9 @@ import {
   Box, 
   Alert,
   useTheme,
-  useMediaQuery
 } from "@mui/material";
 import { signTransaction, validateWitness } from "../../utils/cardano";
-import { TxValidationState, VoteValidationState } from "../../types/types";
+import { TxValidationState, VotingProcedureValidationState } from "../../types/types";
 import { IWallet } from "@meshsdk/core";
 
 interface SignTransactionButtonProps {
@@ -17,7 +16,7 @@ interface SignTransactionButtonProps {
   unsignedTransactionHex: string;
   isVoteTransaction: boolean;
   txValidationState: TxValidationState;
-  voteValidationState: VoteValidationState[];
+  votingProcedureValidationState: VotingProcedureValidationState;
   acknowledgedTx: boolean;
   connected: boolean;
   govActionIDs: string[];
@@ -31,7 +30,7 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
   unsignedTransactionHex,
   isVoteTransaction,
   txValidationState,
-  voteValidationState,
+  votingProcedureValidationState,
   acknowledgedTx,
   connected,
   govActionIDs,
@@ -47,14 +46,15 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     try {
       setLoading(true);
       const txValidationAllState = Object.values(txValidationState).every(Boolean);
-      const voteValidationAllState = voteValidationState.flatMap(Object.values).every(Boolean);
+      // todo: fix to check all properties of votingProcedureValidationState not just the votes state
+      const votingProcedureValidationAllState = votingProcedureValidationState.votesValidation.flatMap(Object.values).every(Boolean);
 
       if (!txValidationAllState) {
         throw new Error("Ensure all transaction validations are successful before proceeding.");
       }
 
-      if (!voteValidationAllState && isVoteTransaction) {
-        throw new Error("Ensure all vote validations are successful before proceeding.");
+      if (!votingProcedureValidationAllState && isVoteTransaction) {
+        throw new Error("Ensure all voting procedure validations are successful before proceeding.");
       }
 
       const {signedTransactionObj , witnessHex} = await signTransaction(wallet, unsignedTransactionHex);
@@ -69,9 +69,10 @@ const SignTransactionButton: React.FC<SignTransactionButtonProps> = ({
     }
   };
 
+  // todo: fix to check all properties of votingProcedureValidationState not just the votes state
   const canSign = acknowledgedTx && connected && 
     Object.values(txValidationState).every(Boolean) && 
-    (isVoteTransaction ? voteValidationState.flatMap(Object.values).every(Boolean) : true);
+    (isVoteTransaction ? votingProcedureValidationState.votesValidation.flatMap(Object.values).every(Boolean) : true);
 
   return (
     <Box sx={{ mt: 3 }}>

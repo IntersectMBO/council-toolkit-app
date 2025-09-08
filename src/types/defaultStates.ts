@@ -1,6 +1,6 @@
 // types/defaultStates.ts
 
-import { TxValidationState, VoteTransactionDetails, VoteValidationState } from "./types";
+import { TxValidationState, VoteTransactionDetails, VoteValidationState, VotingProcedureValidationState } from "./types";
 
 export const defaultTxValidationState: TxValidationState = {
   isPartOfSigners: false,
@@ -10,11 +10,16 @@ export const defaultTxValidationState: TxValidationState = {
   isUnsignedTransaction: false,
 };
 
+export const defaultVotingProcedureValidationState: VotingProcedureValidationState = {
+  oneVotingProcedure: false,
+  isSelectedMemberVoter: false,
+  votesValidation: [{isMetadataAnchorValid : false}],
+};
+
 export const defaultVoteValidationState: VoteValidationState = {
-    isMetadataAnchorValid: false,
-    isSelectedMemberVoter: false,
-  };
-  
+  isMetadataAnchorValid: false,
+};
+
 export const defaultVoteTransactionDetails: VoteTransactionDetails = {
   govActionID: "",
   voteChoice: "",

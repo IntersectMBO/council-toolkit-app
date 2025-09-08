@@ -16,10 +16,15 @@ export interface VoteTransactionDetails {
   metadataAnchorHash: string;
   resetAckState: boolean;
 }
-  
+
+export interface VotingProcedureValidationState {
+  oneVotingProcedure: boolean;
+  isSelectedMemberVoter?: boolean;  // made optional to handle cases where no member is selected
+  votesValidation: VoteValidationState[];
+}
+
 export interface VoteValidationState {
   isMetadataAnchorValid: boolean;
-  isSelectedMemberVoter?: boolean;
 }
 
 export interface CCMember {
