@@ -58,7 +58,7 @@ const CREDENTIALS: CCMember[] = [
     id: "cc4",
     name: "Ktorz",
     coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy6",
-    hotCredential: "cc_hot1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    hotCredential: "cc_hot1qfj0jatguuhl0cqrtd96u7asszssa3h6uhq08q0dgqzn5jgjfy0l0"
   },
   {
     id: "cc5",
