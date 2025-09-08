@@ -204,7 +204,18 @@ export const isSelectedMemberVoter = (votingProcedure: any, selectedHotCredentia
   console.log("[isSelectedMemberVoter] Voter from transaction:", voter);
 
   // todo: for now assume they are using Script credential
-  const voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Script;
+  let voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Script;
+
+  // If the voter does not have a hot credential script hash
+  // try hot credential key hash
+  if (!voterHotCredential) {
+    voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Key;
+  }
+
+  if (!voterHotCredential) {
+    console.log("No hot credential found in voter");
+    return false;
+  }
   
   // convert to hex and
   // remove byte header as this is a CIP-129 id

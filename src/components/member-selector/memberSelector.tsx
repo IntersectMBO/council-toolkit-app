@@ -15,13 +15,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-
-interface CCMember {
-  id: string;
-  name: string;
-  coldCredential: string;
-  hotCredential: string;
-}
+import { CCMember } from "../../types/types";
+import { CC_MEMBERS as CC_MEMBERS } from "../../lib/constants/ccMembers";
 
 // Create context for sharing selected credential across components
 export const MemberContext = createContext<{
@@ -33,58 +28,6 @@ export const MemberContext = createContext<{
 });
 
 export const useMember = () => useContext(MemberContext);
-
-// todo update these
-const CREDENTIALS: CCMember[] = [
-  {
-    id: "cc1",
-    name: "Atlantic Council",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy9",
-    hotCredential: "cc_hot1qvr7p6ms588athsgfd0uez5m9rlhwu3g9dt7wcxkjtr4hhsq6ytv2"
-  },
-  {
-    id: "cc2", 
-    name: "Japan Council",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy8",
-    hotCredential: "cc_hot1qv7fa08xua5s7qscy9zct3asaa5a3hvtdc8sxexetcv3unq7cfkq4"
-  },
-  {
-    id: "cc3",
-    name: "Eastern Council", 
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy3",
-    hotCredential: "cc_hot1qvh20fuwhy2dnz9e6d5wmzysduaunlz5y9n8m6n2xen3pmqqvyw8v"
-  },
-  {
-    id: "cc4",
-    name: "Ktorz",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy6",
-    hotCredential: "cc_hot1qfj0jatguuhl0cqrtd96u7asszssa3h6uhq08q0dgqzn5jgjfy0l0"
-  },
-  {
-    id: "cc5",
-    name: "Phil_uplc",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
-    hotCredential: "cc_hot1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-  },
-  {
-    id: "cc6",
-    name: "Tingvard",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
-    hotCredential: "cc_hot1ccccccccccccccccccccccccccccccccccccccccccccccccccccc"
-  },
-  {
-    id: "cc7",
-    name: "Ace Alliance",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
-    hotCredential: "cc_hot1ddddddddddddddddddddddddddddddddddddddddddddddddddddd"
-  },
-  {
-    id: "cc8",
-    name: "Intersect",
-    coldCredential: "cc_cold1z0cdctqqmy4y25sjv7lz6h0pcjzld7w3g3nd0ctqv2yheacw3r2se",
-    hotCredential: "cc_hot1qwzuglw5hx3wwr5gjewerhtfhcvz64s9kgam2fgtrj2t7eqs00fzv"
-  }
-];
 
 const MemberSelector = ({ 
   selectedCCMember, 
@@ -110,7 +53,7 @@ const MemberSelector = ({
       return;
     }
     
-    const credential = CREDENTIALS.find(c => c.id === credentialId);
+    const credential = CC_MEMBERS.find(c => c.id === credentialId);
     setSelectedCCMember(credential || null);
     setShowDetails(true);
   };
@@ -233,7 +176,7 @@ const MemberSelector = ({
               Selected CC Member
             </Typography>
           </MenuItem>
-          {CREDENTIALS.map((credential) => (
+          {CC_MEMBERS.map((credential) => (
             <MenuItem key={credential.id} value={credential.id}>
               <Typography variant="body2" sx={{ fontWeight: 500 }}>
                 {credential.name}
