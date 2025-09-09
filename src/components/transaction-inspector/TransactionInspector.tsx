@@ -466,17 +466,21 @@ export const TransactionButton = ({
               </Typography>
               {/* todo: move to own component */}
                 <Box display="flex" justifyContent="space-between" gap={2}>
+                  <Box display="flex" flexDirection="column" gap={2} width="48%">
                     <CheckItem 
                       label="One voting procedure?" 
                       tooltip={"Ensures the transaction contains exactly one voting procedure"} 
                       value={votingProcedureValidationState.oneVotingProcedure} 
                     />
+                  </Box>
+                  <Box display="flex" flexDirection="column" gap={2} width="48%"> 
                     <CheckItem
                       label="Is the selected member the voter in the transaction?"
                       tooltip="Verifies that the selected Constitutional Committee member's hot credential matches the voter in the transaction"
                       value={votingProcedureValidationState.isSelectedMemberVoter}
                       textMsg={votingProcedureValidationState.isSelectedMemberVoter === undefined ? "Select member" : undefined}
                     />
+                  </Box>  
               </Box>
               {votingProcedureValidationState.votesValidation.map((validation, index) => (
                 <Box key={index} sx={{ mb: 2, maxHeight: 500, overflowY: "auto" }}>
