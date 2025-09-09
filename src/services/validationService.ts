@@ -47,7 +47,7 @@ export class ValidationService {
       isUnsignedTransaction: voteTxValidationUtils.isUnsignedTransaction(unsignedTransaction)
     };
 
-    if (wallet) {
+    if (wallet && typeof wallet.getNetworkId === 'function' && typeof wallet.getChangeAddress === 'function') {
       try {
         const network = await wallet.getNetworkId();
         const changeAddress = await wallet.getChangeAddress();
