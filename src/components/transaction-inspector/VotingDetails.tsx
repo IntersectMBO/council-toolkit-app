@@ -1,13 +1,8 @@
-import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link, Checkbox, FormControlLabel } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Link } from "@mui/material";
 import { openInNewTab } from "../../utils/cardano";
-import { useEffect, useState } from "react";
-import InfoWithTooltip from "../shared/infoHover";
-import { TOOLTIP_MESSAGES } from "../../lib/constants/infoMessages";
 import { VoteTransactionDetails } from "../../types/types";
 
-
 export interface VotingDetailsProps extends VoteTransactionDetails {
-  // onAcknowledgeChange: (checked: boolean) => void;
   isWalletConnected?: boolean;
 }
 
@@ -17,7 +12,6 @@ export const VotingDetails = ({
     explorerLink, 
     metadataAnchorURL, 
     metadataAnchorHash,
-    // onAcknowledgeChange,
     resetAckState,
     isWalletConnected
 }: VotingDetailsProps) => {

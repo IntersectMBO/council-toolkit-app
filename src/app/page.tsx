@@ -1,7 +1,7 @@
 "use client";
 
 import Wallet from "../components/wallet/Wallet";
-import { TransactionButton as TransactionInspector } from "../components/transaction-inspector/TransactionInspector";
+import { TransactionInspector } from "../components/transaction-inspector/TransactionInspector";
 import { 
   Container, 
   Typography, 
