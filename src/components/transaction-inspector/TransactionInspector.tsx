@@ -156,6 +156,27 @@ export const TransactionInspector: React.FC<TransactionInspectorProps> = ({
     }
   }, [connected, resetAllStates]);
 
+  // Re-validate transaction when selected member changes
+  useEffect(() => {
+    if (transaction.unsignedTransaction && transaction.unsignedTransactionHex) {
+      const revalidateTransaction = async () => {
+        try {
+          const validationResult = await ValidationService.validateTransaction(
+            transaction.unsignedTransaction!.body(),
+            transaction.unsignedTransaction!,
+            wallet,
+            selectedCCMember
+          );
+          setValidation(validationResult);
+        } catch (error) {
+          console.error("Error re-validating transaction:", error);
+        }
+      };
+      
+      revalidateTransaction();
+    }
+  }, [selectedCCMember, transaction.unsignedTransaction, transaction.unsignedTransactionHex, wallet]);
+
   // Auto-scroll to signature when it's generated
   useEffect(() => {
     if (transaction.signature || transaction.unsignedTransaction) {
