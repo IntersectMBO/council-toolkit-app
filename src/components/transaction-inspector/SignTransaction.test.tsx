@@ -42,7 +42,7 @@ describe('SignTransactionButton Component', () => {
     oneVotingProcedure: true,
     isSelectedMemberVoter: true,
     votesValidation: [
-      { isMetadataAnchorValid: true },
+      { isMetadataAnchorValid: true , voteChange: { isVoteChange: false, prevState: null, newState: null } },
     ],
   };
 
@@ -227,6 +227,7 @@ describe('SignTransactionButton Component', () => {
         votesValidation: [
           {
             isMetadataAnchorValid: false,
+            voteChange: { isVoteChange: false, prevState: null, newState: null }
           }
         ]
       };
@@ -254,6 +255,7 @@ describe('SignTransactionButton Component', () => {
         votesValidation: [
           {
             isMetadataAnchorValid: false,
+            voteChange: { isVoteChange: false, prevState: null, newState: null }
           }
         ]
       };
@@ -315,8 +317,8 @@ describe('SignTransactionButton Component', () => {
         oneVotingProcedure: true,
         isSelectedMemberVoter: true,
         votesValidation: [
-          { isMetadataAnchorValid: true },
-          { isMetadataAnchorValid: true },
+          { isMetadataAnchorValid: true, voteChange: { isVoteChange: false, prevState: null, newState: null } },
+          { isMetadataAnchorValid: true , voteChange: { isVoteChange: true, prevState: 'Yes', newState: 'No' } },
         ],
       };
 
@@ -341,8 +343,8 @@ describe('SignTransactionButton Component', () => {
         oneVotingProcedure: true,
         isSelectedMemberVoter: true,
         votesValidation: [
-          { isMetadataAnchorValid: true },
-          { isMetadataAnchorValid: false },
+          { isMetadataAnchorValid: true , voteChange: { isVoteChange: true, prevState: 'No', newState: 'Abstain' } },
+          { isMetadataAnchorValid: false , voteChange: { isVoteChange: false, prevState: null, newState: null } },
         ],
       };
 

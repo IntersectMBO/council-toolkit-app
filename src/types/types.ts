@@ -1,4 +1,5 @@
 // types.ts
+import { Vote, VoteKind } from "@meshsdk/core";
 
 export interface TxValidationState {
   isPartOfSigners?: boolean;
@@ -25,6 +26,11 @@ export interface VotingProcedureValidationState {
 
 export interface VoteValidationState {
   isMetadataAnchorValid: boolean;
+  voteChange: {
+    prevState : VoteKind | null,
+    newState : VoteKind | null,
+    isVoteChange: boolean
+  };
 }
 
 export interface CCMember {

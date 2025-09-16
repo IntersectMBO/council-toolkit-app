@@ -23,6 +23,7 @@ import txWitnessTemplate from "../../lib/templates/cardano-file-templates/txWitn
 import { useMember } from "../member-selector/memberSelector";
 import { isSameNetwork } from "../../utils/validation";
 import CheckItem from "../shared/validationCheckItem";
+import { getPreviousVoteChange } from '../../utils/voteChange';
 
 export const TransactionButton = ({ 
   pendingTransactionHex, 
@@ -142,10 +143,19 @@ export const TransactionButton = ({
         const govActionID = convertGAToBech(vote.action_id.transaction_id, vote.action_id.index);
         const voteChoice = (vote.voting_procedure.vote === 'Yes' ? 'Constitutional' : vote.voting_procedure.vote === 'No' ? 'Unconstitutional' : 'Abstain');
         const metadataURL = vote.voting_procedure.anchor?.anchor_url ?? "unavailable";
-        const metadataHash = vote.voting_procedure.anchor?.anchor_data_hash ?? "unavailable";     
+        const metadataHash = vote.voting_procedure.anchor?.anchor_data_hash ?? "unavailable";
+
+        // Use utility to get previous vote change info
+        const { isVoteChange, prevState, newState } = await getPreviousVoteChange({
+          networkId: transactionNetworkID,
+          govActionID,
+          selectedCCMember,
+          newVote: vote.voting_procedure.vote
+        });
 
         currentVoteValidations.votesValidation.push({
-          isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(metadataURL, metadataHash)
+          isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(metadataURL, metadataHash),
+          voteChange: { isVoteChange, prevState, newState }
         });
 
         currentVoteDetails.push({

@@ -57,3 +57,19 @@ export async function getLiveGAData(currentEpoch: number , currentEpochEndTime: 
   return data;
 
 }
+
+export async function getCouncilVote(network: number, proposalId: string, council: any): Promise<any> {
+  console.log('Fetching council votes for proposal:', proposalId);
+  const response = await fetch(`${network === 0 ? preProdUrl : mainnetUrl}/committe_votes?select=vote,block_time&_cc_hot_id=${council.hotCredential}&proposal_id=eq.${proposalId}`);
+  if (!response.ok) {
+    throw new Error(`Error fetching council votes: ${response.status}`);
+  }
+  const votes = await response.json();
+  if (votes.length <= 1) {
+    return votes[0] || null;
+  }
+  // Return the entry with the latest block_time
+  return votes.reduce((latest: { block_time: number; }, current: { block_time: number; }) =>
+    current.block_time > latest.block_time ? current : latest
+  );
+}
