@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   try {
     console.log(`Fetching data for network server side: ${network}`);
-
+    console.log(`Action requested: ${action}`);
     switch(action) {
       case 'liveProposals':
         {
@@ -29,9 +29,11 @@ export async function GET(request: Request) {
         }
       case 'councilVotes':
         {
+          console.log('Fetching council votes route called');
           const proposalId = searchParams.get("proposalId") || "";
-          const council = searchParams.get("council");
-          const votes = await getCouncilVote(network, proposalId, council);
+          const councilHotCred = searchParams.get("council");
+          console.log(`Parameters - Network: ${network}, Proposal ID: ${proposalId}, Council: ${councilHotCred}`);
+          const votes = await getCouncilVote(network, proposalId, councilHotCred);
           return Response.json(votes);
         }
     }

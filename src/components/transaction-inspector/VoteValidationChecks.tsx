@@ -19,7 +19,7 @@ export const VoteChecks = ({
         />
       </Box>
 
-      {voteChange?.isVoteChange && (
+     
         <Box display="flex" flexDirection="column" gap={2} width="48%">
 
           <CheckItem
@@ -31,7 +31,7 @@ export const VoteChecks = ({
             <i>Note: Changing your vote will override your previous vote from {voteChange?.prevState} to {voteChange?.newState}</i>
           </Box>
         </Box>
-      )}
+    
 
     </Box>
   );
