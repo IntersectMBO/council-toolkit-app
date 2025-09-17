@@ -1,4 +1,4 @@
-import { getCouncilVote, getCurrentEpoch,getCurrentEpochEndTime, getLiveGAData } from "@/utils/onChainData";
+import { getCommitteeVote, getCurrentEpoch,getCurrentEpochEndTime, getLiveGAData } from "@/utils/onChainData";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -27,11 +27,11 @@ export async function GET(request: Request) {
             liveGAData: liveGAData,
           });
         }
-      case 'councilVotes':
+      case 'committeeVotes':
         {
           const proposalId = searchParams.get("proposalId") || "";
-          const councilHotCred = searchParams.get("council");
-          const votes = await getCouncilVote(network, proposalId, councilHotCred);
+          const committeeHotCred = searchParams.get("committee");
+          const votes = await getCommitteeVote(network, proposalId, committeeHotCred);
           return Response.json(votes);
         }
     }

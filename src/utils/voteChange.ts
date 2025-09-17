@@ -16,7 +16,7 @@ export async function getPreviousVoteChange({
   if (selectedCCMember) {
     const ccMemberHotCred = selectedCCMember.hotCredential;
     try {
-      const res = await fetch(`/api/proxy?network=${networkId}&action=councilVotes&proposalId=${govActionID}&council=${ccMemberHotCred}`);
+      const res = await fetch(`/api/proxy?network=${networkId}&action=committeeVotes&proposalId=${govActionID}&committee=${ccMemberHotCred}`);
       console.log('Fetch response:', res);
       if (res.ok) {
         const prevVoteData = await res.json();
