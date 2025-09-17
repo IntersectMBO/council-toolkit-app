@@ -29,10 +29,8 @@ export async function GET(request: Request) {
         }
       case 'councilVotes':
         {
-          console.log('Fetching council votes route called');
           const proposalId = searchParams.get("proposalId") || "";
           const councilHotCred = searchParams.get("council");
-          console.log(`Parameters - Network: ${network}, Proposal ID: ${proposalId}, Council: ${councilHotCred}`);
           const votes = await getCouncilVote(network, proposalId, councilHotCred);
           return Response.json(votes);
         }

@@ -13,10 +13,6 @@ export async function getPreviousVoteChange({
   newVote: VoteKind | null;
 }): Promise<{ isVoteChange: boolean; prevState: VoteKind | null; newState: VoteKind | null }> {
   let prevVote = null;
-  
-  console.log('Selected CC Member:', selectedCCMember?.hotCredential);
-  console.log('Fetching previous vote for proposal ID:', govActionID);
-  console.log('New Vote:', newVote);
   if (selectedCCMember) {
     const ccMemberHotCred = selectedCCMember.hotCredential;
     try {
