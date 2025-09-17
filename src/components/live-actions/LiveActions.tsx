@@ -21,7 +21,7 @@ export const LiveActions = () => {
     const fetchData = async () => {
       try {
         console.log("Fetch with net AAAA:", net);
-        const res = await fetch(`api/proxy?network=${net}`);
+        const res = await fetch(`api/proxy?network=${net}&action=liveProposals`);
         if (!res.ok) throw new Error(`Error: ${res.status}`);
 
         const data = await res.json();

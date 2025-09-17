@@ -13,11 +13,12 @@ export const defaultTxValidationState: TxValidationState = {
 export const defaultVotingProcedureValidationState: VotingProcedureValidationState = {
   oneVotingProcedure: false,
   isSelectedMemberVoter: false,
-  votesValidation: [{isMetadataAnchorValid : false}],
+  votesValidation: [{isMetadataAnchorValid : false , voteChange: { isVoteChange: false, prevState: null, newState: null }}],
 };
 
 export const defaultVoteValidationState: VoteValidationState = {
   isMetadataAnchorValid: false,
+  voteChange: { isVoteChange: false, prevState: null, newState: null }
 };
 
 export const defaultVoteTransactionDetails: VoteTransactionDetails = {
