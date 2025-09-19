@@ -70,54 +70,87 @@ export const LiveActions = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-  <Container maxWidth="md">
+    <Container maxWidth="md">
       <Box my={4}>
-        <Paper elevation={2} sx={{
+        <Paper
+          elevation={2}
+          sx={{
             p: { xs: 2, sm: 4 },
             borderRadius: 3,
-            mt: 2
-          }}>
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'flex-start', sm: 'center' }, justifyContent: 'space-between', gap: 3 }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
+            mt: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: { xs: "flex-start", sm: "center" },
+              justifyContent: "space-between",
+              gap: 3,
+            }}
+          >
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Typography
+                variant="subtitle2"
+                color="primary"
+                sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}
+              >
                 Network
               </Typography>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                {net==0 ? "Preprod" : "Mainnet"}
+                {net == 0 ? "Preprod" : "Mainnet"}
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Typography
+                variant="subtitle2"
+                color="primary"
+                sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}
+              >
                 Current Epoch
               </Typography>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                {currentEpoch !== null ? currentEpoch : <span style={{ color: '#aaa' }}>N/A</span>}
+                {currentEpoch !== null ? (
+                  currentEpoch
+                ) : (
+                  <span style={{ color: "#aaa" }}>N/A</span>
+                )}
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Typography variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>
-                Epoch Ends in 
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Typography
+                variant="subtitle2"
+                color="primary"
+                sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}
+              >
+                Epoch Ends in
               </Typography>
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                {endTime !== null
-                  ? (() => {
+                {endTime !== null ? (
+                  (() => {
                     const days = Math.floor(endTime / (60 * 60 * 24));
-                    const hours = Math.floor((endTime % (60 * 60 * 24)) / (60 * 60));
+                    const hours = Math.floor(
+                      (endTime % (60 * 60 * 24)) / (60 * 60)
+                    );
                     const minutes = Math.floor((endTime % (60 * 60)) / 60);
                     return `${days}d ${hours}h ${minutes}m`;
                   })()
-                  : <span style={{ color: '#aaa' }}>N/A</span>
-                }
+                ) : (
+                  <span style={{ color: "#aaa" }}>N/A</span>
+                )}
               </Typography>
             </Box>
           </Box>
         </Paper>
         {liveGAData && liveGAData.length > 0 ? (
-          <Paper elevation={2} sx={{
-            p: { xs: 2, sm: 4 },
-            borderRadius: 3,
-            mt: 2
-          }}>
+          <Paper
+            elevation={2}
+            sx={{
+              p: { xs: 2, sm: 4 },
+              borderRadius: 3,
+              mt: 2,
+            }}
+          >
             <List>
               {liveGAData.map((item, index) => (
                 <React.Fragment key={index}>
@@ -130,22 +163,39 @@ export const LiveActions = () => {
                             component="span"
                             variant="body2"
                             color="text.secondary"
-                          > 
-                          <a
-                            href={`${getCardanoScanURL(item.proposal, net || 1)}`}
-                            target="_blank"
-                            style={{ color: "blue", textDecoration: "underline" }}
-                            rel="noopener noreferrer"
                           >
-                            {item.proposal}
-                          </a>
+                            <a
+                              href={`${getCardanoScanURL(
+                                item.proposal,
+                                net || 1
+                              )}`}
+                              target="_blank"
+                              style={{
+                                color: "blue",
+                                textDecoration: "underline",
+                              }}
+                              rel="noopener noreferrer"
+                            >
+                              {item.proposal}
+                            </a>
                           </Typography>
                           {/* <Chip label={item.userVote} sx={{ ml: 1 }} /> */}
                         </>
                       }
                     />
                     <ListItemIcon>
-                      <Chip label={item.userVote || null} color={item.userVote ? 'primary' : 'default'} />
+                      <Chip
+                        label={item.userVote || null}
+                        color={
+                          item.userVote === "Yes"
+                            ? "success"
+                            : item.userVote === "No"
+                            ? "error"
+                            : item.userVote === "Abstain"
+                            ? "warning"
+                            : "default"
+                        }
+                      />
                     </ListItemIcon>
                   </ListItem>
                   {index < liveGAData.length - 1 && <Divider component="li" />}
@@ -154,12 +204,21 @@ export const LiveActions = () => {
             </List>
           </Paper>
         ) : (
-          <Paper elevation={2} sx={{
-            p: { xs: 2, sm: 4 },
-            borderRadius: 3,
-            mt: 2
-          }}>
-            <Typography  variant="subtitle2" color="primary" sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}>No governance actions available.</Typography>
+          <Paper
+            elevation={2}
+            sx={{
+              p: { xs: 2, sm: 4 },
+              borderRadius: 3,
+              mt: 2,
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              color="primary"
+              sx={{ fontWeight: 700, letterSpacing: 1, mb: 0.5 }}
+            >
+              No governance actions available.
+            </Typography>
           </Paper>
         )}
       </Box>
