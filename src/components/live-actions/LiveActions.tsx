@@ -182,20 +182,23 @@ export const LiveActions = () => {
                         </>
                       }
                     />
-                    <ListItemIcon>
-                      <Chip
-                        label={item.userVote || null}
-                        color={
-                          item.userVote === "Yes"
-                            ? "success"
-                            : item.userVote === "No"
-                            ? "error"
-                            : item.userVote === "Abstain"
-                            ? "warning"
-                            : "default"
-                        }
-                      />
-                    </ListItemIcon>
+                    {selectedCCMember && (
+                      <ListItemIcon>
+                        <Chip
+                          label={item.userVote || null}
+                          color={
+                            item.userVote === "Yes"
+                              ? "success"
+                              : item.userVote === "No"
+                              ? "error"
+                              : item.userVote === "Abstain"
+                              ? "warning"
+                              : "default"
+                          }
+                        />
+                      </ListItemIcon>
+                    )}
+
                   </ListItem>
                   {index < liveGAData.length - 1 && <Divider component="li" />}
                 </React.Fragment>
