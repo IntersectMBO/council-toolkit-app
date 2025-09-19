@@ -179,7 +179,6 @@ export const LiveActions = () => {
                               {item.proposal}
                             </a>
                           </Typography>
-                          {/* <Chip label={item.userVote} sx={{ ml: 1 }} /> */}
                         </>
                       }
                     />
