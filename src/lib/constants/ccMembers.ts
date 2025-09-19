@@ -32,22 +32,22 @@ export const CC_MEMBERS: CCMember[] = [
   {
     id: "cc5",
     name: "Phil_uplc",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
-    hotCredential: "cc_hot1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    coldCredential: "cc_cold1zgf5jdusmxcrfqapu8ngf6j04u0wfzjc7sp9wnnlyfr0f4q68as9w",
+    hotCredential: "cc_hot1ddddddddddddddddddddddddddddddddddddddddddddddddddddd",
     network: "mainnet"
   },
   {
     id: "cc6",
     name: "Tingvard",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
-    hotCredential: "cc_hot1ccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    coldCredential: "cc_cold1zvvcpkl3443ykr94gyp4nddtzngqs4sejjnv9dk98747cqqeatx67",
+    hotCredential: "cc_hot1qdjx6xe6e9zk3fpzk6rakmz84n0cf8ckwjvz4e8e5j2tuscr7ckq4",
     network: "mainnet"
   },
   {
     id: "cc7",
     name: "Ace Alliance",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy5",
-    hotCredential: "cc_hot1ddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    coldCredential: "cc_cold1zwt49epsdedwsezyr5ssvnmez96v3d3xrxdcu7j9l8srk3g5xu74h",
+    hotCredential: "cc_hot1qdc65ke6jfq2q25fcn3g89tea30tvrzpptc2tw6g8cdc7pqtmus0y",
     network: "mainnet"
   },
   {
