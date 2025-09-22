@@ -18,6 +18,7 @@ This App will allow Intersect council to be able to vote on governance actions, 
 3. Connect to your wallet, for wallet related validation of the transaction and if you want to sign it.
 4. Validity check will be automatically preformed upon transaction.
 5. If the unsigned transaction passes all validity checks you will be able to pass the transaction to your wallet for signing, producing a signature.
+
 ### Live Governance Actions Page 
 
 * Displays all live governance actions you can vote on-chain.
