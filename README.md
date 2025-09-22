@@ -21,7 +21,8 @@ This App will allow Intersect council to be able to vote on governance actions, 
 
 ### Live Governance Actions Page 
 
-* Displays all live governance actions you can vote on-chain.
+* Displays all live governance actions that can be voted on.
+
 1. Select which CC member you are part of to view your vote status on live governance actions.
 
 ### Rationale Generator
