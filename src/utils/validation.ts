@@ -88,41 +88,6 @@ export const isSameNetwork = (transactionBody: any, walletNetworkID: number): bo
 };
 
 /**	
- * Checks if the transaction has valid Intersect Constitutional Committee (ICC) credentials.	
- * @param transactionBody The body of the transaction to check.	
- * @param walletNetworkID The network ID of the wallet.	
- * @returns {boolean} True if the transaction has valid ICC credentials, false otherwise.	
- */	
-export const hasValidICCCredentials = (transactionBody: any, walletNetworkID: number): boolean => {
-  console.log("hasValidICCCredentials");
-  const voter = transactionBody.to_js_value().voting_procedures?.[0].voter;	
-  console.log("voter:", voter);	
-
-  if (!voter) {	
-    return false;	
-  }	
-
-  const credentialType = voter.ConstitutionalCommitteeHotCred;	
-  const scriptHex = credentialType?.Script;	
-
-  if (!scriptHex) {	
-    return false;	
-  }	
-
-  const expectedScripts = {	
-    [0]: "4f00984fa72e265b8ff8ffce4405da562cd3d6b16a4a38de3372eeea",	
-    [1]: "85c47dd4b9a2e70e88965d91dd69be182d5605b23bb5250b1c94bf64",	
-  };	
-  if (expectedScripts[walletNetworkID as 0 | 1] === scriptHex) {	
-    console.log('Intersect CC Credential found in', walletNetworkID===0 ? 'testnet' : 'mainnet');	
-  }	
-  else {	
-    console.error("Incorrect Intersect CC Credentials");	
-  }	
-  return expectedScripts[walletNetworkID as 0 | 1] === scriptHex;	
-};	
-
-/**	
  * Checks if the given stake credential is part of the plutus data of the transaction.	
  * @param transactionBody The body of the transaction to check.	
  * @param stakeCredential The stake credential to check.	
