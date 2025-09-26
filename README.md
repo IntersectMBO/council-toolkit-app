@@ -1,4 +1,4 @@
-# CC Toolkit App
+# Constitutional Committee Toolkit App
 
 This App will allow constitutional committee to be able to vote on governance actions, by connecting their wallet to this app.
 
