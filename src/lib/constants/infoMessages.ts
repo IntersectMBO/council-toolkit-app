@@ -11,4 +11,5 @@
     ACK_VOTE_CHOICE: "Please acknowledge that you have checked and agreed to the vote choice.",
     ACK_METADATA_ANCHOR: "Please acknowledge that you have checked and agreed to the metadata anchor.", 
     ACK_VOTING_DETAILS: "Please acknowledge that you have checked the vote details.",  
+    VOTE_RECAST: "By recasting your vote, you will override your previous vote.",
   };
