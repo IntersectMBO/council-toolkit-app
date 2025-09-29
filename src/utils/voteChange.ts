@@ -1,0 +1,35 @@
+import { Vote, VoteKind } from "@meshsdk/core";
+import { CCMember } from "../types/types";
+
+export async function getPreviousVoteChange({
+  networkId,
+  govActionID,
+  selectedCCMember,
+  newVote
+}: {
+  networkId: number;
+  govActionID: string;
+  selectedCCMember: CCMember | null;
+  newVote: VoteKind | null;
+}): Promise<{ isVoteChange: boolean; prevState: VoteKind | null; newState: VoteKind | null }> {
+  let prevVote = null;
+  if (selectedCCMember) {
+    const ccMemberHotCred = selectedCCMember.hotCredential;
+    try {
+      const res = await fetch(`/api/proxy?network=${networkId}&action=committeeVotes&proposalId=${govActionID}&committee=${ccMemberHotCred}`);
+      console.log('Fetch response:', res);
+      if (res.ok) {
+        const prevVoteData = await res.json();
+        prevVote = prevVoteData?.vote || null;
+      }
+    } catch (e) {
+      prevVote = null;
+    }
+  }
+  const isVoteChange = prevVote !== null && prevVote !== newVote;
+  return {
+    isVoteChange,
+    prevState: prevVote,
+    newState: newVote
+  };
+}

@@ -1,6 +1,6 @@
-# Intersect Council Toolkit App
+# Constitutional Committee Toolkit App
 
-This App will allow Intersect council to be able to vote on governance actions, by connecting their wallet to this app.
+This App will allow constitutional committee to be able to vote on governance actions, by connecting their wallet to this app.
 
 ## Table of Contents
 
@@ -10,11 +10,28 @@ This App will allow Intersect council to be able to vote on governance actions, 
 
 ## Usage
 
-1. Connect your wallet to the app.
-2. Make sure you are on the mainnet or pre-prod for testing.
-3. Paste your unsigned transaction on the input box, then click check transaction.
-4. If the unsigned transaction passes all validity checks you will be able to pass the transaction to your wallet for signing, producing a signature.
+### Transaction Inspector page
+
+* Allows you to inspect your transaction and sign it.
+1. Select which CC member you are part of.
+2. Paste/upload your unsigned transaction on the input box.
+3. Connect to your wallet, for wallet related validation of the transaction and if you want to sign it.
+4. Validity check will be automatically preformed upon transaction.
+5. If the unsigned transaction passes all validity checks you will be able to pass the transaction to your wallet for signing, producing a signature.
+
+### Live Governance Actions Page 
+
+* Displays all live governance actions that can be voted on.
+
+1. Select which CC member you are part of to view your vote status on live governance actions.
+
+### Rationale Generator
+
+* To create a vote rationale metadata based on CIP-136 schema.
+1. Required fields: Summary , Rationale Statement .
+2. Optional fields: Precedent discussion, counter argument discussion, internal vote, references list.
+3. Once ready click DOWNLOAD button to get the jsonld file.
 
 ## Architecture
 
-![Architecture](./docs/images/v1-architecture.PNG)
+![Architecture](./docs/images/v2-architecture.PNG)

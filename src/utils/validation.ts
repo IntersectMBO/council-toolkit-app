@@ -1,0 +1,193 @@
+import * as CSL from "@emurgo/cardano-serialization-lib-browser";
+import { getDataHashFromURI, bech32ToHex } from "./cardano";
+
+// Transaction Validation Functions
+
+/**	
+ * Checks if the given stake credential is part of the required signers of the transaction.	
+ * @param transactionBody the body of the transaction to check.	
+ * @param stakeCred the stake credential to check.	
+ * @returns {boolean} true if the stake credential is part of the required signers, false otherwise.	
+ */	
+export const isPartOfSigners = (transactionBody: any, stakeCred: string) => {
+  console.log("isPartOfSigners");
+  const requiredSigners = transactionBody.required_signers();
+
+  if (!requiredSigners || requiredSigners.len() === 0) {
+    console.log("No required signers in the transaction.");
+  } else if (requiredSigners?.to_json().includes(stakeCred)) {
+    console.log("Required signers in the transaction:", requiredSigners?.to_json());
+    return true;
+  } else {
+    console.log("Not part of the required signers.");
+  }
+  return false;
+};
+
+/**	
+ * Checks if the transaction has one vote set.	
+ * @param transactionBody the body of the transaction to check.	
+ * @returns {boolean} true if the transaction has one vote set, false otherwise.	
+ */	
+export const hasOneVoteOnTransaction = (transactionBody: any): boolean => {
+  console.log("hasOneVoteOnTransaction");
+  const votingProcedure = transactionBody.to_js_value().voting_procedures?.[0];
+  const votes = votingProcedure?.votes;
+  const voteCount = votes?.length;
+
+  if (voteCount === 1) {
+    return true;
+  } else if (voteCount === 0) {
+    throw new Error("Transaction has no votes.");
+  }
+
+  throw new Error(`You are signing more than one vote. Number of votes: ${voteCount}`);
+};
+
+/**	
+ * Checks if the transaction has certificates.	
+ * @param transactionBody the body of the transaction to check.	
+ * @returns {boolean} true if the transaction has certificates, false otherwise.	
+ */	
+export const hasCertificates = (transactionBody: any) => {
+  console.log("hasCertificates");
+  const certificates = transactionBody?.certs();
+  let hasCertificates = true;
+
+  console.log("certificates:", certificates);
+
+  if (!certificates) {
+    console.log("No certificates in the transaction.");
+    hasCertificates = false;
+  }
+
+  return hasCertificates;
+};
+
+export const hasNoCertificates = (transactionBody: any): boolean => {
+  return !hasCertificates(transactionBody);
+};
+
+/**	
+ * Checks if the transaction is on the same network as the wallet.	
+ * @param transactionBody The body of the transaction to check.	
+ * @param walletNetworkID The network ID of the wallet.	
+ * @returns {boolean} True if the transaction is on the same network, false otherwise.	
+ */	
+export const isSameNetwork = (transactionBody: any, walletNetworkID: number): boolean => {
+  console.log("isSameNetwork");
+  const transactionNetworkID = transactionBody
+    .outputs()
+    .get(0)
+    .address()
+    .to_bech32()
+    .startsWith("addr_test1") ? 0 : 1;
+  
+  console.log("transactionNetwork:", transactionNetworkID);
+  return walletNetworkID === transactionNetworkID;
+};
+
+/**	
+ * Checks if the given stake credential is part of the plutus data of the transaction.	
+ * @param transactionBody The body of the transaction to check.	
+ * @param stakeCredential The stake credential to check.	
+ * @returns {boolean} True if the stake credential is part of the plutus data, false otherwise.	
+ */	
+export const isSignerInPlutusData = (transactionBody: any, stakeCredential: string): boolean => {	
+    console.log('isSignerInPlutusData Function');	
+    const outputs = transactionBody?.outputs().to_js_value();	
+    console.log("outputs:", outputs);	
+
+    if (!Array.isArray(outputs) || !stakeCredential) {	
+        console.error("Transaction outputs are not available or stake credential is missing.");	
+        return false;	
+    }	
+
+    const stakeCredRegex = new RegExp(stakeCredential);	
+
+    for (const output of outputs) {	
+        const plutusData = output.plutus_data?.Data;	
+
+        if (plutusData && stakeCredRegex.test(plutusData)) {	
+            return true;	
+        }	
+    }	
+
+    return false;	
+};	
+
+/**	
+ * Checks if a transaction is signed by looking for witnesses in the transaction.	
+ * @param transaction The transaction to check.	
+ * @returns {boolean} True if the transaction is unsigned, false otherwise.	
+ */	
+export const isUnsignedTransaction = (transaction: CSL.Transaction): boolean => {	
+
+  const witnesses = transaction.witness_set().vkeys();	
+  if (!witnesses || witnesses.len() === 0) {	
+    return true;	
+  }	
+  return false;	
+}	
+
+/**	
+ * Checks if the given anchor URL produces the given anchor data hash.	
+ * @param anchorURL The URL of the anchor to check.	
+ * @param anchor_data_hash The expected anchor data hash.	
+ * @returns {Promise<boolean>} True if the anchor URL produces the expected hash, false otherwise.	
+ */	
+export const checkMetadataAnchor = async (anchorURL: string, anchor_data_hash: string): Promise<boolean> => {	
+  try {	
+    const producedHash = await getDataHashFromURI(anchorURL);	
+    return producedHash === anchor_data_hash;	
+  } catch (error) {	
+    console.error("Error fetching metadata:", error);	
+    return false;	
+  }	
+};	
+
+
+/**
+ * Checks if the selected member's hot credential matches the voter in the transaction.
+ * @param votingProcedure The voting procedure to check.
+ * @param selectedHotCredential The hot credential of the selected member.
+ * @returns {boolean} True if the hot credential matches the voter, false otherwise.
+ */
+export const isSelectedMemberVoter = (votingProcedure: any, selectedHotCredential: string): boolean => {
+
+  if (!votingProcedure) {
+    console.log("No voting procedure provided");
+    return false;
+  }
+
+  if (!selectedHotCredential) {
+    console.log("No selected member hot credential provided");
+    return false;
+  }
+
+  const voter = votingProcedure.voter;
+  console.log("[isSelectedMemberVoter] Voter from transaction:", voter);
+
+  // assume voter has a hot credential script hash
+  let voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Script;
+  // If the voter does not have a hot credential script hash
+  // try hot credential key hash
+  if (!voterHotCredential) {
+    console.log("[isSelectedMemberVoter] No hot credential script found in voter, trying key hash");
+    voterHotCredential = voter.ConstitutionalCommitteeHotCred?.Key;
+  }
+  // If still no hot credential found, return false
+  if (!voterHotCredential) {
+    console.log("[isSelectedMemberVoter] No hot credential found in voter");
+    return false;
+  }
+  // convert to hex and remove byte header as this is a CIP-129 id
+  console.log("[isSelectedMemberVoter] Voter hot credential from transaction (hex):", voterHotCredential);
+  const selectedCredentialHex = bech32ToHex(selectedHotCredential, "cc_hot").slice(2);
+  console.log("[isSelectedMemberVoter] Selected member hot credential (hex):", selectedCredentialHex);
+  // Compare the credentials (assuming they are in the same format)
+  const matches = selectedCredentialHex === voterHotCredential;
+  console.log("[isSelectedMemberVoter] Hot credentials match:", matches);
+
+  return matches;
+}

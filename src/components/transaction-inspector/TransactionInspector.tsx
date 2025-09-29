@@ -7,19 +7,23 @@ import { TextField, Box, Typography, Container, Paper, FormControlLabel, Checkbo
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import * as CSL from "@emurgo/cardano-serialization-lib-browser";
 import ReactJsonPretty from "react-json-pretty";
-import * as voteTxValidationUtils from "../utils/txValidationUtils";
-import { TransactionChecks } from "./txValidationChecks";
-import { VoteTransactionChecks } from "./voteValidationChecks";
-import { decodeHexToTx, convertGAToBech, getCardanoScanURL } from "../utils/txUtils";
-import { VotingDetails } from "./votingDetails";
-import { HierarchyDetails } from "./hierarchyDetails";
-import DownloadButton from "./molecules/downloadFiles";
-import FileUploader from "./molecules/fileUploader";
-import {TxValidationState,VoteTransactionDetails,VoteValidationState} from "./types/types";
-import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVoteValidationState} from "./types/defaultStates";
-import SignTransactionButton from "./signTransactionButton";
-import TransactionDetailsActions from "./molecules/transactionDetailsActions";
-import txWitnessTemplate from "../../templates/cardano-file-templates/txWitnessTemplate.json";
+import * as voteTxValidationUtils from "../../utils/validation";
+import { TransactionChecks } from "./ValidationChecks";
+import { VoteChecks } from "./VoteValidationChecks";
+import { decodeHexToTx, convertGAToBech, getCardanoScanURL } from "../../utils/cardano";
+import { VotingDetails } from "./VotingDetails";
+import { HierarchyDetails } from "./HierarchyDetails";
+import DownloadButton from "../shared/downloadFiles";
+import FileUploader from "../shared/fileUploader";
+import {TxValidationState,VoteTransactionDetails, VotingProcedureValidationState} from "../../types/types";
+import {defaultTxValidationState,defaultVoteTransactionDetails,defaultVotingProcedureValidationState} from "../../types/defaultStates";
+import SignTransactionButton from "./SignTransaction";
+import TransactionDetailsActions from "../shared/transactionDetailsActions";
+import txWitnessTemplate from "../../lib/templates/cardano-file-templates/txWitnessTemplate.json";
+import { useMember } from "../member-selector/memberSelector";
+import { isSameNetwork } from "../../utils/validation";
+import CheckItem from "../shared/validationCheckItem";
+import { getPreviousVoteChange } from '../../utils/voteChange';
 
 export const TransactionButton = ({ 
   pendingTransactionHex, 
@@ -29,6 +33,7 @@ export const TransactionButton = ({
   resetPendingTransaction: () => void;
 }) => {
   const { wallet, connected } = useWallet();
+  const { selectedCCMember } = useMember();
   const [stakeCredentialHash, setStakeCredentialHash] = useState<string>("");
   const [message, setMessage] = useState("");
   const [unsignedTransactionHex, setUnsignedTransactionHex] = useState("");
@@ -38,15 +43,16 @@ export const TransactionButton = ({
   const [isVoteTransaction, setIsVoteTransaction] = useState(false);
   // for all transactions
   const [txValidationState, setTxValidationState] = useState<TxValidationState>(defaultTxValidationState);
-  // for vote transactions
+  const [transactionHash, setTransactionHash] = useState<string>("");
+  // for vote transactions details
   const [voteTransactionDetails, setVoteTransactionDetails] = useState<VoteTransactionDetails[]>([defaultVoteTransactionDetails]);
-  // for vote transactions
-  const [voteValidationState, setVoteValidationState] = useState<VoteValidationState[]>([defaultVoteValidationState]);
-
-  // add other transactions validations and details here
+  // for vote transactions validations
+  const [votingProcedureValidationState, setVotingProcedureValidationState] = useState<VotingProcedureValidationState>(defaultVotingProcedureValidationState);
+  // todo add other transactions validations and details here
 
   const resetAllDetailsState = useCallback(() => {
     setVoteTransactionDetails([defaultVoteTransactionDetails]);
+    setTransactionHash("");
     // add hierarchy details reset here
     // add other transaction details reset here
   }, []);
@@ -56,8 +62,8 @@ export const TransactionButton = ({
       ...prev,
       defaultTxValidationState,
     }));
-    setVoteValidationState([defaultVoteValidationState]);
-    // add other transactions validations here
+    setVotingProcedureValidationState(defaultVotingProcedureValidationState);
+    // todo add other transactions validations here
   }, []);
 
   const resetAllStates = useCallback(() => {
@@ -101,29 +107,58 @@ export const TransactionButton = ({
     const votingProcedures = transactionBody.to_js_value().voting_procedures;
     console.log("[processTransactionBody] Voting Procedures:", votingProcedures);
     
-    // if a vote transaction
-    // todo: right now we just assume that if there is one vote, then its a vote transaction -- this can be improved
+    // todo: improve
+    // if a there are voting procedures, assume it's a vote transaction for now
+    // in the future we need to account for other transaction types
     if (votingProcedures) {
       setIsVoteTransaction(true);
       console.log("[processTransactionBody] Transaction is a vote transaction, applying vote validations");
 
-      const votes = votingProcedures[0].votes; // todo work for multiple procedures
-      const voteValidations: VoteValidationState[] = [];
-      const voteDetails: VoteTransactionDetails[] = [];
-      
+      const currentVoteValidations: VotingProcedureValidationState = {
+        oneVotingProcedure: false,
+        votesValidation: [],
+      };
+      const currentVoteDetails: VoteTransactionDetails[] = [];
+
+      // if there is more than one voting procedure, set to false
+      if (votingProcedures.length == 1) {
+        currentVoteValidations.oneVotingProcedure = true;
+        console.log("[processTransactionBody] One voting procedure found");
+      } else {
+        currentVoteValidations.oneVotingProcedure = false;
+        console.log("[processTransactionBody] More than one voting procedure found");
+      }
+
+      // validate for selected member, if one was selected for the first voting procedure
+      if (selectedCCMember) {
+        currentVoteValidations.isSelectedMemberVoter = voteTxValidationUtils.isSelectedMemberVoter(votingProcedures[0], selectedCCMember.hotCredential);
+      }
+
+      // for the first voting procedure apply validations to all votes
+      const votes = votingProcedures[0].votes;
+
       for (const vote of votes) {
         console.log("[processTransactionBody] Vote:", vote);
 
         const govActionID = convertGAToBech(vote.action_id.transaction_id, vote.action_id.index);
         const voteChoice = (vote.voting_procedure.vote === 'Yes' ? 'Constitutional' : vote.voting_procedure.vote === 'No' ? 'Unconstitutional' : 'Abstain');
         const metadataURL = vote.voting_procedure.anchor?.anchor_url ?? "unavailable";
-        const metadataHash = vote.voting_procedure.anchor?.anchor_data_hash ?? "unavailable";     
- 
-        voteValidations.push({
-          isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(metadataURL, metadataHash),
+        const metadataHash = vote.voting_procedure.anchor?.anchor_data_hash ?? "unavailable";
+
+        // Use utility to get previous vote change info
+        const { isVoteChange, prevState, newState } = await getPreviousVoteChange({
+          networkId: transactionNetworkID,
+          govActionID,
+          selectedCCMember,
+          newVote: vote.voting_procedure.vote
         });
 
-        voteDetails.push({
+        currentVoteValidations.votesValidation.push({
+          isMetadataAnchorValid: await voteTxValidationUtils.checkMetadataAnchor(metadataURL, metadataHash),
+          voteChange: { isVoteChange, prevState, newState }
+        });
+
+        currentVoteDetails.push({
           govActionID: govActionID,
           voteChoice: voteChoice,
           explorerLink: getCardanoScanURL(govActionID, transactionNetworkID),
@@ -133,8 +168,8 @@ export const TransactionButton = ({
         });
       }
       // set state
-      setVoteTransactionDetails(voteDetails);
-      setVoteValidationState(voteValidations);
+      setVoteTransactionDetails(currentVoteDetails);
+      setVotingProcedureValidationState(currentVoteValidations);
     } else {
       setIsVoteTransaction(false);
       console.log("[processTransactionBody] Transaction is not a vote transaction");
@@ -144,7 +179,7 @@ export const TransactionButton = ({
     }
 
     return baseTxValidationState;
-  }, []);
+  }, [selectedCCMember]);
 
   // Wallet related validations
   const processWalletValidation = useCallback(async (baseTxValidationState: TxValidationState, transactionBody: any) => {
@@ -168,6 +203,17 @@ export const TransactionButton = ({
     }
   }, [connected, walletRef]);
 
+  // Get transaction hash from hex
+  const getTransactionHash = useCallback((hex: string) => {
+    try {
+      const fixedTx = CSL.FixedTransaction.from_hex(hex);
+      return fixedTx.transaction_hash().to_hex();
+    } catch (error) {
+      console.error("Error getting transaction hash:", error);
+      return "";
+    }
+  }, []);
+
   // Process inputted transaction
   // apply all validation functions
   const processTransaction = useCallback(async (hex: string, isFromURL: boolean = false) => {
@@ -181,6 +227,10 @@ export const TransactionButton = ({
       const unsignedTransaction = decodeHexToTx(hex);
       if (!unsignedTransaction) throw new Error("Invalid transaction format.");
       setUnsignedTransaction(unsignedTransaction);
+      
+      // Set transaction hash
+      const txHash = getTransactionHash(hex);
+      setTransactionHash(txHash);
 
       if (isFromURL) {
         console.log("[processWalletValidation] Transaction loaded successfully from URL");
@@ -210,7 +260,7 @@ export const TransactionButton = ({
         resetAllDetailsState();
       }
     }
-  }, [processTransactionBody, processWalletValidation, resetAllValidationState, resetAllDetailsState]);
+  }, [processTransactionBody, processWalletValidation, resetAllValidationState, resetAllDetailsState, getTransactionHash]);
 
 // Process the transaction
   useEffect(() => {    
@@ -233,6 +283,8 @@ export const TransactionButton = ({
       setMessage("");
       processTransaction(unsignedTransactionHex, false);
     }
+
+    // todo: add refresh/re-validate when a member is selected
     
   },[pendingTransactionHex, unsignedTransactionHex, processTransaction, resetPendingTransaction]);
 
@@ -359,6 +411,46 @@ export const TransactionButton = ({
               </Paper>
             </Box>
           )}
+
+          {/* Transaction Hash Display - Integrated */}
+          {transactionHash && (
+            <Box sx={{ mt: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                <Typography variant="body2" color="textSecondary" sx={{ fontWeight: 500 }}>
+                  Transaction Hash:
+                </Typography>
+                <Tooltip title="Copy transaction hash">
+                  <IconButton
+                    size="small"
+                    onClick={() => {
+                      navigator.clipboard.writeText(transactionHash);
+                      setMessage("Transaction hash copied to clipboard!");
+                    }}
+                    sx={{ 
+                      backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                      '&:hover': { backgroundColor: 'rgba(25, 118, 210, 0.2)' }
+                    }}
+                  >
+                    <ContentCopyIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  fontFamily: "monospace",
+                  wordBreak: "break-all",
+                  backgroundColor: "#f8f9fa",
+                  p: 1.5,
+                  borderRadius: 1,
+                  border: "1px solid #e0e0e0",
+                  fontSize: "0.875rem"
+                }}
+              >
+                {transactionHash}
+              </Typography>
+            </Box>
+          )}
       </Paper>
 
       {/* Validation and Details Sections */}
@@ -382,14 +474,30 @@ export const TransactionButton = ({
               }}>
                 Vote Validation Checks
               </Typography>
-              {/* <VoteTransactionChecks {...voteValidationState} /> */}
-              
-              {voteValidationState.map((validation, index) => (
+              {/* todo: move to own component */}
+                <Box display="flex" justifyContent="space-between" gap={2}>
+                  <Box display="flex" flexDirection="column" gap={2} width="48%">
+                    <CheckItem 
+                      label="One voting procedure?" 
+                      tooltip={"Ensures the transaction contains exactly one voting procedure"} 
+                      value={votingProcedureValidationState.oneVotingProcedure} 
+                    />
+                  </Box>
+                  <Box display="flex" flexDirection="column" gap={2} width="48%"> 
+                    <CheckItem
+                      label="Is the selected member the voter in the transaction?"
+                      tooltip="Verifies that the selected Constitutional Committee member's hot credential matches the voter in the transaction"
+                      value={votingProcedureValidationState.isSelectedMemberVoter}
+                      textMsg={votingProcedureValidationState.isSelectedMemberVoter === undefined ? "Select member" : undefined}
+                    />
+                  </Box>  
+              </Box>
+              {votingProcedureValidationState.votesValidation.map((validation, index) => (
                 <Box key={index} sx={{ mb: 2, maxHeight: 500, overflowY: "auto" }}>
                   <Typography variant="subtitle1" color="textSecondary">
                     Vote no.{index + 1}
                   </Typography>
-                  <VoteTransactionChecks {...validation} />
+                  <VoteChecks {...validation} />
                 </Box>
               ))}
             </Paper>
@@ -496,7 +604,7 @@ export const TransactionButton = ({
             unsignedTransactionHex, 
             isVoteTransaction, 
             txValidationState, 
-            voteValidationState, 
+            votingProcedureValidationState, 
             acknowledgedTx: acknowledgedTxs, 
             connected,
             govActionIDs: voteTransactionDetails.map((detail: VoteTransactionDetails) => detail.govActionID), 

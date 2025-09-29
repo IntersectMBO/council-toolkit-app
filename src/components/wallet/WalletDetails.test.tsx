@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { WalletDetails } from '../../components/walletDetails';
+import { WalletDetails } from './WalletDetails';
 
 // Mock next/image
 jest.mock('next/image', () => ({

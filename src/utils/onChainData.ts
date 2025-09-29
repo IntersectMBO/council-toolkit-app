@@ -57,3 +57,23 @@ export async function getLiveGAData(currentEpoch: number , currentEpochEndTime: 
   return data;
 
 }
+
+export async function getCommitteeVote(network: number, proposalId: string, committee: any): Promise<any> {
+  console.log(
+    `%c[getCommitteeVote]`,
+    "color: #4e9a06; font-weight: bold;",
+    `Network: ${network === 0 ? "preprod" : "mainnet"} | Proposal ID: ${proposalId} | Committee: ${committee}`
+  );
+  const response = await fetch(`${network === 0 ? preProdUrl : mainnetUrl}/committee_votes?select=vote,block_time,proposal_id&_cc_hot_id=${committee}&proposal_id=eq.${proposalId}`);
+  if (!response.ok) {
+    throw new Error(`Error fetching committee votes: ${response.status}`);
+  }
+  const votes = await response.json();
+  if (votes.length <= 1) {
+    return votes[0] || null;
+  }
+  // Return the entry with the latest block_time
+  return votes.reduce((latest: { block_time: number; }, current: { block_time: number; }) =>
+    current.block_time > latest.block_time ? current : latest
+  );
+}

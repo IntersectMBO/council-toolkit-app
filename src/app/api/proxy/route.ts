@@ -1,8 +1,9 @@
-import { getCurrentEpoch,getCurrentEpochEndTime, getLiveGAData } from "@/app/utils/onChainData";
+import { getCommitteeVote, getCurrentEpoch,getCurrentEpochEndTime, getLiveGAData } from "@/utils/onChainData";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const network = Number(searchParams.get("network")) ; //|| 1; 
+  const action = searchParams.get("action"); 
   console.log(` Route Network: ${network}, type ${typeof network}`);
   //  if (!network || Number.isNaN(network) ) {
   //   console.log(network, "is not a valid network number");  
@@ -11,16 +12,30 @@ export async function GET(request: Request) {
 
   try {
     console.log(`Fetching data for network server side: ${network}`);
-    const currentEpoch = await getCurrentEpoch(network);       
-    console.log(`Current epoch: ${currentEpoch}`);       // Step 1
-    const endTime = await getCurrentEpochEndTime(currentEpoch,network);       // Step 2
-    const liveGAData = await getLiveGAData(currentEpoch, endTime,network); // Step 3
+    console.log(`Action requested: ${action}`);
+    switch(action) {
+      case 'liveProposals':
+        {
+          const currentEpoch = await getCurrentEpoch(network);       
+          console.log(`Current epoch: ${currentEpoch}`);       // Step 1
+          const endTime = await getCurrentEpochEndTime(currentEpoch,network);       // Step 2
+          const liveGAData = await getLiveGAData(currentEpoch, endTime,network); // Step 3
 
-    return Response.json({
-      epoch: currentEpoch,
-      endTime: endTime,
-      liveGAData: liveGAData,
-    });
+          return Response.json({
+            epoch: currentEpoch,
+            endTime: endTime,
+            liveGAData: liveGAData,
+          });
+        }
+      case 'committeeVotes':
+        {
+          const proposalId = searchParams.get("proposalId") || "";
+          const committeeHotCred = searchParams.get("committee");
+          const votes = await getCommitteeVote(network, proposalId, committeeHotCred);
+          return Response.json(votes);
+        }
+    }
+    
   } catch (error: any) {
     // Improved error logging
     console.error('API /api/proxy error:', error);

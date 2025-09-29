@@ -1,8 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import InfoWithTooltip from "./molecules/infoHover";
-import { TOOLTIP_MESSAGES } from "../constants/infoMessages";
-import CheckItem from "./molecules/validationCheckItem";
-import { TxValidationState } from "./types/types";
+import InfoWithTooltip from "../shared/infoHover";
+import { TOOLTIP_MESSAGES } from "../../lib/constants/infoMessages";
+import CheckItem from "../shared/validationCheckItem";
+import { TxValidationState } from "../../types/types";
 
 export const TransactionChecks = ({
   isPartOfSigners,
