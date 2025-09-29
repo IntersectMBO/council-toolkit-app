@@ -4,8 +4,8 @@ import { MeshProviderApp } from "@/providers/meshProvider";
 import "@meshsdk/react/styles.css";
 
 export const metadata: Metadata = {
-  title: "CC Toolkit",
-  description: "CC Toolkit App",
+  title: "Constitutional Committee Toolkit",
+  description: "Constitutional Committee Toolkit App",
   icons: {
     icon: [
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
