@@ -11,8 +11,8 @@ export const CC_MEMBERS: CCMember[] = [
   {
     id: "cc2", 
     name: "Japan Council",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy8",
-    hotCredential: "cc_hot1qv7fa08xua5s7qscy9zct3asaa5a3hvtdc8sxexetcv3unq7cfkq4",
+    coldCredential: "cc_cold1zwwv8uu8vgl5tkhx569hp94sctjq8krqr2pdcspzr6k5rcsxw2az4",
+    hotCredential: "cc_hot1qde96n2yfxvx2pc4xm25va9ssqezh5mxhc2n8rdjyxq8kvgwwujd9",
     network: "mainnet"
   },
   {
@@ -33,7 +33,7 @@ export const CC_MEMBERS: CCMember[] = [
     id: "cc5",
     name: "Phil_uplc",
     coldCredential: "cc_cold1zgf5jdusmxcrfqapu8ngf6j04u0wfzjc7sp9wnnlyfr0f4q68as9w",
-    hotCredential: "cc_hot1ddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    hotCredential: "cc_hot1qf5tkz6zwcpplq3kgpt2486d8za943vmymqkdjl249qgw3s2y5r9y",
     network: "mainnet"
   },
   {
