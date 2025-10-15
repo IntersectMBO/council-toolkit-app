@@ -11,8 +11,8 @@ export const CC_MEMBERS: CCMember[] = [
   {
     id: "cc2", 
     name: "Japan Council",
-    coldCredential: "cc_cold1z00saqaaue2pdkk7tv0e0el3zhxpl7ve259dj6y9q7plu5qwvxfy8",
-    hotCredential: "cc_hot1qv7fa08xua5s7qscy9zct3asaa5a3hvtdc8sxexetcv3unq7cfkq4",
+    coldCredential: "cc_cold1zwwv8uu8vgl5tkhx569hp94sctjq8krqr2pdcspzr6k5rcsxw2az4",
+    hotCredential: "cc_hot1qde96n2yfxvx2pc4xm25va9ssqezh5mxhc2n8rdjyxq8kvgwwujd9",
     network: "mainnet"
   },
   {
@@ -33,7 +33,7 @@ export const CC_MEMBERS: CCMember[] = [
     id: "cc5",
     name: "Phil_uplc",
     coldCredential: "cc_cold1zgf5jdusmxcrfqapu8ngf6j04u0wfzjc7sp9wnnlyfr0f4q68as9w",
-    hotCredential: "cc_hot1ddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    hotCredential: "cc_hot1qf5tkz6zwcpplq3kgpt2486d8za943vmymqkdjl249qgw3s2y5r9y",
     network: "mainnet"
   },
   {
@@ -50,18 +50,18 @@ export const CC_MEMBERS: CCMember[] = [
     hotCredential: "cc_hot1qdc65ke6jfq2q25fcn3g89tea30tvrzpptc2tw6g8cdc7pqtmus0y",
     network: "mainnet"
   },
-  {
-    id: "cc8",
-    name: "Intersect mainnet",
-    coldCredential: "cc_cold1z0cdctqqmy4y25sjv7lz6h0pcjzld7w3g3nd0ctqv2yheacw3r2se",
-    hotCredential: "cc_hot1qwzuglw5hx3wwr5gjewerhtfhcvz64s9kgam2fgtrj2t7eqs00fzv",
-    network: "mainnet"
-  },
-  {
-    id: "cc9",
-    name: "Intersect Preprod",
-    coldCredential: "idkkk",
-    hotCredential: "cc_hot1qd8spxz05uhzvku0lrluu3q9mftze57kk94y5wx7xdewa6s3guxzr",
-    network: "preprod"
-  }
+  // {
+  //   id: "cc8",
+  //   name: "Intersect mainnet",
+  //   coldCredential: "cc_cold1z0cdctqqmy4y25sjv7lz6h0pcjzld7w3g3nd0ctqv2yheacw3r2se",
+  //   hotCredential: "cc_hot1qwzuglw5hx3wwr5gjewerhtfhcvz64s9kgam2fgtrj2t7eqs00fzv",
+  //   network: "mainnet"
+  // },
+  // {
+  //   id: "cc9",
+  //   name: "Intersect Preprod",
+  //   coldCredential: "idkkk",
+  //   hotCredential: "cc_hot1qd8spxz05uhzvku0lrluu3q9mftze57kk94y5wx7xdewa6s3guxzr",
+  //   network: "preprod"
+  // }
 ];
